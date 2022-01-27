@@ -3,17 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/dev/PRJ666/app/src/main/res/layout/activity_calendar.xml" value="0.416213768115942" />
-        <entry key="..\:/dev/PRJ666/app/src/main/res/layout/activity_compare_bill.xml" value="0.416213768115942" />
-        <entry key="..\:/dev/PRJ666/app/src/main/res/layout/activity_compare_mp.xml" value="0.416213768115942" />
-        <entry key="..\:/dev/PRJ666/app/src/main/res/layout/activity_feed.xml" value="0.6715328467153284" />
-        <entry key="..\:/dev/PRJ666/app/src/main/res/layout/activity_livestream.xml" value="0.416213768115942" />
-        <entry key="..\:/dev/PRJ666/app/src/main/res/layout/activity_location.xml" value="0.416213768115942" />
-        <entry key="..\:/dev/PRJ666/app/src/main/res/layout/activity_login.xml" value="0.416213768115942" />
-        <entry key="..\:/dev/PRJ666/app/src/main/res/layout/activity_search.xml" value="0.416213768115942" />
-        <entry key="..\:/dev/PRJ666/app/src/main/res/layout/activity_settings.xml" value="0.416213768115942" />
-        <entry key="..\:/dev/PRJ666/app/src/main/res/layout/activity_signup.xml" value="0.416213768115942" />
-        <entry key="..\:/dev/PRJ666/ourcommons/app/src/main/res/layout/activity_calendar.xml" value="0.4098731884057971" />
+        <entry key="..\:/dev/PRJ666/ourcommons/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.5820512820512821" />
+        <entry key="..\:/dev/PRJ666/ourcommons/app/src/main/res/drawable/ic_launcher_background.xml" value="0.5820512820512821" />
+        <entry key="..\:/dev/PRJ666/ourcommons/app/src/main/res/layout/activity_calendar.xml" value="0.416213768115942" />
+        <entry key="..\:/dev/PRJ666/ourcommons/app/src/main/res/layout/activity_signup.xml" value="0.4098731884057971" />
       </map>
     </option>
   </component>
