@@ -11,8 +11,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import io.realm.Realm;
-
 public class LocationActivity extends AppCompatActivity
         implements LocationListener, NetworkingService.NetworkingListener{
 
@@ -43,9 +41,9 @@ public class LocationActivity extends AppCompatActivity
         getSupportFragmentManager().beginTransaction().replace(R.id.map, fragment).commit();
 
         //initialize networking service and json service
-        networkingService = ( (MyApp)getApplication()).getNetworkingService();
-        jsonService = ( (MyApp)getApplication()).getJsonService();
-        dbManager = ((MyApp) getApplication()).getDbManager();
+        networkingService = ( (MainApplication)getApplication()).getNetworkingService();
+        jsonService = ( (MainApplication)getApplication()).getJsonService();
+        dbManager = ((MainApplication) getApplication()).getDbManager();
         networkingService.listener = this;
     }
 

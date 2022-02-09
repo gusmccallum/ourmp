@@ -1,20 +1,19 @@
 package com.example.ourmp;
 
 import android.app.Application;
-import android.util.Log;
 
-
-//application level subclass to initialize realm on app startup
 public class MainApplication extends Application {
 
+    private DBManager dbManager = new DBManager();
+    public DBManager getDbManager(){return dbManager;}
 
-    //Sign in users anonymously until this is true, delete anonymous account if and when they make an account and sign in
-    final boolean signedIn = false;
+    public  NetworkingService getNetworkingService(){
+        return networkingService;
+    }
+    private NetworkingService networkingService = new NetworkingService();
+    private JsonService jsonService = new JsonService();
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        DBManager DB = new DBManager();
-
+    public  JsonService getJsonService(){
+        return jsonService;
     }
 }
