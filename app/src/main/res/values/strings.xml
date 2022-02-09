@@ -1,5 +1,14 @@
 <resources>
     <string name="app_name">ourmp</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="search_title">search_title</string>
+    <string-array name="mps">
+        <item>MP one</item>
+        <item>MP two</item>
+        <item>MP three</item>
+        <item>MP4</item>
+        <item>MP5</item>
+        <item>MP6</item>
+        <item>MP7</item>
+        <item>MP8</item>
+    </string-array>
 </resources>
