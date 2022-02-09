@@ -11,6 +11,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import io.realm.Realm;
+
 public class LocationActivity extends AppCompatActivity
         implements LocationListener, NetworkingService.NetworkingListener{
 
@@ -20,6 +22,7 @@ public class LocationActivity extends AppCompatActivity
     MP mpObj = new MP();
     ImageView img;
     RelativeLayout mpCard;
+    DBManager dbManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -42,6 +45,7 @@ public class LocationActivity extends AppCompatActivity
         //initialize networking service and json service
         networkingService = ( (MyApp)getApplication()).getNetworkingService();
         jsonService = ( (MyApp)getApplication()).getJsonService();
+        dbManager = ((MyApp) getApplication()).getDbManager();
         networkingService.listener = this;
     }
 
@@ -85,7 +89,11 @@ public class LocationActivity extends AppCompatActivity
     }
 
     public void SubscribeBtnClicked(View view) {
+        //if(check if logged - yes)
+        dbManager.insertMPs(1, mpName.getText().toString());
         Toast.makeText(this, "Subscribed!", Toast.LENGTH_SHORT).show();
+        //else - not logged in
+        //Toast.makeText(this, "Need to login to subscribe MP!", Toast.LENGTH_SHORT).show();
     }
 
     public void MoreInfoBtnClicked(View view) {
