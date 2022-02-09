@@ -1,7 +1,7 @@
 package com.example.ourmp;
 
-import static io.realm.Realm.getApplicationContext;
 
+import static io.realm.Realm.getApplicationContext;
 
 import android.util.Log;
 
@@ -12,47 +12,57 @@ import java.util.ArrayList;
 import io.realm.Realm;
 import io.realm.mongodb.App;
 import io.realm.mongodb.AppConfiguration;
+
 import io.realm.mongodb.Credentials;
 import io.realm.mongodb.User;
 import io.realm.mongodb.mongo.MongoClient;
 import io.realm.mongodb.mongo.MongoCollection;
 import io.realm.mongodb.mongo.MongoDatabase;
 
+import static io.realm.Realm.getApplicationContext;
+
 public class DBManager {
-    String Appid = "ourmp-ksaww";
+    String appID = "ourmp-ksaww";
     App app;
     MongoClient mongoClient;
     MongoDatabase mongoDatabase;
-    User user;
-    MongoCollection<Document> mongoCollection;
+    User user; // realm user not object
+    //MongoCollection<Document> mongoCollection = new MongoCollection<Document>(1);
 
     public void DBManager(){
-
-        //Initialize Realm
         Realm.init(getApplicationContext());
-        app = new App(new AppConfiguration.Builder(Appid).build());
+        app = new App(new AppConfiguration.Builder(appID).build());
         user = app.currentUser();
         mongoClient = user.getMongoClient("mongodb-atlas");
         mongoDatabase = mongoClient.getDatabase("ourmpdb");
-
-
-        //Log user in anonymously
-        app.loginAsync(Credentials.anonymous(), new App.Callback<User>() {
-            @Override
-            public void onResult(App.Result<User> result) {
-                if (result.isSuccess())
-                {
-                    Log.v("User", "Logged in anonymously");
-
-                }
-                else {
-                    Log.v("User", "Failed to login");
-                }
-            }
-        });
     }
 
-    //Allow current user to subscribe to new MP
+    //insert MP in db
+    public void insertMPs(int id, String mps){
+        MongoCollection<Document> mongoCollection = mongoDatabase.getCollection("subscribed");
+        //find if the user with id has subscribe
+        /*Document queryFilter  = new Document("userId", id);
+        //find userId with same value with id
+        mongoCollection.findOne(queryFilter).getAsync(task -> {
+            if (task.isSuccess()) { //user has sub -> update the data
+                Document result = task.get();
+                Log.v("EXAMPLE", ""+result);
+            } else {//doesn have -> insert
+                Log.e("EXAMPLE", "fail: "+task.getError());
+            }
+        });*/
+    }
+
+    //need to implement
+    public void insertBills(int id, ArrayList legislations){
+        //mongoCollection = mongoDatabase.getCollection("subscribed");
+
+    }
+    //need to implement
+    public void insertUsers(){
+        //mongoCollection = mongoDatabase.getCollection("users");
+    }
+   //Allow current user to subscribe to new MP
     private void addMPSub(String MPName) {
         //TODO
     }
@@ -87,9 +97,4 @@ public class DBManager {
     private void removeBillSubs(String billID) {
         //TODO
     }
-
-
-
-
-
 }
