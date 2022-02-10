@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         findMP = (Button) findViewById(R.id.findMP);
         findMP.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -32,11 +33,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btn_search = (Button) findViewById(R.id.btn_search);
-
         btn_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, Search.class);
+                Intent intent = new Intent();
+                intent.setClass(getApplicationContext(), Search.class);
                 startActivity(intent);
             }
         });
