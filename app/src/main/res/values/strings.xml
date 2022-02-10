@@ -1,5 +1,25 @@
 <resources>
     <string name="app_name">ourmp</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="search_title">search_title</string>
+    <string-array name="mps">
+        <item>Edwardo Loomer</item>
+        <item>Clinton Covelli</item>
+        <item>Stephan Selvy</item>
+        <item>Jodi Holy</item>
+        <item>Elbert Redpath</item>
+        <item>Yael Naples</item>
+        <item>Bertha Baliga</item>
+        <item>Domitila Ciuffreda</item>
+        <item>Rosita Lawal</item>
+        <item>Gregg Dryman</item>
+        <item>Ty Farkus</item>
+        <item>Rachel Pinski</item>
+        <item>Eldon Cleckner</item>
+        <item>Sherwood Ishee</item>
+        <item>Gabriel Therres</item>
+        <item>Wayne Houch</item>
+        <item>Joseph Burczyk</item>
+        <item>Donnie Porcelli</item>
+        <item>Emmett Kuanoni</item>
+    </string-array>
 </resources>
