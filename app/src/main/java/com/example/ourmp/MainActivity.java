@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button findMP;
     Button btn_search;
+    Button btn_activityFeed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,5 +42,16 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        btn_activityFeed = (Button)findViewById(R.id.btn_activityFeed);
+        btn_activityFeed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(getApplicationContext(), ActivityFeed.class);
+                startActivity(intent);
+            }
+        });
+
     }
 }
