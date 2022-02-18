@@ -16,6 +16,7 @@ import java.util.concurrent.Executors;
 
 public class NetworkingService {
     String findMPURL = "https://represent.opennorth.ca/representatives/house-of-commons/?point=";
+    String listOfBills = "https://api.openparliament.ca/bills/?introduced__gt=2018-01-01&format=json&limit=20";
 
     public static final ExecutorService networkingExecutor = Executors.newFixedThreadPool(4);
     static Handler networkHander = new Handler(Looper.getMainLooper());
@@ -30,6 +31,10 @@ public class NetworkingService {
     public void fetchMPData(Double lat, Double lng){
         String completeURL = findMPURL + lat + "," + lng;
         connect(completeURL);
+    }
+
+    public void fetchBillsData(){
+        connect(listOfBills);
     }
 
     private void connect(String completeURL) {

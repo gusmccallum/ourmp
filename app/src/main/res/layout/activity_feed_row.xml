@@ -4,36 +4,53 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="horizontal"
     >
-    <LinearLayout
-        android:layout_weight="@integer/material_motion_duration_long_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
-    <ImageView
-        android:id="@+id/activityPicture"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/ic_launcher_foreground" />
 
-        <TextView
-            android:id="@+id/activityDescription"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/activityPicture"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@drawable/law" />
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_toRightOf="@+id/activityPicture"
-            android:text="Activity Description"
-            android:textSize="25sp" />
+            android:orientation="vertical">
 
-        <TextView
-        android:id="@+id/activityDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_toRightOf="@+id/activityPicture"
-        android:layout_below="@+id/activityDescription"
-        android:text="Activity Date Description"
-        android:textSize="15sp"/>
+            <TextView
+                android:id="@+id/activityTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_toRightOf="@+id/activityPicture"
+                android:text="Activity Description"
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/activityDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_toRightOf="@+id/activityPicture"
+                android:text="Activity Description"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/activityDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/activityDescription"
+                android:layout_gravity="left"
+                android:layout_toRightOf="@+id/activityPicture"
+                android:text="Activity Date Description"
+                android:textSize="10sp"
+                android:textStyle="italic"/>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

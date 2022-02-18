@@ -36,11 +36,14 @@ public class ActivityFeedBaseAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         view = LayoutInflater.from(context).inflate(R.layout.activity_feed_row, null);
+        TextView activityTitle = view.findViewById(R.id.activityTitle);
         TextView activityDescription = view.findViewById(R.id.activityDescription);
         TextView activityDate = view.findViewById(R.id.activityDate);
 
+        activityTitle.setText(String.valueOf(activityList.get(i).activityTitle) + " was introduced in session " + String.valueOf(activityList.get(i).activitySession));
         activityDescription.setText(String.valueOf(activityList.get(i).activityDescription));
         activityDate.setText(String.valueOf(activityList.get(i).activityDate));
+
         return view;
     }
 }
