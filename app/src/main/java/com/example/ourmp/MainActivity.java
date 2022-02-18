@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SearchView;
 
+import io.realm.Realm;
+
 public class MainActivity extends AppCompatActivity {
 
     Button findMP;
@@ -22,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        //Realm.init(this);
         findMP = (Button) findViewById(R.id.findMP);
         findMP.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,11 +49,10 @@ public class MainActivity extends AppCompatActivity {
         btn_activityFeed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setClass(getApplicationContext(), ActivityFeed.class);
-                startActivity(intent);
+                Intent intent2 = new Intent();
+                intent2.setClass(getApplicationContext(), ActivityFeed.class);
+                startActivity(intent2);
             }
         });
-
     }
 }

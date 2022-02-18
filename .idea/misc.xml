@@ -10,7 +10,7 @@
         <entry key="app/src/main/res/layout/activity_calendar.xml" value="0.19427083333333334" />
         <entry key="app/src/main/res/layout/activity_compare_bill.xml" value="0.19427083333333334" />
         <entry key="app/src/main/res/layout/activity_feed.xml" value="0.19427083333333334" />
-        <entry key="app/src/main/res/layout/activity_feed_row.xml" value="0.19427083333333334" />
+        <entry key="app/src/main/res/layout/activity_feed_row.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_location.xml" value="0.1897644927536232" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.3255208333333333" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1897644927536232" />
