@@ -2,7 +2,7 @@ package com.example.ourmp;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
+import android.graphics.Bitmap;
 import androidx.annotation.Nullable;
 
 public class MP implements Parcelable {
@@ -15,6 +15,7 @@ public class MP implements Parcelable {
     private String phone;
     private String email;
     private String ballotURL;
+    private Bitmap photo;
 
     public MP() { }
 
@@ -143,5 +144,13 @@ public class MP implements Parcelable {
         dest.writeString(phone);
         dest.writeString(email);
         dest.writeString(ballotURL);
+    }
+
+    public Bitmap getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(Bitmap photo) {
+        this.photo = photo;
     }
 }
