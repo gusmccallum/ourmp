@@ -1,15 +1,23 @@
 package com.example.ourmp;
 
 
-import static io.realm.Realm.getApplicationContext;
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 import android.util.Log;
 
 import org.bson.Document;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.mongodb.App;
 import io.realm.mongodb.AppConfiguration;
 
@@ -19,38 +27,75 @@ import io.realm.mongodb.mongo.MongoClient;
 import io.realm.mongodb.mongo.MongoCollection;
 import io.realm.mongodb.mongo.MongoDatabase;
 
-import static io.realm.Realm.getApplicationContext;
-
 public class DBManager {
     String appID = "ourmp-ksaww";
     App app;
+    User user; // realm user not object
     MongoClient mongoClient;
     MongoDatabase mongoDatabase;
-    User user; // realm user not object
-    //MongoCollection<Document> mongoCollection = new MongoCollection<Document>(1);
+    CodecRegistry pojoCodecRegistry;
+    MongoCollection<Subscribed> subscribedCollection;
 
-    public void DBManager(){
-        Realm.init(getApplicationContext());
-        app = new App(new AppConfiguration.Builder(appID).build());
+    public Realm getRealmInstance(){
+
+        RealmConfiguration config = new RealmConfiguration.Builder()
+                .name(appID)
+                .allowQueriesOnUiThread(true)
+                .allowWritesOnUiThread(true)
+                .compactOnLaunch()
+                .build();
+
+        return Realm.getInstance(config);
+
+    }
+    public void atlasConfig(){
+        app = new App(new AppConfiguration.Builder(appID)
+                .appName("OurMP")
+                .requestTimeout(30, TimeUnit.SECONDS)
+                .build());;
+
+        Credentials anonymousCredentials = Credentials.anonymous();
+        AtomicReference<User> anonymousUser = new AtomicReference<User>();
+        app.loginAsync(anonymousCredentials, it -> {
+            if (it.isSuccess()) {
+                Log.v("AUTH", "Successfully authenticated anonymously.");
+                anonymousUser.set(app.currentUser());
+            } else {
+                Log.e("AUTH", it.getError().toString());
+            }
+        });
+
         user = app.currentUser();
         mongoClient = user.getMongoClient("mongodb-atlas");
         mongoDatabase = mongoClient.getDatabase("ourmpdb");
+        pojoCodecRegistry = fromRegistries(AppConfiguration.DEFAULT_BSON_CODEC_REGISTRY,
+                fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+        subscribedCollection = mongoDatabase.getCollection(
+                        "subscribed",
+                        Subscribed.class).withCodecRegistry(pojoCodecRegistry);
     }
 
     //insert MP in db
-    public void insertMPs(int id, String mps){
-        MongoCollection<Document> mongoCollection = mongoDatabase.getCollection("subscribed");
-        //find if the user with id has subscribe
-        /*Document queryFilter  = new Document("userId", id);
-        //find userId with same value with id
-        mongoCollection.findOne(queryFilter).getAsync(task -> {
-            if (task.isSuccess()) { //user has sub -> update the data
-                Document result = task.get();
-                Log.v("EXAMPLE", ""+result);
-            } else {//doesn have -> insert
-                Log.e("EXAMPLE", "fail: "+task.getError());
+    public void insertMPs(String id, String mps){
+        Realm realm = getRealmInstance();
+        atlasConfig();
+
+        Document queryFilter  = new Document("userId", id);
+        //find if the user with id has subscription
+
+        subscribedCollection.findOne(queryFilter).getAsync(task -> {
+            if (task.isSuccess()) {
+                addMPSub(mps);
             }
-        });*/
+            else{
+                Subscribed newSub = new Subscribed(id);
+                newSub.addMPs(mps);
+                subscribedCollection.insertOne(newSub);
+            }
+        });
+
+        realm.close();
+
     }
 
     //need to implement
@@ -65,6 +110,7 @@ public class DBManager {
    //Allow current user to subscribe to new MP
     private void addMPSub(String MPName) {
         //TODO
+        //check if MPs attribute has the same name
     }
 
     //Allow current user to subscribe to new Bill

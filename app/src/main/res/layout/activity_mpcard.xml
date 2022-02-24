@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MPCardActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="10dp"
+        android:background="@drawable/mpcard_background">
+
+        <LinearLayout
+            android:id="@+id/mppage_linear1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+        <ImageView
+            android:id="@+id/mppage_img"
+            android:layout_width="150dp"
+            android:layout_height="130dp"
+            android:contentDescription="MP's photo"
+            />
+        <TextView
+            android:id="@+id/mppage_name_txt"
+            android:textSize="17sp"
+            android:layout_width="130dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/maroon"
+            android:layout_gravity="center"
+            />
+
+            <Button
+                android:id="@+id/sns_btn"
+                android:onClick="SNSBtnClicked"
+                android:layout_margin="3dp"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="@string/sns_btn"
+                android:textSize="12sp"
+                android:textColor="@color/black"
+                android:background="@drawable/mpcard_button"
+                app:backgroundTint="@null"
+                android:layout_gravity="center"
+                />
+            <Button
+                android:id="@+id/email_btn"
+                android:layout_margin="3dp"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="@string/email_btn"
+                android:textSize="12sp"
+                android:textColor="@color/black"
+                android:background="@drawable/mpcard_button"
+                app:backgroundTint="@null"
+                android:layout_gravity="center"
+                />
+            <Button
+                android:id="@+id/phone_btn"
+                android:onClick="PhoneBtnClicked"
+                android:layout_margin="3dp"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="@string/phone_btn"
+                android:textSize="12sp"
+                android:textColor="@color/black"
+                android:background="@drawable/mpcard_button"
+                app:backgroundTint="@null"
+                android:layout_gravity="center"
+                />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/mppage_linear2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_alignBottom="@+id/mppage_linear1"
+            android:layout_alignParentEnd="true"
+            android:layout_toEndOf="@+id/mppage_linear1">
+
+            <TextView
+                android:id="@+id/riding_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/riding"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/mppage_riding_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_toEndOf="@id/riding_txt"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/party_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/mppage_riding_txt"
+                android:text="@string/party"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/mppage_party_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/mppage_riding_txt"
+                android:layout_toEndOf="@+id/party_txt"
+                android:textSize="18sp" />
+
+
+            <TextView
+                android:id="@+id/mppage_info_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/mppage_party_txt"
+                android:layout_marginTop="30dp"
+                android:textSize="18sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/mppage_linear3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/mppage_linear1">
+
+            <Button
+                android:id="@+id/mppage_subscribe_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@+id/mppage_view"
+                android:background="@drawable/mpcard_button"
+                android:gravity="center"
+                android:text="@string/subscribe"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                app:backgroundTint="@null"
+                android:layout_centerVertical="true"/>
+
+            <View
+                android:id="@+id/mppage_view"
+                android:layout_width="50dp"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true" />
+
+            <Button
+                android:id="@+id/compare_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_toEndOf="@+id/mppage_view"
+                android:background="@drawable/mpcard_button"
+                android:gravity="center"
+                android:text="@string/compare_btn"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                app:backgroundTint="@null"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/mpcard_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline4">
+
+        <TextView
+            android:id="@+id/recent_ballot_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="@string/recent_ballot_txt"
+            android:textSize="18sp"
+            android:layout_marginBottom="5dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ballot_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/recent_ballot_txt" />
+
+        <Button
+            android:id="@+id/moreBallot_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ballot_list"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/mpcard_button"
+            android:onClick="SeemoreBtnClicked"
+            android:text="@string/moreBallot_btn"
+            android:textColor="@color/black"
+            app:backgroundTint="@null"
+            />
+    </RelativeLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.6" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,23 +18,75 @@ public class NetworkingService {
     String findMPURL = "https://represent.opennorth.ca/representatives/house-of-commons/?point=";
     String listOfBills = "https://api.openparliament.ca/bills/?introduced__gt=2018-01-01&format=json&limit=20";
 
-    public static final ExecutorService networkingExecutor = Executors.newFixedThreadPool(4);
+    String MpPageURL1 = "https://api.openparliament.ca/politicians/";
+    String formatJson = "/?format=json";
+
+    String openMPURL = "https://api.openparliament.ca/";
+
+    String MPdescURL = "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=";
+    String formatJson2 = "&format=json";
+    int status;
+    public static final ExecutorService networkingExecutor = Executors.newFixedThreadPool(8);
     static Handler networkHander = new Handler(Looper.getMainLooper());
 
     interface NetworkingListener{
-        void APINetworkListner(String jsonString);
-        void APINetworkingListerForImage(Bitmap image);
+        void APINetworkListner(String jsonString); //status = 0
+        void APINetworkingListerForImage(Bitmap image);//status = 0
+        void APIMPMoreInfoListener(String jsonString); // status = 4
+        void APIBallotListener(String jsonString);//status = 1
+        void APIVoteListener(String jsonString); //status = 2
+        void APIMPDescListener(String jsonString); // status = 3
     }
 
     NetworkingListener listener;
 
     public void fetchMPData(Double lat, Double lng){
+        status = 0;
         String completeURL = findMPURL + lat + "," + lng;
         connect(completeURL);
     }
 
+<<<<<<< Updated upstream
     public void fetchBillsData(){
         connect(listOfBills);
+=======
+    public void fetchMoreMPInfo(String fullName){
+        status = 4;
+        String completeURL;
+        if(fullName.contains(" ")) {
+            String[] splitStr = fullName.toLowerCase()
+                    .trim().split("\\s+");
+            completeURL = MpPageURL1 + splitStr[0] + "-" + splitStr[1] + formatJson;
+
+        }else{
+            completeURL = MpPageURL1 + fullName + formatJson;
+        }
+        connect(completeURL);
+    }
+
+    public void fetchBallot(String ballotUrl){
+        status = 1;
+        String completeURL = openMPURL+ballotUrl;
+        connect(completeURL);
+    }
+
+    public void fetchVote(String voteURL){
+        status = 2;
+        String completeURL = openMPURL+voteURL;
+        connect(completeURL);
+    }
+    public void fetchMPDesc(String fullName){
+        status = 3;
+        String completeURL;
+        if(fullName.contains(" ")) {
+            String[] splitStr = fullName.trim().split("\\s+");
+            completeURL = MPdescURL + splitStr[0] + "%20" + splitStr[1] + formatJson2;
+
+        }else{
+            completeURL = MPdescURL + fullName + formatJson2;
+        }
+        connect(completeURL);
+>>>>>>> Stashed changes
     }
 
     private void connect(String completeURL) {
@@ -65,7 +117,23 @@ public class NetworkingService {
                             @Override
                             public void run() {
                                 //send data to main thread
-                                listener.APINetworkListner(finalJson);
+                                if(status == 0)
+                                {
+                                    listener.APINetworkListner(finalJson);
+                                }
+                                else if(status == 1)
+                                {
+                                    listener.APIBallotListener(finalJson);
+                                }
+                                else if(status == 2){
+                                    listener.APIVoteListener(finalJson);
+                                }
+                                else if(status == 3){
+                                    listener.APIMPDescListener(finalJson);
+                                }
+                                else if(status == 4){
+                                    listener.APIMPMoreInfoListener(finalJson);
+                                }
                             }
                         });
                     }
