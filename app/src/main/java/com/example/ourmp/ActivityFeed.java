@@ -42,4 +42,24 @@ public class ActivityFeed extends AppCompatActivity implements NetworkingService
     public void APINetworkingListerForImage(Bitmap image) {
 
     }
+
+    @Override
+    public void APIMPMoreInfoListener(String jsonString) {
+
+    }
+
+    @Override
+    public void APIBallotListener(String jsonString) {
+
+    }
+
+    @Override
+    public void APIVoteListener(String jsonString) {
+
+    }
+
+    @Override
+    public void APIMPDescListener(String jsonString) {
+
+    }
 }

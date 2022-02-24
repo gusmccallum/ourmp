@@ -1,11 +1,9 @@
 package com.example.ourmp;
 
-<<<<<<< Updated upstream
-import android.graphics.Bitmap;
-=======
-import android.text.Html;
->>>>>>> Stashed changes
 
+import android.graphics.Bitmap;
+
+import android.text.Html;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,14 +38,13 @@ public class JsonService{
         return foundedMP;
     }
 
-<<<<<<< Updated upstream
-    public ArrayList<Activity> parseFindBills(String jsonBill){
+    public ArrayList<Activity> parseFindBills(String jsonBill) {
         ArrayList<Activity> bills = new ArrayList<>();
 
-        try{
+        try {
             JSONObject jsonObject = new JSONObject(jsonBill);// root
             JSONArray BillsArray = jsonObject.getJSONArray("objects");
-            for(int i=0; i<BillsArray.length();i++) {
+            for (int i = 0; i < BillsArray.length(); i++) {
                 JSONObject BillObject = BillsArray.getJSONObject(i);
                 String billNumber = BillObject.getString("number");
                 String billDesc = BillObject.getJSONObject("name").getString("en");
@@ -58,11 +55,12 @@ public class JsonService{
             bills.sort(Comparator.comparing(obj -> obj.activityDate));
             Collections.reverse(bills);
 
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         return bills;
-=======
+    }
+
     public MP parseMoreInfoAPI(String jsonMP){
         //return with twitter, phone, email
         MP foundedMP = new MP();
@@ -177,6 +175,6 @@ public class JsonService{
             e.printStackTrace();
         }
         return desc;
->>>>>>> Stashed changes
+
     }
 }
