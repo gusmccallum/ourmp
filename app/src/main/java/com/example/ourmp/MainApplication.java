@@ -8,10 +8,6 @@ import io.realm.Realm;
 
 public class MainApplication extends Application {
 
-<<<<<<< Updated upstream
-    Realm.init(this);
-
-
     private DBManager dbManager = new DBManager();
     public DBManager getDbManager(){return dbManager;}
 
@@ -19,21 +15,9 @@ public class MainApplication extends Application {
         return networkingService;
     }
     private NetworkingService networkingService = new NetworkingService();
-    private JsonService jsonService = new JsonService();
-
-    public  JsonService getJsonService(){
-        return jsonService;
-=======
-    private DBManager dbManager = new DBManager();
-    public DBManager getDbManager(){return dbManager;}
-
-    private NetworkingService networkingService = new NetworkingService();
-    public  NetworkingService getNetworkingService(){
-        return networkingService;
-    }
 
     private JsonService jsonService = new JsonService();
-    public  JsonService getJsonService(){
+    public  JsonService getJsonService() {
         return jsonService;
     }
 
@@ -41,6 +25,5 @@ public class MainApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Realm.init(this);
->>>>>>> Stashed changes
     }
 }
