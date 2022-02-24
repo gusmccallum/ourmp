@@ -33,12 +33,11 @@
             android:textSize="15sp"
             android:layout_width="130dp"
             android:layout_height="wrap_content"
-            android:text="MP name"
             android:gravity="center"/>
 
         </LinearLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/linear2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -46,29 +45,52 @@
             android:layout_toEndOf="@+id/linear1"
             android:orientation="vertical"
             >
+            <TextView
+                android:id="@+id/riding_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/riding"
+                android:textSize="15sp"
+                android:layout_margin="5dp"
+                />
 
             <TextView
                 android:id="@+id/mpcardRiding_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Riding goes here"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_toEndOf="@+id/riding_txt"
+                android:textSize="15sp" />
+            <TextView
+                android:id="@+id/party_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/party"
                 android:textSize="15sp"
-                android:layout_margin="5dp"/>
-
+                android:layout_margin="5dp"
+                android:layout_below="@+id/riding_txt"
+                />
             <TextView
                 android:id="@+id/mpcardParty_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Party goes here"
+                android:layout_below="@id/mpcardRiding_txt"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
                 android:textSize="15sp"
-                android:layout_margin="5dp"/>
+                android:layout_toEndOf="@+id/party_txt"/>
 
-        </LinearLayout>
+        </RelativeLayout>
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/linear2"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_marginTop="20dp"
             >
 
@@ -81,11 +103,11 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="10dp"
                 android:background="@color/darker_gray"
-                android:text="Subscribe"
-                android:textSize="10dp"
-                app:backgroundTint="@null"
+                android:onClick="SubscribeBtnClicked"
+                android:text="@string/subscribe"
                 android:textColor="@color/black"
-                android:onClick="SubscribeBtnClicked"/>
+                android:textSize="11sp"
+                app:backgroundTint="@null" />
 
             <Button
                 android:id="@+id/mpInfo_btn"
@@ -93,8 +115,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:layout_toEndOf="@+id/subscribe_btn"
-                android:textSize="10dp"
-                android:text="More Info"
+                android:textSize="11sp"
+                android:text="@string/mpInfo_btn"
                 app:backgroundTint="@null"
                 android:background="@color/darker_gray"
                 android:textColor="@color/black"
@@ -109,7 +131,7 @@
             android:layout_alignParentEnd="true"
             android:background="@drawable/close_button"
             android:onClick="ClosedBtnClicked"
-            android:text="x"
+            android:text="@string/close"
             android:textColor="@color/black"
             app:backgroundTint="@null" />
 

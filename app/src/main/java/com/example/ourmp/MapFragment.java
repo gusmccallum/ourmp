@@ -172,6 +172,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                     latLng = new LatLng(location.getLatitude(), location.getLongitude());
                     //set Address object as current location info
                     address = addressList2.get(0);
+
                     //if the address obj is Canada
                     if(address.getCountryName().equals("Canada")){
                         //show in a map

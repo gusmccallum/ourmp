@@ -1,5 +1,6 @@
 package com.example.ourmp;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
@@ -26,14 +27,14 @@ public class LocationActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location);
-        mpCard = (RelativeLayout) findViewById(R.id.mpcard_relative);
+        mpCard = findViewById(R.id.mpcard_relative);
         //set the MP info card(relative layout) invisible
         mpCard.setVisibility(View.GONE);
 
-        mpName = (TextView) findViewById(R.id.mpcardName_txt);
-        mpRiding = (TextView) findViewById(R.id.mpcardRiding_txt);
-        mpParty = (TextView) findViewById(R.id.mpcardParty_txt);
-        img = (ImageView) findViewById(R.id.mpcard_img);
+        mpName = findViewById(R.id.mpcardName_txt);
+        mpRiding = findViewById(R.id.mpcardRiding_txt);
+        mpParty = findViewById(R.id.mpcardParty_txt);
+        img = findViewById(R.id.mpcard_img);
 
         //initialize fragment
         Fragment fragment = new MapFragment();
@@ -66,8 +67,8 @@ public class LocationActivity extends AppCompatActivity
 
         //set text view
         mpName.setText(mpObj.getName());
-        mpRiding.setText("Riding: " + mpObj.getRiding());
-        mpParty.setText("Party: " + mpObj.getParty());
+        mpRiding.setText(mpObj.getRiding());
+        mpParty.setText(mpObj.getParty());
 
         //get the image from the image url from the api
         networkingService.getImageData(mpObj.getPhotoURL());
@@ -80,6 +81,27 @@ public class LocationActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public void APIMPMoreInfoListener(String jsonString) {
+
+    }
+
+    @Override
+    public void APIBallotListener(String jsonString) {
+
+    }
+
+    @Override
+    public void APIVoteListener(String jsonString) {
+
+    }
+
+    @Override
+    public void APIMPDescListener(String jsonString) {
+
+    }
+
+
     public void ClosedBtnClicked(View view) {
         //when close button clicked, set the mp card invisible and bring to the back
         mpCard.setVisibility(View.GONE);
@@ -88,14 +110,16 @@ public class LocationActivity extends AppCompatActivity
 
     public void SubscribeBtnClicked(View view) {
         //if(check if logged - yes)
-        dbManager.insertMPs(1, mpName.getText().toString());
+        //id will be riding+name?
+        //dbManager.insertMPs("6", mpName.getText().toString());
         Toast.makeText(this, "Subscribed!", Toast.LENGTH_SHORT).show();
         //else - not logged in
         //Toast.makeText(this, "Need to login to subscribe MP!", Toast.LENGTH_SHORT).show();
     }
 
     public void MoreInfoBtnClicked(View view) {
-        //need to start MP info page passing MP info
-        Toast.makeText(this, "It will show MP page", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, MPCardActivity.class);
+        intent.putExtra("selectedMP", mpObj);
+        startActivity(intent);
     }
 }

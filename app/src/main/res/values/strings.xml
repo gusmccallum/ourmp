@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">ourmp</string>
+<<<<<<< Updated upstream
     <string name="search_title">search_title</string>
     <string-array name="mps">
         <item>Edwardo Loomer</item>
@@ -22,4 +23,20 @@
         <item>Donnie Porcelli</item>
         <item>Emmett Kuanoni</item>
     </string-array>
+=======
+    <string name="subscribe">Subscribe</string>
+    <string name="mpInfo_btn">More Info</string>
+    <string name="sns_btn">Social Media</string>
+    <string name="email_btn">Email</string>
+    <string name="phone_btn">Phone</string>
+    <string name="compare_btn">Compare</string>
+    <string name="riding">Riding: \u0020</string>
+    <string name="party">Party: \u0020</string>
+    <string name="close">x</string>
+    <string name="committee">Committee: \u0020</string>
+    <string name="recent_ballot_txt">Recent Votes</string>
+    <string name="voted_txt">Voted \u0020</string>
+    <string name="onbill_txt">\u0020 on Bill \u0020</string>
+    <string name="moreBallot_btn">See more...</string>
+>>>>>>> Stashed changes
 </resources>
