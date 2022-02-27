@@ -47,12 +47,10 @@ public class NetworkingService {
     }
 
 
-    public void fetchBillsData(){
-
     public void fetchBillsData() {
         status = 0;
-
         connect(listOfBills);
+    }
 
     public void fetchMoreMPInfo(String fullName){
         status = 4;
