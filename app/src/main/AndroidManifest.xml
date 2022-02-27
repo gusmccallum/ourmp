@@ -21,6 +21,13 @@
 
         <uses-library android:name="com.google.android.maps" />
         <activity
+            android:name=".BallotListActivity"
+            android:exported="true">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.ourmp.LocationActivity" />
+        </activity>
+        <activity
             android:name=".MPCardActivity"
             android:exported="true">
             <meta-data
@@ -41,11 +48,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-<<<<<<< Updated upstream
+
         <activity android:name=".Search" />
         <activity android:name=".ActivityFeed" />
-=======
->>>>>>> Stashed changes
+
+
     </application>
 
 </manifest>

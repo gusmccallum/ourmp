@@ -67,8 +67,6 @@ public class MPCardActivity extends AppCompatActivity
 
     @Override
     public void APINetworkListner(String jsonString) {
-
-
     }
 
     @Override
@@ -141,6 +139,10 @@ public class MPCardActivity extends AppCompatActivity
 
 
     public void SeemoreBtnClicked(View view) {
-
+        Intent intent = new Intent(this, BallotListActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("ballotList", allBallotFromMP);
+        intent.putExtra("bundle",bundle);
+        startActivity(intent);
     }
 }

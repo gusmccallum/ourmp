@@ -95,22 +95,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                             //if the text is not null or not empty
                             if(zip!=null || !zip.equals("")){
 
-                                try{
+                                try {
                                     //get the location information by search text
                                     addressList = geocoder.getFromLocationName(zip, 1);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
-                                //store the first result in Address object
-                                address = addressList.get(0);
-                                //set latlng using lat, lng from address object
-                                latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                                if(address.getCountryName().equals("Canada")){
-                                    //show the map only the result is in Canada
-                                    supportMapFragment.getMapAsync(MapFragment.this);
-                                }else{
-                                    //if it's not Canada, popup message to enter address inside of Canda
-                                    Toast.makeText(getActivity(), "Please enter address in Canada", Toast.LENGTH_SHORT).show();
+
+                               if(addressList != null && addressList.size() > 0)
+                                {
+                                    //store the first result in Address object
+                                    address = addressList.get(0);
+                                    //set latlng using lat, lng from address object
+                                    latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                                    if(address.getCountryName().equals("Canada")){
+                                        //show the map only the result is in Canada
+                                        supportMapFragment.getMapAsync(MapFragment.this);
+                                    }else{
+                                        //if it's not Canada, popup message to enter address inside of Canda
+                                        Toast.makeText(getActivity(), "Please enter address in Canada", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             }
                             return false;
@@ -170,19 +174,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                         e.printStackTrace();
                     }
                     latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    //set Address object as current location info
-                    address = addressList2.get(0);
 
-                    //if the address obj is Canada
-                    if(address.getCountryName().equals("Canada")){
-                        //show in a map
-                        supportMapFragment.getMapAsync(MapFragment.this);
+                    if(addressList2 != null && addressList2.size() > 0){
+                        //set Address object as current location info
+                        address = addressList2.get(0);
+                        //if the address obj is Canada
+                        if(address.getCountryName().equals("Canada")){
+                            //show in a map
+                            supportMapFragment.getMapAsync(MapFragment.this);
+                        }
+                        else{
+                            //if not in Canada, show popup message
+                            Toast.makeText(getActivity(), "Please use search option as you are outside of Canada", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                    else{
-                        //if not in Canada, show popup message
-                        Toast.makeText(getActivity(), "Please use search option as you are outside of Canada", Toast.LENGTH_SHORT).show();
-                    }
-
                 }
             }
         });

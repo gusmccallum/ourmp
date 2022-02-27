@@ -46,10 +46,14 @@ public class NetworkingService {
         connect(completeURL);
     }
 
-<<<<<<< Updated upstream
+
     public void fetchBillsData(){
+
+    public void fetchBillsData() {
+        status = 0;
+
         connect(listOfBills);
-=======
+
     public void fetchMoreMPInfo(String fullName){
         status = 4;
         String completeURL;
@@ -86,7 +90,7 @@ public class NetworkingService {
             completeURL = MPdescURL + fullName + formatJson2;
         }
         connect(completeURL);
->>>>>>> Stashed changes
+
     }
 
     private void connect(String completeURL) {
