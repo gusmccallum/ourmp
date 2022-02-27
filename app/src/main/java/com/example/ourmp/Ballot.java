@@ -1,8 +1,11 @@
 package com.example.ourmp;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.Nullable;
 
-public class Ballot {
+public class Ballot implements Parcelable {
 
     private String ballot;
     private String politicianURL;
@@ -21,6 +24,26 @@ public class Ballot {
         this.billNum = billNum;
         this.date = date;
     }
+
+    protected Ballot(Parcel in) {
+        ballot = in.readString();
+        politicianURL = in.readString();
+        voteURL = in.readString();
+        billNum = in.readString();
+        date = in.readString();
+    }
+
+    public static final Creator<Ballot> CREATOR = new Creator<Ballot>() {
+        @Override
+        public Ballot createFromParcel(Parcel in) {
+            return new Ballot(in);
+        }
+
+        @Override
+        public Ballot[] newArray(int size) {
+            return new Ballot[size];
+        }
+    };
 
     public String getBallot() {
         return ballot;
@@ -60,6 +83,20 @@ public class Ballot {
 
     public void setVoteURL(String voteURL) {
         this.voteURL = voteURL;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(ballot);
+        dest.writeString(politicianURL);
+        dest.writeString(voteURL);
+        dest.writeString(billNum);
+        dest.writeString(date);
     }
 }
 

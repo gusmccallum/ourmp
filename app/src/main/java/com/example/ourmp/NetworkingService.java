@@ -52,7 +52,7 @@ public class NetworkingService {
         status = 0;
         connect(listOfBills);
     }
-    
+
     public void fetchMoreMPInfo(String fullName){
         status = 4;
         String completeURL;

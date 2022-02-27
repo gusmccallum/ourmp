@@ -21,6 +21,13 @@
 
         <uses-library android:name="com.google.android.maps" />
         <activity
+            android:name=".BallotListActivity"
+            android:exported="true">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.ourmp.LocationActivity" />
+        </activity>
+        <activity
             android:name=".MPCardActivity"
             android:exported="true">
             <meta-data
@@ -49,6 +56,7 @@
             android:value="com.example.ourmp.MainActivity" />
         </activity>
         <activity android:name=".ActivityFeed" />
+
     </application>
 
 </manifest>
