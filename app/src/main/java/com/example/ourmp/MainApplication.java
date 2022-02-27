@@ -4,10 +4,13 @@ import static io.realm.Realm.getApplicationContext;
 
 import android.app.Application;
 
+import java.util.ArrayList;
+
 import io.realm.Realm;
 
 public class MainApplication extends Application {
 
+    public ArrayList<MP> allMPs = new ArrayList<>();
     private DBManager dbManager = new DBManager();
     public DBManager getDbManager(){return dbManager;}
 

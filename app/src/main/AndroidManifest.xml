@@ -48,8 +48,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".Search" />
+        <activity
+            android:name=".Search"
+            android:exported="true">
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.example.ourmp.MainActivity" />
+        </activity>
         <activity android:name=".ActivityFeed" />
 
     </application>
