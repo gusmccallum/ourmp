@@ -38,6 +38,7 @@ public class NetworkingService {
         void APIBallotListener(String jsonString);//status = 1
         void APIVoteListener(String jsonString); //status = 2
         void APIMPDescListener(String jsonString); // status = 3
+        void APIBillsListener(String jsonString); //status = 5
     }
 
     NetworkingListener listener;
@@ -49,7 +50,7 @@ public class NetworkingService {
     }
 
     public void fetchBillsData() {
-        status = 0;
+        status = 5;
         connect(listOfBills);
     }
 
@@ -136,6 +137,8 @@ public class NetworkingService {
                                 }
                                 else if(status == 4){
                                     listener.APIMPMoreInfoListener(finalJson);
+                                }else if(status == 5){
+                                    listener.APIBillsListener(finalJson);
                                 }
                             }
                         });

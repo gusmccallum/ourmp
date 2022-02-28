@@ -12,6 +12,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
+
 public class LocationActivity extends AppCompatActivity
         implements LocationListener, NetworkingService.NetworkingListener{
 
@@ -22,6 +24,8 @@ public class LocationActivity extends AppCompatActivity
     ImageView img;
     RelativeLayout mpCard;
     DBManager dbManager;
+
+    ArrayList<MP> allMPs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -45,6 +49,7 @@ public class LocationActivity extends AppCompatActivity
         networkingService = ( (MainApplication)getApplication()).getNetworkingService();
         jsonService = ( (MainApplication)getApplication()).getJsonService();
         dbManager = ((MainApplication) getApplication()).getDbManager();
+        allMPs = ((MainApplication) getApplication()).allMPs;
         networkingService.listener = this;
     }
 
@@ -101,6 +106,11 @@ public class LocationActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public void APIBillsListener(String jsonString) {
+
+    }
+
 
     public void ClosedBtnClicked(View view) {
         //when close button clicked, set the mp card invisible and bring to the back
@@ -113,6 +123,7 @@ public class LocationActivity extends AppCompatActivity
         //id will be riding+name?
         //dbManager.insertMPs("6", mpName.getText().toString());
         Toast.makeText(this, "Subscribed!", Toast.LENGTH_SHORT).show();
+        allMPs.add(mpObj);
         //else - not logged in
         //Toast.makeText(this, "Need to login to subscribe MP!", Toast.LENGTH_SHORT).show();
     }
