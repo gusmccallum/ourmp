@@ -125,6 +125,11 @@ public class MPCardActivity extends AppCompatActivity
         networkingService.fetchBallot(mpObj.getBallotURL());
     }
 
+    @Override
+    public void APIBillsListener(String jsonString) {
+
+    }
+
     public void SNSBtnClicked(View view){
         Intent twitterIntent =new Intent("android.intent.action.VIEW",
                         Uri.parse("https://twitter.com/"+mpObj.getTwitter()));
