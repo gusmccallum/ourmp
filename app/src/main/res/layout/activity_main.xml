@@ -6,32 +6,107 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/findMP"
+    <ImageView
+        android:id="@+id/MainLogo_img"
+        android:layout_width="72dp"
+        android:layout_height="244dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline8"
+        app:layout_constraintEnd_toStartOf="@+id/guideline6"
+        app:srcCompat="@drawable/ic_ourmp_logo_transparent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Find MP"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="98dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="239dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="OurMP"
+        android:textColor="@color/OurMPLogo"
+        android:textSize="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/btn_search"
+        android:id="@+id/MainActivityFeed_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:text="Search"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/btn_activityFeed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:background="@drawable/btn_bg"
         android:text="Activity Feed"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_search"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/MainFindMP_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/btn_bg"
+        android:text="Find MP"
+        app:layout_constraintEnd_toEndOf="@+id/MainActivityFeed_btn"
+        app:layout_constraintStart_toStartOf="@+id/MainActivityFeed_btn"
+        app:layout_constraintTop_toBottomOf="@+id/MainActivityFeed_btn" />
+
+    <Button
+        android:id="@+id/MainSearch_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/btn_bg"
+        android:text="Search"
+        app:layout_constraintEnd_toEndOf="@+id/MainActivityFeed_btn"
+        app:layout_constraintStart_toStartOf="@+id/MainActivityFeed_btn"
+        app:layout_constraintTop_toBottomOf="@+id/MainFindMP_btn" />
+
+    <Button
+        android:id="@+id/MainSignUp_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/btn_bg"
+        android:text="Sign Up"
+        app:layout_constraintEnd_toEndOf="@+id/MainActivityFeed_btn"
+        app:layout_constraintStart_toStartOf="@+id/MainActivityFeed_btn"
+        app:layout_constraintTop_toBottomOf="@+id/MainSearch_btn" />
+
+    <Button
+        android:id="@+id/MainLogIn_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/btn_bg"
+        android:text="Log In"
+        app:layout_constraintEnd_toEndOf="@+id/MainActivityFeed_btn"
+        app:layout_constraintStart_toStartOf="@+id/MainActivityFeed_btn"
+        app:layout_constraintTop_toBottomOf="@+id/MainSignUp_btn" />
+
+
+
+
+
+
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

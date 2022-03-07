@@ -56,6 +56,7 @@
             android:value="com.example.ourmp.MainActivity" />
         </activity>
         <activity android:name=".ActivityFeed" />
+        <activity android:name=".SignUp" />
 
     </application>
 
