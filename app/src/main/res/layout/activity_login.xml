@@ -1,7 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/LoginTitle1_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Log In with Email"
+        android:textColor="@color/black"
+        android:textSize="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.20" />
+
+    <EditText
+        android:id="@+id/LoginEmail_edit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/input_bg"
+        android:drawableLeft="@drawable/ic_email"
+        android:drawablePadding="10dp"
+        android:ems="10"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        app:layout_constraintEnd_toEndOf="@+id/LoginTitle1_txt"
+        app:layout_constraintStart_toStartOf="@+id/LoginTitle1_txt"
+        app:layout_constraintTop_toTopOf="@+id/guideline1" />
+
+    <EditText
+        android:id="@+id/LoginPassword_edit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/input_bg"
+        android:drawableLeft="@drawable/ic_security"
+        android:drawablePadding="10dp"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        app:layout_constraintEnd_toEndOf="@+id/LoginEmail_edit"
+        app:layout_constraintStart_toStartOf="@+id/LoginEmail_edit"
+        app:layout_constraintTop_toBottomOf="@+id/LoginEmail_edit" />
+
+    <Button
+        android:id="@+id/LoginEmailLogin_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/btn_ourmp"
+        android:text="Log In"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@+id/LoginPassword_edit"
+        app:layout_constraintStart_toStartOf="@+id/LoginPassword_edit"
+        app:layout_constraintTop_toBottomOf="@+id/LoginPassword_edit" />
+
+    <TextView
+        android:id="@+id/LoginTitle2_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Forgot your password? Reset it here."
+        android:textColor="@color/OurMPGrey"
+        android:textSize="10dp"
+        app:layout_constraintEnd_toEndOf="@+id/LoginEmailLogin_btn"
+        app:layout_constraintStart_toStartOf="@+id/LoginEmailLogin_btn"
+        app:layout_constraintTop_toBottomOf="@+id/LoginEmailLogin_btn" />
+
+    <TextView
+        android:id="@+id/LoginTitle3_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="--------------OR--------------"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/LoginEmailLogin_btn" />
+
+    <Button
+        android:id="@+id/LoginGoogle_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/btn_bg_sso"
+        android:drawableStart="@drawable/ic_google"
+        android:text="Log In with Google"
+        app:layout_constraintEnd_toEndOf="@+id/LoginEmailLogin_btn"
+        app:layout_constraintStart_toStartOf="@+id/LoginEmailLogin_btn"
+        app:layout_constraintTop_toBottomOf="@+id/LoginTitle3_txt" />
+
+    <Button
+        android:id="@+id/LoginFacebook_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/btn_bg_sso"
+        android:text="Log In with Facebook"
+        app:layout_constraintEnd_toEndOf="@+id/LoginEmailLogin_btn"
+        app:layout_constraintStart_toStartOf="@+id/LoginEmailLogin_btn"
+        app:layout_constraintTop_toBottomOf="@+id/LoginGoogle_btn" />
 
 
 

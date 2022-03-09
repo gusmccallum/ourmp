@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.amplifyframework.AmplifyException;
 import com.amplifyframework.api.aws.AWSApiPlugin;
@@ -132,6 +133,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
             Subscribed newSub = db.getSubscriptionObject();
+            String ID = newSub.getId();
+            String subbedMPs = "";
+            String subbedBills = "";
+            for (int i = 0; i < newSub.getSubscribedMPs().size(); i++) {
+                subbedMPs += newSub.getSubscribedMPs().get(i);
+                subbedMPs += ", ";
+            }
+            for (int i = 0; i < newSub.getSubscribedBills().size(); i++) {
+                 subbedBills += newSub.getSubscribedBills().get(i);
+                 subbedBills += ", ";
+            }
+            Toast.makeText(v.getContext(), "User ID: " + ID + " Subscribed MPs: " + subbedMPs + " Subscribed Bills: " + subbedBills, Toast.LENGTH_LONG).show();
             }
         });
 
