@@ -2,15 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/item1"
-        android:title="Find my MP" />
-
-    <item
-        android:id="@+id/item2"
         android:title="Home" />
 
     <item
+        android:id="@+id/item2"
+        android:title="Find MP" />
+
+    <item
         android:id="@+id/item3"
-        android:title="Calendar" />
+        android:title="Activity Feed" />
 
     <item
         android:id="@+id/item4"
@@ -22,5 +22,17 @@
 
     <item
         android:id="@+id/item6"
-        android:title="Settings" />
+        android:title="Login" />
+
+    <item
+        android:id="@+id/item7"
+        android:title="Events" />
+
+    <item android:title="Others">
+        <menu>
+            <item
+                android:id="@+id/item8"
+                android:title="Settings" />
+        </menu>
+    </item>
 </menu>

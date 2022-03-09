@@ -24,7 +24,7 @@ public class BaseActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_base);
 
         drawerLayout = findViewById(R.id.drawerLayout);
         NavigationView navigationView = findViewById(R.id.navView);
@@ -43,26 +43,26 @@ public class BaseActivity extends AppCompatActivity
 
                 if (item.getItemId() == R.id.item1)
                 {
-                    Toast.makeText(getApplicationContext(), "Clicked Find my MP", Toast.LENGTH_SHORT).show();
-                    //intent = new Intent(BaseActivity.this, FirstActivity.class);
-                }
-
-                if (item.getItemId() == R.id.item2)
-                {
                     Toast.makeText(getApplicationContext(), "Clicked Home", Toast.LENGTH_SHORT).show();
                     intent = new Intent(BaseActivity.this, MainActivity.class);
                 }
 
+                if (item.getItemId() == R.id.item2)
+                {
+                    Toast.makeText(getApplicationContext(), "Clicked Find MP", Toast.LENGTH_SHORT).show();
+                    //intent = new Intent(BaseActivity.this, ActivityFeed.class);
+                }
+
                 if (item.getItemId() == R.id.item3)
                 {
-                    Toast.makeText(getApplicationContext(), "Clicked Calendar", Toast.LENGTH_SHORT).show();
-                    //intent = new Intent(BaseActivity.this, ThirdActivity.class);
+                    Toast.makeText(getApplicationContext(), "Clicked Activity Feed", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(BaseActivity.this, ActivityFeed.class);
                 }
 
                 if (item.getItemId() == R.id.item4)
                 {
                     Toast.makeText(getApplicationContext(), "Clicked Search", Toast.LENGTH_SHORT).show();
-                    //intent = new Intent(BaseActivity.this, Search.class);
+                    intent = new Intent(BaseActivity.this, Search.class);
                 }
 
                 if (item.getItemId() == R.id.item5)
@@ -73,8 +73,20 @@ public class BaseActivity extends AppCompatActivity
 
                 if (item.getItemId() == R.id.item6)
                 {
-                    Toast.makeText(getApplicationContext(), "Clicked Settings", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Clicked Login", Toast.LENGTH_SHORT).show();
                     //intent = new Intent(BaseActivity.this, SixthActivity.class);
+                }
+
+                if (item.getItemId() == R.id.item7)
+                {
+                    Toast.makeText(getApplicationContext(), "Clicked Events", Toast.LENGTH_SHORT).show();
+                    //intent = new Intent(BaseActivity.this, SeventhActivity.class);
+                }
+
+                if (item.getItemId() == R.id.item8)
+                {
+                    Toast.makeText(getApplicationContext(), "Clicked Settings", Toast.LENGTH_SHORT).show();
+                    //intent = new Intent(BaseActivity.this, EighthActivity.class);
                 }
 
                 startActivity(intent);

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class ActivityFeed extends AppCompatActivity implements NetworkingService.NetworkingListener {
+public class ActivityFeed extends BaseActivity implements NetworkingService.NetworkingListener {
 
     NetworkingService networkingService;
     JsonService jsonService;
@@ -38,7 +38,8 @@ public class ActivityFeed extends AppCompatActivity implements NetworkingService
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_feed);
+        //setContentView(R.layout.activity_feed);
+        replaceContentLayout(R.layout.activity_feed);
 
         //initialize networking service and json service
         networkingService = ( (MainApplication)getApplication()).getNetworkingService();
