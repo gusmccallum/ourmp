@@ -20,5 +20,6 @@
 
     <string name="open">Open</string>
     <string name="closed">Close</string>
-
+    <string name="mps_toggle">MPs</string>
+    <string name="bills_toggle">Bills</string>
 </resources>

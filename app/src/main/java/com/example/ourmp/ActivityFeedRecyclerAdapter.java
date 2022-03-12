@@ -21,6 +21,14 @@ public class ActivityFeedRecyclerAdapter  extends
         this.context = context;
     }
 
+    public void setFilter(ArrayList<Activity> filteredBills) {
+        this.activities = filteredBills;
+    }
+
+    public void update() {
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public ActivityFeedViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
