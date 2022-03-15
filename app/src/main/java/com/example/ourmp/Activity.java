@@ -1,22 +1,22 @@
 package com.example.ourmp;
 
+import android.graphics.Bitmap;
+
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 
 public class Activity  implements Comparable<Activity>{
-    String activityPicture;
+    Bitmap activityPicture;
     String activityTitle;
     String activityDescription;
     String activityDate;
-    String activitySession;
     String activityStatus;
 
-    public Activity(String pic, String title, String desc, String date, String session){
-        this.activityPicture = pic;
+    public Activity(Bitmap pic, String title, String desc, String date){
+        this.activityPicture = null;
         this.activityTitle = title;
         this.activityDescription = desc;
         this.activityDate = date;
-        this.activitySession = session;
     }
 
     public Activity(){

@@ -1,28 +1,6 @@
 <resources>
     <string name="app_name">ourmp</string>
     <string name="search_title">search_title</string>
-    <string-array name="mps">
-        <item>Edwardo Loomer</item>
-        <item>Clinton Covelli</item>
-        <item>Stephan Selvy</item>
-        <item>Jodi Holy</item>
-        <item>Elbert Redpath</item>
-        <item>Yael Naples</item>
-        <item>Bertha Baliga</item>
-        <item>Domitila Ciuffreda</item>
-        <item>Rosita Lawal</item>
-        <item>Gregg Dryman</item>
-        <item>Ty Farkus</item>
-        <item>Rachel Pinski</item>
-        <item>Eldon Cleckner</item>
-        <item>Sherwood Ishee</item>
-        <item>Gabriel Therres</item>
-        <item>Wayne Houch</item>
-        <item>Joseph Burczyk</item>
-        <item>Donnie Porcelli</item>
-        <item>Emmett Kuanoni</item>
-    </string-array>
-
     <string name="subscribe">Subscribe</string>
     <string name="mpInfo_btn">More Info</string>
     <string name="sns_btn">Social Media</string>
@@ -37,5 +15,6 @@
     <string name="voted_txt">Voted \u0020</string>
     <string name="onbill_txt">\u0020 on Bill \u0020</string>
     <string name="moreBallot_btn">See more...</string>
+    <string name="compare">Compare</string>
 
 </resources>

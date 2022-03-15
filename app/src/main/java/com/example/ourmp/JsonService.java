@@ -50,10 +50,8 @@ public class JsonService{
                 String billDesc = BillObject.getJSONObject("name").getString("en");
                 String billDate = BillObject.getString("introduced");
                 String billSession = BillObject.getString("session");
-                bills.add(new Activity("", billNumber, billDesc, billDate, billSession));
+                bills.add(new Activity(null, billNumber + " was introduced in session " + billSession, billDesc, billDate));
             }
-            bills.sort(Comparator.comparing(obj -> obj.activityDate));
-            Collections.reverse(bills);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -129,6 +127,9 @@ public class JsonService{
                 String mpURL = BallotObject.getString("politician_url");
                 String voteUrl = BallotObject.getString("vote_url");
 
+                if(!ballot.equals("Yes") && !ballot.equals("No")){
+                    ballot = "";
+                }
                 Ballot newBallot = new Ballot(ballot, mpURL, voteUrl, null, null);
                 allBallotFromMP.add(newBallot);
             }

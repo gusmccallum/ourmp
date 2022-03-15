@@ -29,7 +29,15 @@ public class BallotsAdapter extends RecyclerView.Adapter<BallotsAdapter.TasksVie
     @Override
     public void onBindViewHolder(@NonNull BallotsAdapter.TasksViewHolder holder, int position) {
         Ballot ballot = ballotList.get(position);
-        holder.ballot_txt.setText(ballot.getBallot());
+
+        if(ballot.getBallot().equals("")){
+            holder.voted_txt.setText("");
+            holder.ballot_txt.setText("Didn't vote on ");
+        }
+        else{
+            holder.ballot_txt.setText(ballot.getBallot());
+        }
+
         holder.billnum_txt.setText(ballot.getBillNum());
     }
 
@@ -41,11 +49,13 @@ public class BallotsAdapter extends RecyclerView.Adapter<BallotsAdapter.TasksVie
     class TasksViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView ballot_txt;
         private final TextView billnum_txt;
+        private final TextView voted_txt;
 
         public TasksViewHolder(View itemView) {
             super(itemView);
             ballot_txt = itemView.findViewById(R.id.ballot_txt);
             billnum_txt = itemView.findViewById(R.id.billnum_txt);
+            voted_txt = itemView.findViewById(R.id.voted_txt);
         }
         @Override
         public void onClick(View view) {
