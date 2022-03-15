@@ -31,7 +31,7 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-public class Search extends AppCompatActivity  {
+public class Search extends BaseActivity {
 
     ArrayList<MP> MPArrayList = new ArrayList<>();
     RecyclerView recyclerView_event;
@@ -41,7 +41,8 @@ public class Search extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+        //setContentView(R.layout.activity_search);
+        replaceContentLayout(R.layout.activity_search);
 
         findViewById(R.id.imgbck).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,7 +95,6 @@ public class Search extends AppCompatActivity  {
                         MP member = new MP();
                         JSONObject jsonObject1 = jsonArrayMps.getJSONObject(i);
                         member.setName(jsonObject1.getString("name"));
-                        member.setRiding(jsonObject1.getString("district_name"));
                         member.setParty(jsonObject1.getString("party_name"));
                         member.setPhotoURL(jsonObject1.getString("photo_url"));
                         new DownloadImage(member).execute(member.getPhotoURL());

@@ -13,7 +13,7 @@ public class Activity  implements Comparable<Activity>{
     String activityStatus;
 
     public Activity(Bitmap pic, String title, String desc, String date){
-        this.activityPicture = null;
+        this.activityPicture = pic;
         this.activityTitle = title;
         this.activityDescription = desc;
         this.activityDate = date;

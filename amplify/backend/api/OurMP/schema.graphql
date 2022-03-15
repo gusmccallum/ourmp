@@ -1,0 +1,6 @@
+type Subscribed @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  userId: String!
+  subscribedMPs: [String]
+  subscribedBills: [String]
+}
