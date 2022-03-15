@@ -127,6 +127,9 @@ public class JsonService{
                 String mpURL = BallotObject.getString("politician_url");
                 String voteUrl = BallotObject.getString("vote_url");
 
+                if(!ballot.equals("Yes") && !ballot.equals("No")){
+                    ballot = "";
+                }
                 Ballot newBallot = new Ballot(ballot, mpURL, voteUrl, null, null);
                 allBallotFromMP.add(newBallot);
             }
