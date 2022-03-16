@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.20" />
+        app:layout_constraintGuide_percent="0.30" />
 
     <EditText
         android:id="@+id/SignUpEmail_edit"
@@ -107,6 +107,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
+        android:visibility="gone"
         android:text="--------------OR--------------"
         android:textColor="@color/black"
         android:textSize="20dp"
@@ -119,6 +120,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
+        android:visibility="gone"
         android:background="@drawable/btn_bg_sso"
         android:text="Sign Up with Google"
         app:layout_constraintEnd_toEndOf="@+id/SignUpEmailSignUp_btn"
@@ -130,6 +132,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
+        android:visibility="gone"
         android:background="@drawable/btn_bg_sso"
         android:text="Sign Up with Facebook"
         app:layout_constraintEnd_toEndOf="@+id/SignUpEmailSignUp_btn"

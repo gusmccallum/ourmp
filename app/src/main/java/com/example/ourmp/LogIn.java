@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -35,7 +36,18 @@ public class LogIn extends AppCompatActivity {
             public void onClick(View v) {
                 String email = edit_email.getText().toString();
                 String password = edit_password.getText().toString();
-                logUserInEmail(email, password);
+                if (( (MainApplication)getApplication()).getLogInStatus() == true) {
+                    Toast.makeText(v.getContext(), "Login failed - already logged in. Sign out first to log in to another account.", Toast.LENGTH_LONG).show();
+                }
+                else if (password.isEmpty()) {
+                    Toast.makeText(v.getContext(), "Login failed - password field is empty.", Toast.LENGTH_LONG).show();
+                }
+                else if (email.isEmpty()) {
+                    Toast.makeText(v.getContext(), "Login failed - email field is empty.", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    logUserInEmail(email, password);
+                }
             }
         });
 
@@ -66,11 +78,14 @@ public class LogIn extends AppCompatActivity {
                 if(result.isSuccess())
                 {
                     Log.v("User","Logged In Successfully");
+                    ( (MainApplication)getApplication()).setLogInStatus(true);
+                    Toast.makeText(getBaseContext(), "Used logged in successfully.", Toast.LENGTH_LONG).show();
 
                 }
                 else
                 {
                     Log.v("User","Failed to Login");
+                    Toast.makeText(getBaseContext(), "Used login failed. Error: ", Toast.LENGTH_LONG).show();
                 }
             }
         });
