@@ -16,9 +16,7 @@ import java.util.concurrent.Executors;
 
 public class NetworkingService {
     String findMPURL = "https://represent.opennorth.ca/representatives/house-of-commons/?point=";
-    String listOfBills = "https://api.openparliament.ca/bills/?introduced__gt=2018-01-01&format=json&limit=100";
-    String listOfMPs = "https://represent.opennorth.ca/representatives/house-of-commons/?limit=50";
-
+    String listOfBills = "https://api.openparliament.ca/bills/?introduced__gt=2018-01-01&format=json&limit=50";
 
     String MpPageURL1 = "https://api.openparliament.ca/politicians/";
     String formatJson = "/?format=json";
@@ -27,6 +25,8 @@ public class NetworkingService {
 
     String MPdescURL = "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=";
     String formatJson2 = "&format=json";
+
+
     int status;
     public static final ExecutorService networkingExecutor = Executors.newFixedThreadPool(8);
     static Handler networkHander = new Handler(Looper.getMainLooper());

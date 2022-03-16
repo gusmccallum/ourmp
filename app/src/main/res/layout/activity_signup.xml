@@ -96,7 +96,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:text="Already have an account? Sign In here."
-        android:textColor="@color/OurMPGrey"
+        android:textColor="@color/darker_gray"
         android:textSize="10dp"
         app:layout_constraintEnd_toEndOf="@+id/SignUpEmailSignUp_btn"
         app:layout_constraintStart_toStartOf="@+id/SignUpEmailSignUp_btn"

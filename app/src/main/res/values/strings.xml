@@ -15,6 +15,11 @@
     <string name="voted_txt">Voted \u0020</string>
     <string name="onbill_txt">\u0020 on Bill \u0020</string>
     <string name="moreBallot_btn">See more...</string>
+
+    <string name="compare">Compare</string>
+
     <string name="open">Open</string>
     <string name="closed">Close</string>
+    <string name="mps_toggle">MPs</string>
+    <string name="bills_toggle">Bills</string>
 </resources>

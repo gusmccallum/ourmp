@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/gray"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/mp2_icon_relative"
+            android:layout_alignParentLeft="true">
+
+            <ImageView
+                android:id="@+id/mp2_icon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/no_icon" />
+        </RelativeLayout>
+        <TextView
+            android:id="@+id/voted_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/voted_txt"
+            android:textSize="15sp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_toRightOf="@+id/mp2_icon_relative"
+            >
+
+        </TextView>
+        <TextView
+            android:id="@+id/ballot_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:layout_toRightOf="@+id/voted_txt">
+
+        </TextView>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/mp1_icon_relative"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentRight="true"
+            >
+
+            <ImageView
+                android:id="@+id/mp1_icon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/no_icon" />
+        </RelativeLayout>
+        </RelativeLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/onbill_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/onbill_txt"
+            android:textSize="15sp"
+            android:layout_marginLeft="20dp">
+
+        </TextView>
+        <TextView
+            android:id="@+id/billnum_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            >
+
+        </TextView>
+
+    </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
