@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHolder> {
     ArrayList<MP> MPsArrayList;
+    ArrayList<Activity> BillsList;
     Context context;
 
     public interface OnItemClickListener {

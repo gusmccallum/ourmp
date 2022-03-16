@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -28,6 +29,7 @@ public class MPCardActivity extends AppCompatActivity
     ArrayList<Ballot> tempbollotArray = new ArrayList<>(0);
     BallotsAdapter adapter;
     RecyclerView recyclerView;
+    ProgressDialog progressDialog;
 
 
     @Override
@@ -36,6 +38,11 @@ public class MPCardActivity extends AppCompatActivity
         setContentView(R.layout.activity_mpcard);
 
         mpObj = getIntent().getParcelableExtra("selectedMP");
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
 
         mpName = findViewById(R.id.mppage_name_txt);
         mpRiding = findViewById(R.id.mppage_riding_txt);
@@ -92,6 +99,7 @@ public class MPCardActivity extends AppCompatActivity
         for(int i=0; i<allBallotFromMP.size(); i++){
             networkingService.fetchVote(allBallotFromMP.get(i).getVoteURL());
         }
+
     }
 
     @Override
@@ -115,6 +123,7 @@ public class MPCardActivity extends AppCompatActivity
             }
 
             recyclerView.setAdapter(adapter);
+            progressDialog.dismiss();
         }
     }
 
@@ -148,6 +157,15 @@ public class MPCardActivity extends AppCompatActivity
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList("ballotList", allBallotFromMP);
         intent.putExtra("bundle",bundle);
+        startActivity(intent);
+    }
+
+    public void MPCompareBtnClicked(View view) {
+        Intent intent = new Intent(this, CompareMPActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("ballotList", allBallotFromMP);
+        intent.putExtra("bundle",bundle);
+        intent.putExtra("MPObj", mpObj);
         startActivity(intent);
     }
 }

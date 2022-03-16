@@ -27,6 +27,8 @@ public class NetworkingService {
 
     String MPdescURL = "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=";
     String formatJson2 = "&format=json";
+
+
     int status;
     public static final ExecutorService networkingExecutor = Executors.newFixedThreadPool(8);
     static Handler networkHander = new Handler(Looper.getMainLooper());

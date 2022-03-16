@@ -26,7 +26,7 @@ import java.util.Arrays;
 
 import io.realm.Realm;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     Button btn_findMP;
     Button btn_search;
@@ -48,7 +48,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
+        replaceContentLayout(R.layout.activity_main);
 
         // Initialize Amplify
 
