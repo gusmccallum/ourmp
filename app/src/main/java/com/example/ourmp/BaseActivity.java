@@ -50,7 +50,7 @@ public class BaseActivity extends AppCompatActivity
                 if (item.getItemId() == R.id.item2)
                 {
                     Toast.makeText(getApplicationContext(), "Clicked Find MP", Toast.LENGTH_SHORT).show();
-                    //intent = new Intent(BaseActivity.this, ActivityFeed.class);
+                    intent = new Intent(BaseActivity.this, LocationActivity.class);
                 }
 
                 if (item.getItemId() == R.id.item3)
@@ -80,7 +80,7 @@ public class BaseActivity extends AppCompatActivity
                 if (item.getItemId() == R.id.item7)
                 {
                     Toast.makeText(getApplicationContext(), "Clicked Events", Toast.LENGTH_SHORT).show();
-                    //intent = new Intent(BaseActivity.this, SeventhActivity.class);
+                    intent = new Intent(BaseActivity.this, Events.class);
                 }
 
                 if (item.getItemId() == R.id.item8)

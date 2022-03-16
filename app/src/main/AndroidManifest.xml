@@ -17,6 +17,9 @@
         android:theme="@style/Theme.Ourmp"
         tools:replace="android:name">
         <activity
+            android:name=".Events"
+            android:exported="false" />
+        <activity
             android:name=".BaseActivity"
             android:exported="false" />
 

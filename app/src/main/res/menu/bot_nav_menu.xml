@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/recent"
+        android:title="Recent"
+        android:icon="@drawable/ic_baseline_event_repeat_24"/>
+
+    <item
+        android:id="@+id/live"
+        android:title="Live"
+        android:icon="@drawable/ic_baseline_live_tv_24"/>
+
+    <item
+        android:id="@+id/upcoming"
+        android:title="Upcoming"
+        android:icon="@drawable/ic_baseline_calendar_month_24"/>
+</menu>

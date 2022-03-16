@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import java.util.ArrayList;
 
-public class LocationActivity extends AppCompatActivity
+public class LocationActivity extends BaseActivity
         implements LocationListener, NetworkingService.NetworkingListener{
 
     TextView mpName, mpRiding, mpParty;
@@ -30,7 +30,8 @@ public class LocationActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_location);
+        //setContentView(R.layout.activity_location);
+        replaceContentLayout(R.layout.activity_location);
         mpCard = findViewById(R.id.mpcard_relative);
         //set the MP info card(relative layout) invisible
         mpCard.setVisibility(View.GONE);
