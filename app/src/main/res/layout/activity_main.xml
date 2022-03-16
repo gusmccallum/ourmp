@@ -47,38 +47,6 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/MainCreate_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Create"
-        app:layout_constraintEnd_toStartOf="@+id/guideline6"
-        app:layout_constraintTop_toTopOf="@+id/guideline8" />
-
-    <Button
-        android:id="@+id/MainRead_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Read"
-        app:layout_constraintStart_toStartOf="@+id/guideline6"
-        app:layout_constraintTop_toTopOf="@+id/guideline8" />
-
-    <Button
-        android:id="@+id/MainUpdate_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Update"
-        app:layout_constraintStart_toEndOf="@+id/MainRead_btn"
-        app:layout_constraintTop_toTopOf="@+id/guideline8" />
-
-    <Button
-        android:id="@+id/MainDelete_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Delete"
-        app:layout_constraintStart_toEndOf="@+id/MainUpdate_btn"
-        app:layout_constraintTop_toTopOf="@+id/guideline8" />
-
-    <Button
         android:id="@+id/MainActivityFeed_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -133,7 +101,13 @@
         app:layout_constraintStart_toStartOf="@+id/MainActivityFeed_btn"
         app:layout_constraintTop_toBottomOf="@+id/MainSignUp_btn" />
 
-
+    <Button
+        android:id="@+id/toastbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Toast button"
+        app:layout_constraintStart_toStartOf="@+id/guideline6"
+        app:layout_constraintTop_toTopOf="@+id/guideline8" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

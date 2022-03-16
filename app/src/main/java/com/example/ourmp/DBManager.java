@@ -15,6 +15,11 @@ public class DBManager {
 
     String userID = "1234abcd";
 
+    // Query variables
+    Subscribed returnedSub = null;
+    ArrayList<String> MPSubs = new ArrayList<String>();
+    ArrayList<String> BillSubs = new ArrayList<String>();
+
 
     // Create Methods
 
@@ -43,59 +48,56 @@ public class DBManager {
     // Read Methods
 
     public Subscribed getSubscriptionObject() {
-        AtomicReference<Subscribed> subObject = null;
+        returnedSub = null;
         Amplify.DataStore.query(
                 Subscribed.class,
                 Where.matches(Subscribed.USER_ID.eq(userID)),
                 items -> {
                     while (items.hasNext()) {
                         Subscribed item = items.next();
-                        subObject.set(item);
                         Log.i("Amplify", "Id: " + item.getId() + " - User ID: " + item.getUserId());
+                        returnedSub = item;
                     }
                 },
                 failure -> {
                     Log.e("Amplify", "Could not query DataStore", failure);
                 }
         );
-        Subscribed subObj = (Subscribed) subObject.get();
-        return subObj;
+        return returnedSub;
     }
 
     public ArrayList<String> getMPSubscriptions() {
-        AtomicReference<ArrayList<String>> AtomicMPs = null;
+        MPSubs.clear();
         Amplify.DataStore.query(
                 Subscribed.class,
                 Where.matches(Subscribed.USER_ID.eq(userID)),
                 items -> {
                     while (items.hasNext()) {
                         Subscribed item = items.next();
-                        AtomicMPs.set((ArrayList<String>) item.getSubscribedMPs());
+                        MPSubs = (ArrayList<String>) item.getSubscribedMPs();
                         Log.i("Amplify", "Id: " + item.getId() + " - User ID: " + item.getUserId());
                     }
                 },
                 failure -> Log.e("Amplify", "Could not query DataStore", failure)
         );
-        ArrayList<String> MPs = (ArrayList<String>) AtomicMPs.get();
-        return MPs;
+        return MPSubs;
     }
 
     public ArrayList<String> getBillSubscriptions() {
-        AtomicReference<ArrayList<String>> AtomicBills = null;
+        BillSubs.clear();
         Amplify.DataStore.query(
                 Subscribed.class,
                 Where.matches(Subscribed.USER_ID.eq(userID)),
                 items -> {
                     while (items.hasNext()) {
                         Subscribed item = items.next();
-                        AtomicBills.set((ArrayList<String>) item.getSubscribedBills());
+                        BillSubs = (ArrayList<String>) item.getSubscribedBills();
                         Log.i("Amplify", "Id: " + item.getId() + " - User ID: " + item.getUserId());
                     }
                 },
                 failure -> Log.e("Amplify", "Could not query DataStore", failure)
         );
-        ArrayList<String> Bills = (ArrayList<String>) AtomicBills.get();
-        return Bills;
+        return BillSubs;
     }
 
     // Update Methods
