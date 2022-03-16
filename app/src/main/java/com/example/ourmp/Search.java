@@ -1,6 +1,5 @@
 package com.example.ourmp;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,26 +29,41 @@ import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
-public class Search extends BaseActivity {
+public class Search extends BaseActivity implements NetworkingService.NetworkingListener {
+
+    NetworkingService networkingService;
+    JsonService jsonService;
+    RecyclerView activityList;
+    ArrayList<Activity> activities = new ArrayList<>();
+    ActivityFeedBaseAdapter billsAdapter;
+    ActivityFeedRecyclerAdapter recyclerAdapter;
 
     ArrayList<MP> MPArrayList = new ArrayList<>();
     RecyclerView recyclerView_event;
     EditText SearchText;
     private SearchAdapter adapter;
-    String str_url = "https://represent.opennorth.ca/representatives/house-of-commons/?limit=400";
+    String str_url = "https://represent.opennorth.ca/representatives/house-of-commons/?limit=500";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_search);
         replaceContentLayout(R.layout.activity_search);
 
-        findViewById(R.id.imgbck).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+
+        //initialize networking service and json service
+        networkingService = ( (MainApplication)getApplication()).getNetworkingService();
+        jsonService = ( (MainApplication)getApplication()).getJsonService();
+        networkingService.listener = this;
+
+        activityList = findViewById(R.id.activityList);
+        recyclerAdapter = new ActivityFeedRecyclerAdapter(activities, this);
+        activityList.setAdapter(recyclerAdapter);
+        activityList.setLayoutManager(new LinearLayoutManager(this));
+        networkingService.fetchBillsData();
+
 
         MPArrayList = new ArrayList<>();
         recyclerView_event = findViewById(R.id.recyclerView_data);
@@ -131,20 +145,72 @@ public class Search extends BaseActivity {
     public void filterQuery(String text) {
         if (!text.isEmpty()) {
             recyclerView_event.setVisibility(View.VISIBLE);
-            ArrayList<MP> filterdNames = new ArrayList<>();
+            activityList.setVisibility(View.VISIBLE);
+            ArrayList<MP> filteredNames = new ArrayList<>();
             for (MP mp : this.MPArrayList) {
                 if (mp.getName().toLowerCase().contains(text.toLowerCase())) {
-                    filterdNames.add(mp);
+                    filteredNames.add(mp);
                     adapter.update();
                 }
             }
-            this.adapter.setFilter(filterdNames);
+            this.adapter.setFilter(filteredNames);
+
+            ArrayList<Activity> filteredBills = new ArrayList<>();
+            for (Activity bill : this.activities) {
+                if (bill.activityTitle.toLowerCase().contains(text.toLowerCase())) {
+                    filteredBills.add(bill);
+                    recyclerAdapter.update();
+                }
+            }
+            this.recyclerAdapter.setFilter(filteredBills);
         } else {
             recyclerView_event.setVisibility(View.GONE);
+            activityList.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void APINetworkListner(String jsonString) {
 
     }
 
+    @Override
+    public void APINetworkingListerForImage(Bitmap image) {
+
+    }
+
+    @Override
+    public void APIMPMoreInfoListener(String jsonString) {
+
+    }
+
+    @Override
+    public void APIBallotListener(String jsonString) {
+
+    }
+
+    @Override
+    public void APIVoteListener(String jsonString) {
+
+    }
+
+    @Override
+    public void APIMPDescListener(String jsonString) {
+
+    }
+
+    @Override
+    public void APIBillsListener(String jsonString) {
+        ArrayList<Activity> temp = new ArrayList<>();
+        temp = jsonService.parseFindBills(jsonString);
+        activities.addAll(temp);
+        activities.sort(Comparator.comparing(obj -> obj.activityDate));
+        Collections.reverse(activities);
+        recyclerAdapter.notifyDataSetChanged();
+        //adapter = new ActivityFeedBaseAdapter(activities, this);
+        //activityList.setAdapter(adapter);
+
+    }
 
     public static class DownloadImage extends AsyncTask<String, Void, Bitmap> {
         MP member;
