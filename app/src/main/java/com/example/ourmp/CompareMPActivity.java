@@ -36,7 +36,7 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-public class CompareMPActivity extends AppCompatActivity
+public class CompareMPActivity extends BaseActivity
         implements NetworkingService.NetworkingListener, CompareSearchAdapter.OnItemClickListener{
 
     NetworkingService networkingService;
@@ -63,7 +63,7 @@ public class CompareMPActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_compare_mp);
+        replaceContentLayout(R.layout.activity_compare_mp);
 
         Bundle bundleFromMainActivity = getIntent().getBundleExtra("bundle");
         allBallotFromMP1 = bundleFromMainActivity.getParcelableArrayList("ballotList");
