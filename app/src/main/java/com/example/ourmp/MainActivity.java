@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.amplifyframework.AmplifyException;
 import com.amplifyframework.api.aws.AWSApiPlugin;
@@ -50,16 +51,7 @@ public class MainActivity extends BaseActivity {
         //setContentView(R.layout.activity_main);
         replaceContentLayout(R.layout.activity_main);
 
-        // Initialize Amplify
 
-        try {
-            Amplify.addPlugin(new AWSApiPlugin()); // UNCOMMENT this line once backend is deployed
-            Amplify.addPlugin(new AWSDataStorePlugin());
-            Amplify.configure(getApplicationContext());
-            Log.i("Amplify", "Initialized Amplify");
-        } catch (AmplifyException error) {
-            Log.e("Amplify", "Could not initialize Amplify", error);
-        }
 
         // Get DBManager
 
@@ -118,40 +110,6 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        // Amplify CRUD methods
 
-        btn_create = (Button)findViewById(R.id.MainCreate_btn);
-        btn_create.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            db.addNewUserSubscription(MPs, Bills);
-            }
-        });
-
-        btn_read = (Button)findViewById(R.id.MainRead_btn);
-        btn_read.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            Subscribed newSub = db.getSubscriptionObject();
-            }
-        });
-
-        btn_update = (Button)findViewById(R.id.MainUpdate_btn);
-        btn_update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            db.addMPSubscription("Robert Pattinson");
-            db.addBillSubscription("5555");
-            }
-        });
-
-        btn_delete = (Button)findViewById(R.id.MainDelete_btn);
-        btn_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                db.removeMPSubscription("Robert Pattinson");
-                db.removeBillSubscription("5555");
-            }
-        });
     }
 }

@@ -2,6 +2,7 @@
     <string name="app_name">OurMP</string>
     <string name="search_title">search_title</string>
     <string name="subscribe">Subscribe</string>
+    <string name="unfollow">Unsubscribe</string>
     <string name="mpInfo_btn">More Info</string>
     <string name="sns_btn">Social Media</string>
     <string name="email_btn">Email</string>
@@ -17,9 +18,8 @@
     <string name="moreBallot_btn">See more...</string>
 
     <string name="compare">Compare</string>
-
+    <string name="unfollow">Unfollow</string>
     <string name="open">Open</string>
     <string name="closed">Close</string>
-    <string name="mps_toggle">MPs</string>
-    <string name="bills_toggle">Bills</string>
+
 </resources>

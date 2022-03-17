@@ -16,18 +16,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Ourmp"
         tools:replace="android:name">
-        <activity
-            android:name=".Events"
-            android:exported="false" />
-        <activity
-            android:name=".BaseActivity"
-            android:exported="false" />
+
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/map_key" />
 
         <uses-library android:name="com.google.android.maps" />
+
+        <activity
+            android:name=".BaseActivity"
+            android:exported="false" />
 
         <activity
             android:name=".BallotListActivity"/>
@@ -44,12 +43,12 @@
                 android:value="com.example.ourmp.LocationActivity" />
         </activity>-->
         <activity
-            android:name=".CompareMPActivity"
-            android:exported="true">
+            android:name=".CompareMPActivity"/>
+          <!--  android:exported="true">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.ourmp.MPCardActivity" />
-        </activity>
+        </activity>-->
         <activity android:name=".LocationActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -75,6 +74,7 @@
         </activity>
         <activity android:name=".ActivityFeed" />
         <activity android:name=".SignUp" />
+        <activity android:name=".LogIn" />
     </application>
 
 </manifest>

@@ -17,9 +17,10 @@
         android:textSize="20sp"
         android:textStyle="bold"/>
 
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_margin="10dp"
         android:background="@drawable/mpcard_background"
        app:layout_constraintEnd_toEndOf="parent"
@@ -48,7 +49,8 @@
                 android:id="@+id/mp1_relativeLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/mp1_name_txt">
+                android:layout_below="@id/mp1_name_txt"
+                android:layout_marginTop="55dp">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/mp1_list"
@@ -76,26 +78,113 @@
                 android:textColor="@color/red"
                 />
 
-            <SearchView
+            <!--<SearchView
                 android:id="@+id/compare_search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/mp2_name_txt"
- />
+                android:background="@color/white"
+                app:backgroundTint="@null"/>-->
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="1.0"
+                android:layout_below="@+id/mp2_name_txt"
+                android:id="@+id/search_linear">
+
+                <RelativeLayout
+                    android:layout_width="0.0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/white"
+                    android:padding="2.0dip"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+
+                    >
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/search_bar"
+                        android:layout_width="fill_parent"
+                        android:layout_height="50.0dip"
+                        android:clipToPadding="false"
+                        app:cardBackgroundColor="@android:color/white"
+                        app:cardCornerRadius="3.0dip"
+                        app:cardElevation="1.0dip"
+                        >
+
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:orientation="horizontal">
+
+                            <EditText
+                                android:id="@+id/search_input"
+                                android:layout_width="0.0dip"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="1.0"
+                                android:background="@android:color/transparent"
+                                android:hint="Search"
+                                android:paddingLeft="15dp"
+                                android:imeOptions="actionSearch"
+                                android:maxLines="1"
+                                android:singleLine="true" />
+
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+                </RelativeLayout>
+            </LinearLayout>
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/nested_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/search_linear"
+                android:clipToPadding="false"
+                android:fillViewport="true"
+                android:scrollbars="none"
+                android:scrollingCache="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView_data"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:scrollbars="none"
+                        android:scrollingCache="false"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
             <RelativeLayout
                 android:id="@+id/mp2_list_relativeLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/compare_search"
+                android:layout_below="@id/nested_scroll_view"
                 android:visibility="invisible">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/mp2_list"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    />
             </RelativeLayout>
 
         </RelativeLayout>
+
+
     </LinearLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

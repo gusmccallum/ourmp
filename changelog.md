@@ -1,17 +1,21 @@
 
 # **Changelog**
 
-Week of March 6, 2022
+Week of March 13, 2022
 
 ## **Back End**
 
-- Began implementing database using AWS Amplify Datastore
+- Implemented DB CRUD methods for activities to access
+- Implemented callback to allow activities to update from DB methods
 
 ## **Sidebar**
-- Implemented sidebar menu
+- Implemented sidebar menu in all layouts
+
+## **Calendar**
+- Implemented calendar/event feature layout
 
 ## **Sign Up and Login**
-- Continued developing sign up and login pages
+- Implemented DB features to add newly created user to DB on sign up
 
 ## **Compare MP**
-- Began development on compare MP feature
+- Implemented compare MP feature

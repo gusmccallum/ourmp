@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -12,12 +13,20 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.amplifyframework.AmplifyException;
+import com.amplifyframework.api.aws.AWSApiPlugin;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.AWSDataStorePlugin;
+import com.amplifyframework.datastore.generated.model.Subscribed;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class LocationActivity extends BaseActivity
-        implements LocationListener, NetworkingService.NetworkingListener{
+        implements LocationListener, NetworkingService.NetworkingListener, DBManager.subObjCallback{
 
     TextView mpName, mpRiding, mpParty;
+    Button subscribe_btn;
     NetworkingService networkingService;
     JsonService jsonService;
     MP mpObj = new MP();
@@ -32,6 +41,15 @@ public class LocationActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_location);
         replaceContentLayout(R.layout.activity_location);
+
+        //Perform initial query to see if user is subscribed to MP
+        if (((MainApplication)getApplication()).getLogInStatus() == true) {
+            DBManager dbManager = ((MainApplication)getApplication()).getDbManager();
+            dbManager.getSubscriptionObject();
+            dbManager.setSubObjCallbackInstance(this);
+        }
+
+
         mpCard = findViewById(R.id.mpcard_relative);
         //set the MP info card(relative layout) invisible
         mpCard.setVisibility(View.GONE);
@@ -40,6 +58,7 @@ public class LocationActivity extends BaseActivity
         mpRiding = findViewById(R.id.mpcardRiding_txt);
         mpParty = findViewById(R.id.mpcardParty_txt);
         img = findViewById(R.id.mpcard_img);
+        subscribe_btn = findViewById(R.id.subscribe_btn);
 
         //initialize fragment
         Fragment fragment = new MapFragment();
@@ -50,6 +69,7 @@ public class LocationActivity extends BaseActivity
         networkingService = ( (MainApplication)getApplication()).getNetworkingService();
         jsonService = ( (MainApplication)getApplication()).getJsonService();
         dbManager = ((MainApplication) getApplication()).getDbManager();
+        dbManager.setSubObjCallbackInstance(LocationActivity.this);
         allMPs = ((MainApplication) getApplication()).allMPs;
         networkingService.listener = this;
     }
@@ -121,17 +141,56 @@ public class LocationActivity extends BaseActivity
 
     public void SubscribeBtnClicked(View view) {
         //if(check if logged - yes)
-        //id will be riding+name?
-        //dbManager.insertMPs("6", mpName.getText().toString());
-        Toast.makeText(this, "Subscribed!", Toast.LENGTH_SHORT).show();
-        allMPs.add(mpObj);
-        //else - not logged in
-        //Toast.makeText(this, "Need to login to subscribe MP!", Toast.LENGTH_SHORT).show();
+        if (((MainApplication)getApplication()).getLogInStatus() == true) {
+            DBManager dbManager = ((MainApplication)getApplication()).getDbManager();
+            //if the button = subscribe which means user has not followed the MP yet
+            if(subscribe_btn.getText().toString().equals("Subscribe")){
+                //follow the MP and change the text to unfollow
+                dbManager.addMPSubscription(mpName.getText().toString());
+                subscribe_btn.setText(R.string.unfollow);
+                Toast.makeText(this, "Subscribed!", Toast.LENGTH_SHORT).show();
+            }
+            //if user already followed the MP and wants to unfollow
+            else{
+                //unfollow and change the text to subscribe
+                dbManager.removeMPSubscription(mpName.getText().toString());
+                subscribe_btn.setText(R.string.subscribe);
+                Toast.makeText(this, "Unfollowed!", Toast.LENGTH_SHORT).show();
+            }
+
+
+            dbManager.setSubObjCallbackInstance(this);
+        }
+        else{
+            //else - not logged in
+            Toast.makeText(this, "Login to save MP Subscriptions.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void MoreInfoBtnClicked(View view) {
         Intent intent = new Intent(this, MPCardActivity.class);
         intent.putExtra("selectedMP", mpObj);
         startActivity(intent);
+    }
+
+    @Override
+    public void getSub(Subscribed cbReturnSub) {
+        String MPName = mpName.getText().toString();
+        List<String> subscribedMPs = cbReturnSub.getSubscribedMPs();
+        if (subscribedMPs != null) {
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (subscribedMPs.indexOf(MPName) == -1) {
+                        subscribe_btn.setText(R.string.subscribe);
+                    }
+                    else {
+                        subscribe_btn.setText(R.string.unfollow);
+                    }
+                }
+            });
+        }
+
     }
 }
