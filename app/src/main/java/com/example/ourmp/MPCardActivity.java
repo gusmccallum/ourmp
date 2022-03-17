@@ -35,9 +35,11 @@ public class MPCardActivity extends BaseActivity
     MP mpObj;
     ArrayList<Ballot> allBallotFromMP = new ArrayList<>(0);
     ArrayList<Ballot> tempbollotArray = new ArrayList<>(0);
+    ArrayList<Ballot> validBollotList = new ArrayList<>(0);
     BallotsAdapter adapter;
     RecyclerView recyclerView;
     ProgressDialog progressDialog;
+    DBManager dbManager;
 
 
 
@@ -46,6 +48,13 @@ public class MPCardActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         replaceContentLayout(R.layout.activity_mpcard);
 
+
+        try {
+            Amplify.addPlugin(new AWSApiPlugin()); // UNCOMMENT this line once backend is deployed
+            Amplify.addPlugin(new AWSDataStorePlugin());
+            Amplify.configure(getApplicationContext());
+        } catch (AmplifyException error) {
+        }
 
         mpObj = getIntent().getParcelableExtra("selectedMP");
 
@@ -83,6 +92,8 @@ public class MPCardActivity extends BaseActivity
 
         networkingService = ( (MainApplication)getApplication()).getNetworkingService();
         jsonService = ( (MainApplication)getApplication()).getJsonService();
+        dbManager = ((MainApplication) getApplication()).getDbManager();
+        dbManager.setSubObjCallbackInstance(MPCardActivity.this);
         networkingService.listener = this;
 
         networkingService.getImageData(mpObj.getPhotoURL());
@@ -125,19 +136,31 @@ public class MPCardActivity extends BaseActivity
         tempbollotArray.add(jsonService.parseVote(jsonString));
         //list date and bill desc, same size with allBollotFromMP
         if(tempbollotArray.size() == allBallotFromMP.size()){
+            //copy all date and bill number
             for(int i=0; i<allBallotFromMP.size(); i++){
-                allBallotFromMP.get(i).setBillNum(tempbollotArray.get(i).getBillNum());
-                allBallotFromMP.get(i).setDate(tempbollotArray.get(i).getDate());
+
+                if(!tempbollotArray.get(i).getBillNum().equals("null")){
+                    allBallotFromMP.get(i).setBillNum(tempbollotArray.get(i).getBillNum());
+                    allBallotFromMP.get(i).setDate(tempbollotArray.get(i).getDate());
+
+                }
+
+            }
+            //choose ballots only that has valid bill number
+            for(int j=0; j<allBallotFromMP.size(); j++){
+                if(allBallotFromMP.get(j).getBillNum() != null){
+                    validBollotList.add(allBallotFromMP.get(j));
+                }
             }
 
             ArrayList<Ballot> shortBallotList = new ArrayList<>(0);
-            if(allBallotFromMP.size() > 2){
-                for(int j=0; j<2; j++){
-                    shortBallotList.add(allBallotFromMP.get(j));
+            if(validBollotList.size() > 5){
+                for(int j=0; j<5; j++){
+                    shortBallotList.add(validBollotList.get(j));
                 }
                 adapter = new BallotsAdapter(this, shortBallotList);
             }else{
-                adapter = new BallotsAdapter(this, allBallotFromMP);
+                adapter = new BallotsAdapter(this, validBollotList);
             }
 
             recyclerView.setAdapter(adapter);
@@ -173,7 +196,7 @@ public class MPCardActivity extends BaseActivity
     public void SeemoreBtnClicked(View view) {
         Intent intent = new Intent(this, BallotListActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("ballotList", allBallotFromMP);
+        bundle.putParcelableArrayList("ballotList", validBollotList);
         intent.putExtra("bundle",bundle);
         startActivity(intent);
     }
@@ -181,7 +204,7 @@ public class MPCardActivity extends BaseActivity
     public void MPCompareBtnClicked(View view) {
         Intent intent = new Intent(this, CompareMPActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("ballotList", allBallotFromMP);
+        bundle.putParcelableArrayList("ballotList", validBollotList);
         intent.putExtra("bundle",bundle);
         intent.putExtra("MPObj", mpObj);
         startActivity(intent);

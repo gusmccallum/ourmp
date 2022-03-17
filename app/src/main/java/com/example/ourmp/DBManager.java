@@ -2,7 +2,6 @@ package com.example.ourmp;
 
 
 
-import android.app.Application;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -25,7 +24,6 @@ public class DBManager {
     public void setUserID(String ID) {
         userID = ID;
     }
-
 
 
     // Callback instance
