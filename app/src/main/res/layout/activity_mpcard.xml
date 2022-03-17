@@ -139,6 +139,7 @@
                 android:id="@+id/mppage_subscribe_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_toStartOf="@+id/mppage_view"
                 android:background="@drawable/mpcard_button"
                 android:gravity="center"
@@ -146,7 +147,7 @@
                 android:textColor="@color/black"
                 android:textSize="15sp"
                 app:backgroundTint="@null"
-                android:layout_centerVertical="true"/>
+                android:onClick="SubscribeBtnClickedInMPCard"/>
 
             <View
                 android:id="@+id/mppage_view"
@@ -186,10 +187,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp"
             android:gravity="center"
             android:text="@string/recent_ballot_txt"
-            android:textSize="18sp"
-            android:layout_marginBottom="5dp"/>
+            android:textSize="20sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/ballot_list"

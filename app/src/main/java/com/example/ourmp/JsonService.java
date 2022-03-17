@@ -145,18 +145,22 @@ public class JsonService{
 
         try{
             JSONObject jsonObject = new JSONObject(jsonMP);// root
-            JSONObject descObject = jsonObject.getJSONObject("description");
-            String str = descObject.getString("en");
+            /*JSONObject descObject = jsonObject.getJSONObject("description");
+            String str = descObject.getString("en");*/
             String date = jsonObject.getString("date");
 
-           /* int index = str.indexOf("Bill C-");
-            if (index > 0)
-            {
-                str = str.substring(index, index+9);
-            }*/
-            ballot.setDate(date);
-            ballot.setBillNum(str);
+           if(jsonObject.getString("bill_url").equals("null")){
+               ballot.setDate("");
+               ballot.setBillNum("null");
+           }
+           else{
+               String str = jsonObject.getString("bill_url");
+               String[] temp = str.split("/");
+               str = temp[3];
 
+               ballot.setDate(date);
+               ballot.setBillNum(str);
+           }
 
         }catch (JSONException e) {
             e.printStackTrace();
