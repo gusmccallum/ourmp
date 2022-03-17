@@ -75,6 +75,7 @@
         <activity android:name=".ActivityFeed" />
         <activity android:name=".SignUp" />
         <activity android:name=".LogIn" />
+        <activity android:name=".Events" />
     </application>
 
 </manifest>
