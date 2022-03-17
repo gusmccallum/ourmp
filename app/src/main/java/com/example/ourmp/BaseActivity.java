@@ -74,7 +74,6 @@ public class BaseActivity extends AppCompatActivity
 
                 if (item.getItemId() == R.id.login)
                 {
-                    //Toast.makeText(getApplicationContext(), "Clicked Login", Toast.LENGTH_SHORT).show();
                     intent = new Intent(BaseActivity.this, LogIn.class);
                 }
 
