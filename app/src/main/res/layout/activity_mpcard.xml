@@ -139,14 +139,15 @@
                 android:id="@+id/mppage_subscribe_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_toStartOf="@+id/mppage_view"
                 android:background="@drawable/mpcard_button"
                 android:gravity="center"
+                android:onClick="SubscribeBtnClickedInMPCard"
                 android:text="@string/subscribe"
                 android:textColor="@color/black"
                 android:textSize="15sp"
-                app:backgroundTint="@null"
-                android:layout_centerVertical="true"/>
+                app:backgroundTint="@null" />
 
             <View
                 android:id="@+id/mppage_view"
@@ -163,11 +164,11 @@
                 android:layout_toEndOf="@+id/mppage_view"
                 android:background="@drawable/mpcard_button"
                 android:gravity="center"
+                android:onClick="MPCompareBtnClicked"
                 android:text="@string/compare_btn"
                 android:textColor="@color/black"
                 android:textSize="15sp"
-                app:backgroundTint="@null"
-                android:onClick="MPCompareBtnClicked"/>
+                app:backgroundTint="@null" />
         </RelativeLayout>
     </RelativeLayout>
 

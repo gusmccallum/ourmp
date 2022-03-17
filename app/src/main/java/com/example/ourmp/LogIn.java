@@ -14,7 +14,7 @@ import io.realm.mongodb.App;
 import io.realm.mongodb.Credentials;
 import io.realm.mongodb.User;
 
-public class LogIn extends AppCompatActivity {
+public class LogIn extends BaseActivity {
 
     Button btn_logInEmail;
     Button btn_logInGoogle;
@@ -23,10 +23,11 @@ public class LogIn extends AppCompatActivity {
     EditText edit_password;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        replaceContentLayout(R.layout.activity_login);
 
         edit_email = (EditText) findViewById(R.id.LoginEmail_edit);
         edit_password = (EditText) findViewById(R.id.LoginPassword_edit);
@@ -78,7 +79,9 @@ public class LogIn extends AppCompatActivity {
                 if(result.isSuccess())
                 {
                     Log.v("User","Logged In Successfully");
-                    ( (MainApplication)getApplication()).setLogInStatus(true);
+                    ((MainApplication)getApplication()).setLogInStatus(true);
+                    DBManager dbManager = ((MainApplication)getApplication()).getDbManager();
+                    dbManager.setUserID(((MainApplication)getApplication()).getRealmApp().currentUser().getId());
                     Toast.makeText(getBaseContext(), "Used logged in successfully.", Toast.LENGTH_LONG).show();
 
                 }

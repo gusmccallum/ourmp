@@ -14,9 +14,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
+
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
@@ -30,7 +30,7 @@ import io.realm.mongodb.User;
 import io.realm.mongodb.auth.GoogleAuthType;
 import kotlin.text.Regex;
 
-public class SignUp extends AppCompatActivity {
+public class SignUp extends BaseActivity {
 
     Button btn_signUpEmail;
     Button btn_signUpGoogle;
@@ -44,7 +44,7 @@ public class SignUp extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_signup);
+        replaceContentLayout(R.layout.activity_signup);
 
         edit_email = (EditText) findViewById(R.id.SignUpEmail_edit);
         edit_password = (EditText) findViewById(R.id.SignUpPassword_edit);
@@ -70,7 +70,7 @@ public class SignUp extends AppCompatActivity {
                 }
             }
         });
-
+        /*
         btn_signUpGoogle = (Button) findViewById(R.id.SignUpGoogle_btn);
         btn_signUpGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +78,8 @@ public class SignUp extends AppCompatActivity {
                 signInWithGoogle();
             }
         });
+        */
+
 
     }
 
@@ -85,8 +87,33 @@ public class SignUp extends AppCompatActivity {
         ( (MainApplication)getApplication()).getRealmApp().getEmailPassword().registerUserAsync(email,password,it->{
             if(it.isSuccess())
             {
+
                 Log.v("User","Registered with email successfully");
                 Toast.makeText(getApplicationContext(), "Account created successfully!", Toast.LENGTH_LONG).show();
+
+                Credentials credentials = Credentials.emailPassword(email,password);
+                ( (MainApplication)getApplication()).getRealmApp().loginAsync(credentials, new App.Callback<User>() {
+                    @Override
+                    public void onResult(App.Result<User> result) {
+                        if(result.isSuccess())
+                        {
+                            Log.v("User","Logged In Successfully");
+                            ((MainApplication)getApplication()).setLogInStatus(true);
+                            DBManager dbManager = ((MainApplication)getApplication()).getDbManager();
+                            dbManager.setUserID(((MainApplication)getApplication()).getRealmApp().currentUser().getId());
+                            dbManager.addNewUserSubscription();
+                            Toast.makeText(getBaseContext(), "Used logged in successfully.", Toast.LENGTH_LONG).show();
+
+                        }
+                        else
+                        {
+                            Log.v("User","Failed to Login");
+                            Toast.makeText(getBaseContext(), "Used login failed. Error: ", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
+
             }
             else
             {
@@ -96,7 +123,7 @@ public class SignUp extends AppCompatActivity {
         });
 
     }
-
+    /*
     private void signInWithGoogle() {
         GoogleSignInOptions gso = new GoogleSignInOptions
                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -140,7 +167,7 @@ public class SignUp extends AppCompatActivity {
         } catch (ApiException e) {
             Log.w("AUTH", "Failed to log in with Google OAuth: " + e.getMessage());
         }
-    }
+    }*/
 
 
 

@@ -107,7 +107,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                                     //store the first result in Address object
                                     address = addressList.get(0);
                                     //set latlng using lat, lng from address object
-                                    latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                                    //latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                                    latLng = new LatLng(43.707343,-79.394242);
                                     if(address.getCountryName().equals("Canada")){
                                         //show the map only the result is in Canada
                                         supportMapFragment.getMapAsync(MapFragment.this);
@@ -173,11 +174,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+                    //latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    latLng = new LatLng(43.707343,-79.394242);
 
                     if(addressList2 != null && addressList2.size() > 0){
                         //set Address object as current location info
                         address = addressList2.get(0);
+
                         //if the address obj is Canada
                         if(address.getCountryName().equals("Canada")){
                             //show in a map

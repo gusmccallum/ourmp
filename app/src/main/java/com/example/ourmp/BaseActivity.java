@@ -20,11 +20,17 @@ public class BaseActivity extends AppCompatActivity
     protected DrawerLayout drawerLayout;
     ActionBarDrawerToggle toggle;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
+
+        if (( (MainApplication)getApplication()).getLogInStatus() == true) {
+
+        }
 
         drawerLayout = findViewById(R.id.drawerLayout);
         NavigationView navigationView = findViewById(R.id.navView);
@@ -43,49 +49,49 @@ public class BaseActivity extends AppCompatActivity
 
                 if (item.getItemId() == R.id.item1)
                 {
-                    Toast.makeText(getApplicationContext(), "Clicked Home", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Clicked Home", Toast.LENGTH_SHORT).show();
                     intent = new Intent(BaseActivity.this, MainActivity.class);
                 }
 
                 if (item.getItemId() == R.id.item2)
                 {
-                    Toast.makeText(getApplicationContext(), "Clicked Find MP", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Clicked Find MP", Toast.LENGTH_SHORT).show();
                     intent = new Intent(BaseActivity.this, LocationActivity.class);
                 }
 
                 if (item.getItemId() == R.id.item3)
                 {
-                    Toast.makeText(getApplicationContext(), "Clicked Activity Feed", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Clicked Activity Feed", Toast.LENGTH_SHORT).show();
                     intent = new Intent(BaseActivity.this, ActivityFeed.class);
                 }
 
                 if (item.getItemId() == R.id.item4)
                 {
-                    Toast.makeText(getApplicationContext(), "Clicked Search", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Clicked Search", Toast.LENGTH_SHORT).show();
                     intent = new Intent(BaseActivity.this, Search.class);
                 }
 
                 if (item.getItemId() == R.id.item5)
                 {
-                    Toast.makeText(getApplicationContext(), "Clicked Sign Up", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Clicked Sign Up", Toast.LENGTH_SHORT).show();
                     //intent = new Intent(BaseActivity.this, SignUp.class);
                 }
 
                 if (item.getItemId() == R.id.item6)
                 {
-                    Toast.makeText(getApplicationContext(), "Clicked Login", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Clicked Login", Toast.LENGTH_SHORT).show();
                     //intent = new Intent(BaseActivity.this, SixthActivity.class);
                 }
 
                 if (item.getItemId() == R.id.item7)
                 {
-                    Toast.makeText(getApplicationContext(), "Clicked Events", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Clicked Events", Toast.LENGTH_SHORT).show();
                     intent = new Intent(BaseActivity.this, Events.class);
                 }
 
                 if (item.getItemId() == R.id.item8)
                 {
-                    Toast.makeText(getApplicationContext(), "Clicked Settings", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Clicked Settings", Toast.LENGTH_SHORT).show();
                     //intent = new Intent(BaseActivity.this, EighthActivity.class);
                 }
 

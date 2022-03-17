@@ -13,11 +13,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.amplifyframework.AmplifyException;
+import com.amplifyframework.api.aws.AWSApiPlugin;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.AWSDataStorePlugin;
+import com.amplifyframework.datastore.generated.model.Subscribed;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class MPCardActivity extends AppCompatActivity
-        implements NetworkingService.NetworkingListener{
+public class MPCardActivity extends BaseActivity
+        implements NetworkingService.NetworkingListener, DBManager.subObjCallback{
 
     NetworkingService networkingService;
     JsonService jsonService;
@@ -32,10 +40,12 @@ public class MPCardActivity extends AppCompatActivity
     ProgressDialog progressDialog;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mpcard);
+        replaceContentLayout(R.layout.activity_mpcard);
+
 
         mpObj = getIntent().getParcelableExtra("selectedMP");
 
@@ -43,6 +53,14 @@ public class MPCardActivity extends AppCompatActivity
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading...");
         progressDialog.show();
+
+        //Perform initial query to see if user is subscribed to MP
+        if (((MainApplication)getApplication()).getLogInStatus() == true) {
+            DBManager dbManager = ((MainApplication)getApplication()).getDbManager();
+            dbManager.getSubscriptionObject();
+            dbManager.setSubObjCallbackInstance(this);
+        }
+
 
         mpName = findViewById(R.id.mppage_name_txt);
         mpRiding = findViewById(R.id.mppage_riding_txt);
@@ -141,7 +159,7 @@ public class MPCardActivity extends AppCompatActivity
 
     public void SNSBtnClicked(View view){
         Intent twitterIntent =new Intent("android.intent.action.VIEW",
-                        Uri.parse("https://twitter.com/"+mpObj.getTwitter()));
+                Uri.parse("https://twitter.com/"+mpObj.getTwitter()));
         startActivity(twitterIntent);
     }
 
@@ -168,4 +186,53 @@ public class MPCardActivity extends AppCompatActivity
         intent.putExtra("MPObj", mpObj);
         startActivity(intent);
     }
-}
+
+    public void SubscribeBtnClickedInMPCard(View view) {
+        //if(check if logged - yes)
+        if (((MainApplication)getApplication()).getLogInStatus() == true) {
+            DBManager dbManager = ((MainApplication)getApplication()).getDbManager();
+            //if the button = subscribe which means user has not followed the MP yet
+            if(subscribeBtn.getText().toString().equals("Subscribe")){
+                //follow the MP and change the text to unfollow
+                dbManager.addMPSubscription(mpName.getText().toString());
+                subscribeBtn.setText(R.string.unfollow);
+                Toast.makeText(this, "Subscribed!", Toast.LENGTH_SHORT).show();
+            }
+            //if user already followed the MP and wants to unfollow
+            else{
+                //unfollow and change the text to subscribe
+                dbManager.removeMPSubscription(mpName.getText().toString());
+                subscribeBtn.setText(R.string.subscribe);
+                Toast.makeText(this, "Unfollowed!", Toast.LENGTH_SHORT).show();
+            }
+
+
+            dbManager.setSubObjCallbackInstance(this);
+        }
+        else{
+            //else - not logged in
+            Toast.makeText(this, "Login to save MP Subscriptions.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void getSub(Subscribed cbReturnSub) {
+        String MPName = mpName.getText().toString();
+        List<String> subscribedMPs = cbReturnSub.getSubscribedMPs();
+        if (subscribedMPs != null) {
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (subscribedMPs.indexOf(MPName) == -1) {
+                        subscribeBtn.setText(R.string.subscribe);
+                    }
+                    else {
+                        subscribeBtn.setText(R.string.unfollow);
+                    }
+                }
+            });
+        }
+        }
+    }
+
