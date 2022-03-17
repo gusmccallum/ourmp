@@ -81,7 +81,7 @@ public class BaseActivity extends AppCompatActivity
                 if (item.getItemId() == R.id.item7)
                 {
                     Toast.makeText(getApplicationContext(), "Clicked Events", Toast.LENGTH_SHORT).show();
-                    intent = new Intent(BaseActivity.this, SeventhActivity.class);
+                    //intent = new Intent(BaseActivity.this, SeventhActivity.class);
                 }
 
                 if (item.getItemId() == R.id.item8)

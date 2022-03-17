@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
 public class NetworkingService {
     String findMPURL = "https://represent.opennorth.ca/representatives/house-of-commons/?point=";
 
-    String listOfBills = "https://api.openparliament.ca/bills/?introduced__gt=2018-01-01&format=json&limit=100";
+    String listOfBills = "https://api.openparliament.ca/bills/?session=44-1&format=json&limit=100";
     String listOfMPs = "https://represent.opennorth.ca/representatives/house-of-commons/?limit=50";
 
 

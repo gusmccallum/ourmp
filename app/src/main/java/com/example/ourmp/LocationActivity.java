@@ -144,7 +144,7 @@ public class LocationActivity extends BaseActivity
         if (((MainApplication)getApplication()).getLogInStatus() == true) {
             DBManager dbManager = ((MainApplication)getApplication()).getDbManager();
             //if the button = subscribe which means user has not followed the MP yet
-            if(subscribe_btn.getText().toString().equals("Subscribe")){
+            if(subscribe_btn.getText().toString().equals(R.string.subscribe)){
                 //follow the MP and change the text to unfollow
                 dbManager.addMPSubscription(mpName.getText().toString());
                 subscribe_btn.setText(R.string.unfollow);

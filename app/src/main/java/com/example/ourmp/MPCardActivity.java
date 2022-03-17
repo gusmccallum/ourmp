@@ -117,8 +117,8 @@ public class MPCardActivity extends BaseActivity
         mpObj.setPhone(tempMp.getPhone());
         mpObj.setBallotURL(tempMp.getBallotURL());
         mpObj.setTwitter(tempMp.getTwitter());
-//there might not be twitter info, in case it's empty string
-        //it will take user to twitter home
+        //there might not be twitter info, in case it's empty string
+        //it will send a toast to notify user
         networkingService.fetchMPDesc(mpObj.getName());
     }
 
@@ -181,15 +181,24 @@ public class MPCardActivity extends BaseActivity
     }
 
     public void SNSBtnClicked(View view){
-        Intent twitterIntent =new Intent("android.intent.action.VIEW",
-                Uri.parse("https://twitter.com/"+mpObj.getTwitter()));
-        startActivity(twitterIntent);
+        if (mpObj.getTwitter().isEmpty()) {
+            Toast.makeText(this, "No Twitter found for MP.", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Intent twitterIntent =new Intent("android.intent.action.VIEW",
+                    Uri.parse("https://twitter.com/"+mpObj.getTwitter()));
+            startActivity(twitterIntent);
+        }
     }
 
     public void PhoneBtnClicked(View view){
         Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
         phoneIntent.setData(Uri.parse("tel:"+mpObj.getPhone()));
         startActivity(phoneIntent);
+    }
+
+    public void EmailBtnClicked(View view){
+        Toast.makeText(this, "No email found for MP.", Toast.LENGTH_SHORT).show();
     }
 
 
