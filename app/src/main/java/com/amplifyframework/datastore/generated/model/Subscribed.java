@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.Objects;
 
+import androidx.annotation.Nullable;
 import androidx.core.util.ObjectsCompat;
 
 import com.amplifyframework.core.model.AuthStrategy;
@@ -16,6 +17,7 @@ import com.amplifyframework.core.model.annotations.Index;
 import com.amplifyframework.core.model.annotations.ModelConfig;
 import com.amplifyframework.core.model.annotations.ModelField;
 import com.amplifyframework.core.model.query.predicate.QueryField;
+
 
 import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 
@@ -181,13 +183,13 @@ public final class Subscribed implements Model {
     }
     
     @Override
-     public BuildStep subscribedMPs(List<String> subscribedMPs) {
+     public BuildStep subscribedMPs(@Nullable List<String> subscribedMPs) {
         this.subscribedMPs = subscribedMPs;
         return this;
     }
     
     @Override
-     public BuildStep subscribedBills(List<String> subscribedBills) {
+     public BuildStep subscribedBills(@Nullable List<String> subscribedBills) {
         this.subscribedBills = subscribedBills;
         return this;
     }
@@ -204,7 +206,7 @@ public final class Subscribed implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, String userId, List<String> subscribedMPs, List<String> subscribedBills) {
+    private CopyOfBuilder(String id, String userId, @Nullable List<String> subscribedMPs, @Nullable List<String> subscribedBills) {
       super.id(id);
       super.userId(userId)
         .subscribedMPs(subscribedMPs)
@@ -217,12 +219,12 @@ public final class Subscribed implements Model {
     }
     
     @Override
-     public CopyOfBuilder subscribedMPs(List<String> subscribedMPs) {
+     public CopyOfBuilder subscribedMPs(@Nullable List<String> subscribedMPs) {
       return (CopyOfBuilder) super.subscribedMPs(subscribedMPs);
     }
     
     @Override
-     public CopyOfBuilder subscribedBills(List<String> subscribedBills) {
+     public CopyOfBuilder subscribedBills(@Nullable List<String> subscribedBills) {
       return (CopyOfBuilder) super.subscribedBills(subscribedBills);
     }
   }

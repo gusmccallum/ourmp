@@ -13,11 +13,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.amplifyframework.AmplifyException;
+import com.amplifyframework.api.aws.AWSApiPlugin;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.AWSDataStorePlugin;
+import com.amplifyframework.datastore.generated.model.Subscribed;
 
 import java.util.ArrayList;
 
 public class MPCardActivity extends AppCompatActivity
-        implements NetworkingService.NetworkingListener{
+        implements NetworkingService.NetworkingListener, DBManager.subObjCallback{
 
     NetworkingService networkingService;
     JsonService jsonService;
@@ -27,15 +34,24 @@ public class MPCardActivity extends AppCompatActivity
     MP mpObj;
     ArrayList<Ballot> allBallotFromMP = new ArrayList<>(0);
     ArrayList<Ballot> tempbollotArray = new ArrayList<>(0);
+    ArrayList<Ballot> validBollotList = new ArrayList<>(0);
     BallotsAdapter adapter;
     RecyclerView recyclerView;
     ProgressDialog progressDialog;
+    DBManager dbManager;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mpcard);
+
+        try {
+            Amplify.addPlugin(new AWSApiPlugin()); // UNCOMMENT this line once backend is deployed
+            Amplify.addPlugin(new AWSDataStorePlugin());
+            Amplify.configure(getApplicationContext());
+        } catch (AmplifyException error) {
+        }
 
         mpObj = getIntent().getParcelableExtra("selectedMP");
 
@@ -65,6 +81,8 @@ public class MPCardActivity extends AppCompatActivity
 
         networkingService = ( (MainApplication)getApplication()).getNetworkingService();
         jsonService = ( (MainApplication)getApplication()).getJsonService();
+        dbManager = ((MainApplication) getApplication()).getDbManager();
+        dbManager.setSubObjCallbackInstance(MPCardActivity.this);
         networkingService.listener = this;
 
         networkingService.getImageData(mpObj.getPhotoURL());
@@ -107,19 +125,31 @@ public class MPCardActivity extends AppCompatActivity
         tempbollotArray.add(jsonService.parseVote(jsonString));
         //list date and bill desc, same size with allBollotFromMP
         if(tempbollotArray.size() == allBallotFromMP.size()){
+            //copy all date and bill number
             for(int i=0; i<allBallotFromMP.size(); i++){
-                allBallotFromMP.get(i).setBillNum(tempbollotArray.get(i).getBillNum());
-                allBallotFromMP.get(i).setDate(tempbollotArray.get(i).getDate());
+
+                if(!tempbollotArray.get(i).getBillNum().equals("null")){
+                    allBallotFromMP.get(i).setBillNum(tempbollotArray.get(i).getBillNum());
+                    allBallotFromMP.get(i).setDate(tempbollotArray.get(i).getDate());
+
+                }
+
+            }
+            //choose ballots only that has valid bill number
+            for(int j=0; j<allBallotFromMP.size(); j++){
+                if(allBallotFromMP.get(j).getBillNum() != null){
+                    validBollotList.add(allBallotFromMP.get(j));
+                }
             }
 
             ArrayList<Ballot> shortBallotList = new ArrayList<>(0);
-            if(allBallotFromMP.size() > 2){
-                for(int j=0; j<2; j++){
-                    shortBallotList.add(allBallotFromMP.get(j));
+            if(validBollotList.size() > 5){
+                for(int j=0; j<5; j++){
+                    shortBallotList.add(validBollotList.get(j));
                 }
                 adapter = new BallotsAdapter(this, shortBallotList);
             }else{
-                adapter = new BallotsAdapter(this, allBallotFromMP);
+                adapter = new BallotsAdapter(this, validBollotList);
             }
 
             recyclerView.setAdapter(adapter);
@@ -155,7 +185,7 @@ public class MPCardActivity extends AppCompatActivity
     public void SeemoreBtnClicked(View view) {
         Intent intent = new Intent(this, BallotListActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("ballotList", allBallotFromMP);
+        bundle.putParcelableArrayList("ballotList", validBollotList);
         intent.putExtra("bundle",bundle);
         startActivity(intent);
     }
@@ -163,9 +193,39 @@ public class MPCardActivity extends AppCompatActivity
     public void MPCompareBtnClicked(View view) {
         Intent intent = new Intent(this, CompareMPActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("ballotList", allBallotFromMP);
+        bundle.putParcelableArrayList("ballotList", validBollotList);
         intent.putExtra("bundle",bundle);
         intent.putExtra("MPObj", mpObj);
         startActivity(intent);
+    }
+
+    public void SubscribeBtnClickedInMPCard(View view) {
+        //if(check if logged - yes)
+        boolean loggedIn = true;
+        if(loggedIn){
+            /*//if the button = subscribe which means user has not followed the MP yet
+            if(subscribeBtn.getText().toString().equals(R.string.subscribe)){
+                //follow the MP and change the text to unfollow
+                dbManager.addMPSubscription(mpName.getText().toString());
+                subscribeBtn.setText(R.string.unfollow);
+            }
+            //if user already followed the MP and wants to unfollow
+            else{
+                //unfollow and change the text to subscribe
+                dbManager.removeMPSubscription(mpName.getText().toString());
+                subscribeBtn.setText(R.string.subscribe);
+            }*/
+
+            Toast.makeText(this, "Subscribed!", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            //else - not logged in
+            Toast.makeText(this, "Need to login to subscribe MP!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void getSub(Subscribed cbReturnSub) {
+
     }
 }
