@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,7 +42,7 @@ public class CompareMPActivity extends AppCompatActivity
     NetworkingService networkingService;
     JsonService jsonService;
     ArrayList<Ballot> allBallotFromMP1 = new ArrayList<>(0);
-    ArrayList<Ballot> allBallotFromMP2 = new ArrayList<>(0);
+
     MP mpObj1, mpObj2;
     ImageView mp1_img, mp2_img;
     TextView mp1_name, mp2_name;
@@ -55,9 +56,9 @@ public class CompareMPActivity extends AppCompatActivity
     EditText SearchText;
     NestedScrollView nestedView;
     ArrayList<Ballot> allBallotFromMP = new ArrayList<>(0);
-    ArrayList<Ballot> tempbollotArray = new ArrayList<>(0);
-    ArrayList<Ballot> validBollotList = new ArrayList<>(0);
+    ArrayList<Ballot> tempbollotArray;
     ProgressDialog progressDialog;
+    RelativeLayout mp2_relative;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +80,7 @@ public class CompareMPActivity extends AppCompatActivity
         recyclerView1.setLayoutManager(new LinearLayoutManager(this));
         recyclerView2 = findViewById(R.id.mp2_list);
         recyclerView2.setLayoutManager(new LinearLayoutManager(this));
+        mp2_relative = findViewById(R.id.mp2_list_relativeLayout);
 
         networkingService = ( (MainApplication)getApplication()).getNetworkingService();
         jsonService = ( (MainApplication)getApplication()).getJsonService();
@@ -108,7 +110,7 @@ public class CompareMPActivity extends AppCompatActivity
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 nestedView.setVisibility(View.VISIBLE);
-                recyclerView2.setVisibility(View.GONE);
+                mp2_relative.setVisibility(View.GONE);
             }
 
             @Override
@@ -138,6 +140,8 @@ public class CompareMPActivity extends AppCompatActivity
 
     @Override
     public void APIBallotListener(String jsonString) {
+        tempbollotArray = new ArrayList<>(0);
+
         allBallotFromMP = jsonService.parseBallots(jsonString);
         for(int i=0; i<allBallotFromMP.size(); i++){
             networkingService.fetchVote(allBallotFromMP.get(i).getVoteURL());
@@ -146,6 +150,7 @@ public class CompareMPActivity extends AppCompatActivity
 
     @Override
     public void APIVoteListener(String jsonString) {
+
 
         tempbollotArray.add(jsonService.parseVote(jsonString));
         //list date and bill desc, same size with allBollotFromMP
@@ -160,16 +165,18 @@ public class CompareMPActivity extends AppCompatActivity
                 }
 
             }
+
+            ArrayList<Ballot> allBallotFromMP2 = new ArrayList<>(0);
             //choose ballots only that has valid bill number
             for(int j=0; j<allBallotFromMP.size(); j++){
                 if(allBallotFromMP.get(j).getBillNum() != null){
-                    validBollotList.add(allBallotFromMP.get(j));
+                    allBallotFromMP2.add(allBallotFromMP.get(j));
                 }
             }
 
-            adapter2 = new MP1CompareAdapter(this, validBollotList, 2);//enter 1 for MP1
+            adapter2 = new MP1CompareAdapter(this, allBallotFromMP2, 2);//enter 1 for MP1
             recyclerView2.setAdapter(adapter2);
-            recyclerView2.setVisibility(View.VISIBLE);
+            mp2_relative.setVisibility(View.VISIBLE);
 
 
             progressDialog.dismiss();

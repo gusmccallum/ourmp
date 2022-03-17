@@ -17,7 +17,7 @@
         android:textSize="20sp"
         android:textStyle="bold"/>
 
-    
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -50,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/mp1_name_txt"
-                android:layout_marginTop="48dp">
+                android:layout_marginTop="55dp">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/mp1_list"
@@ -176,7 +176,8 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/mp2_list"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    />
             </RelativeLayout>
 
         </RelativeLayout>
