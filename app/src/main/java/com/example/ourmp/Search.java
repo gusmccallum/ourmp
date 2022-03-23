@@ -111,6 +111,7 @@ public class Search extends BaseActivity implements NetworkingService.Networking
                         member.setName(jsonObject1.getString("name"));
                         member.setParty(jsonObject1.getString("party_name"));
                         member.setPhotoURL(jsonObject1.getString("photo_url"));
+                        member.setRiding(jsonObject1.getString("district_name"));
                         new DownloadImage(member).execute(member.getPhotoURL());
 
                         MPArrayList.add(member);
