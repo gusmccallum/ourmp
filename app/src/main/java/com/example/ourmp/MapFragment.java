@@ -175,8 +175,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                         e.printStackTrace();
                     }
 
-                    //latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    latLng = new LatLng(43.707343,-79.394242);
+                    latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
                     if(addressList2 != null && addressList2.size() > 0){
                         //set Address object as current location info
