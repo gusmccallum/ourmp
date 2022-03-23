@@ -47,47 +47,45 @@ public class BaseActivity extends AppCompatActivity
             {
                 Intent intent = getIntent();
 
-                if (item.getItemId() == R.id.item1)
+                if (item.getItemId() == R.id.home)
                 {
                      intent = new Intent(BaseActivity.this, MainActivity.class);
                 }
 
-                if (item.getItemId() == R.id.item2)
+                if (item.getItemId() == R.id.findMP)
                 {
                     intent = new Intent(BaseActivity.this, LocationActivity.class);
                 }
 
-                if (item.getItemId() == R.id.item3)
+                if (item.getItemId() == R.id.actFeed)
                 {
                     intent = new Intent(BaseActivity.this, ActivityFeed.class);
                 }
 
-                if (item.getItemId() == R.id.item4)
+                if (item.getItemId() == R.id.search)
                 {
                      intent = new Intent(BaseActivity.this, Search.class);
                 }
 
-                if (item.getItemId() == R.id.item5)
+                if (item.getItemId() == R.id.signup)
                 {
                     intent = new Intent(BaseActivity.this, SignUp.class);
                 }
 
-                if (item.getItemId() == R.id.item6)
+                if (item.getItemId() == R.id.login)
                 {
-                    //Toast.makeText(getApplicationContext(), "Clicked Login", Toast.LENGTH_SHORT).show();
                     intent = new Intent(BaseActivity.this, LogIn.class);
                 }
 
-                if (item.getItemId() == R.id.item7)
+                if (item.getItemId() == R.id.events)
                 {
-                    Toast.makeText(getApplicationContext(), "Clicked Events", Toast.LENGTH_SHORT).show();
-                    //intent = new Intent(BaseActivity.this, SeventhActivity.class);
+                    intent = new Intent(BaseActivity.this, Events.class);
                 }
 
-                if (item.getItemId() == R.id.item8)
+                if (item.getItemId() == R.id.settings)
                 {
-                    //Toast.makeText(getApplicationContext(), "Clicked Settings", Toast.LENGTH_SHORT).show();
-                    //intent = new Intent(BaseActivity.this, EighthActivity.class);
+                    Toast.makeText(getApplicationContext(), "Clicked Settings", Toast.LENGTH_SHORT).show();
+                    //intent = new Intent(BaseActivity.this, Settings.class);
                 }
 
                 startActivity(intent);

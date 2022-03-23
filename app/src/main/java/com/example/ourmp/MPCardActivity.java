@@ -198,7 +198,9 @@ public class MPCardActivity extends BaseActivity
     }
 
     public void EmailBtnClicked(View view){
-        Toast.makeText(this, "No email found for MP.", Toast.LENGTH_SHORT).show();
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+        emailIntent.setData(Uri.parse("mailto:"+mpObj.getEmail()));
+        startActivity(emailIntent);
     }
 
 
