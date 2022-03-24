@@ -10,13 +10,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecentFragment extends Fragment
+public  class RecentFragment extends Fragment
 {
     List<Bill> billList;
     RecyclerView recyclerView;
+    private RequestQueue mRequestQueue;
 
     public RecentFragment() { }
 
@@ -25,6 +37,8 @@ public class RecentFragment extends Fragment
     {
         View view = inflater.inflate(R.layout.fragment_recent, container, false);
         recyclerView = view.findViewById(R.id.recyclerView);
+        billList = new ArrayList<>();
+        mRequestQueue = Volley.newRequestQueue(getActivity());
         initData();
         initRecyclerView();
         return view;
@@ -39,16 +53,48 @@ public class RecentFragment extends Fragment
 
     private void initData()
     {
-        billList = new ArrayList<>();
-        billList.add(new Bill("37", "44-1", "2022-03-02", "PASSED", "Government Business No. 9 (Parliamentary review committee pursuant to the Emergencies Act)", "214", "115"));
-        billList.add(new Bill("36", "44-1", "2022-03-02", "FAILED", "Government Business No. 9 (Parliamentary review committee pursuant to the Emergencies Act) (amendment)", "146", "181"));
-        billList.add(new Bill("35", "44-1", "2022-03-02", "PASSED", "Motion for closure", "181", "151"));
-        billList.add(new Bill("34", "44-1", "2022-03-02", "PASSED", "Motion to proceed to orders of the day", "183", "150"));
-        billList.add(new Bill("33", "44-1", "2022-03-02", "PASSED", "Opposition Motion (Representation of Quebec in the House of Commons)", "262", "66"));
-        billList.add(new Bill("32", "44-1", "2022-02-21", "PASSED", "Motion for confirmation of the declaration of emergency", "185", "151"));
-        billList.add(new Bill("31", "44-1", "2022-02-16", "PASSED", "2nd reading of Bill C-12, An Act to amend the Old Age Security Act (Guaranteed Income Supplement)", "335", "0"));
-        billList.add(new Bill("30", "44-1", "2022-02-15", "PASSED", "Government Business No. 7 (Proceedings on Bill C-12, An Act to amend the Old Age Security Act (Guaranteed Income Supplement) (amended by unanimous consent))", "214", "118"));
-        billList.add(new Bill("29", "44-1", "2022-02-15", "FAILED", "Government Business No. 7 (Proceedings on Bill C-12, An Act to amend the Old Age Security Act (Guaranteed Income Supplement)) (amendment)", "150", "182"));
-        billList.add(new Bill("28", "44-1", "2022-02-15", "PASSED", "2nd reading of Bill C-10, An Act respecting certain measures related to COVID-19", "333", "0"));
+        String url = "https://api.openparliament.ca/votes/?session=44-1&format=json";
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>()
+        {
+            @Override
+            public void onResponse(JSONObject response)
+            {
+                try
+                {
+                    JSONArray BillsArray = response.getJSONArray("objects");
+
+                    for (int i = 0; i < BillsArray.length(); i++)
+                    {
+                        JSONObject BillObject = BillsArray.getJSONObject(i);
+                        String billNum = BillObject.getString("number");
+                        String billSession = BillObject.getString("session");
+                        String billDate = BillObject.getString("date");
+                        String billResult = BillObject.getString("result");
+                        String billDesc = BillObject.getJSONObject("description").getString("en");
+                        String yesVotes = BillObject.getString("yea_total");
+                        String  noVotes = BillObject.getString("nay_total");
+                        billList.add(new Bill(billNum, billSession, billDate, billResult, billDesc, yesVotes, noVotes));
+                    }
+
+                    MyAdapter myAdapter = new MyAdapter(billList);
+                    recyclerView.setAdapter(myAdapter);
+                }
+
+                catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener()
+        {
+            @Override
+            public void onErrorResponse(VolleyError error)
+            {
+                error.printStackTrace();
+            }
+        });
+
+        mRequestQueue.add(request);
     }
 }
