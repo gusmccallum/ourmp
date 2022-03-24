@@ -67,14 +67,20 @@ public  class RecentFragment extends Fragment
                     for (int i = 0; i < BillsArray.length(); i++)
                     {
                         JSONObject BillObject = BillsArray.getJSONObject(i);
-                        String billNum = BillObject.getString("number");
-                        String billSession = BillObject.getString("session");
-                        String billDate = BillObject.getString("date");
-                        String billResult = BillObject.getString("result");
-                        String billDesc = BillObject.getJSONObject("description").getString("en");
-                        String yesVotes = BillObject.getString("yea_total");
-                        String  noVotes = BillObject.getString("nay_total");
-                        billList.add(new Bill(billNum, billSession, billDate, billResult, billDesc, yesVotes, noVotes));
+
+                        if(BillObject.getString("bill_url") != ("null"))
+                        {
+                            String billNum = BillObject.getString("bill_url");
+                            String[] temp = billNum.split("/");
+                            billNum = temp[3];
+                            String billSession = BillObject.getString("session");
+                            String billDate = BillObject.getString("date");
+                            String billResult = BillObject.getString("result");
+                            String billDesc = BillObject.getJSONObject("description").getString("en");
+                            String yesVotes = BillObject.getString("yea_total");
+                            String noVotes = BillObject.getString("nay_total");
+                            billList.add(new Bill(billNum, billSession, billDate, billResult, billDesc, yesVotes, noVotes));
+                        }
                     }
 
                     MyAdapter myAdapter = new MyAdapter(billList);
