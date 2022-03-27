@@ -40,6 +40,8 @@ public class MainApplication extends Application {
         return jsonService;
     }
 
+    public ArrayList<String> searchHistoryMPs = new ArrayList<>();
+
     public void setLogInStatus(boolean status) {
         isLoggedIn = status;
     }

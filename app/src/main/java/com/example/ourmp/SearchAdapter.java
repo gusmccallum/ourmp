@@ -12,21 +12,23 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHolder> {
     ArrayList<MP> MPsArrayList;
-    ArrayList<Activity> BillsList;
     Context context;
 
-    public interface OnItemClickListener {
-        void onItemClick(int positon, MP item, View view);
+    public static interface AdapterCallback {
+        void onMethodCallback(MP yourValue);
     }
 
-    public void setFilter(ArrayList<MP> filterdNames) {
-        this.MPsArrayList = filterdNames;
+    private AdapterCallback mAdapterCallback;
+
+    public void setFilter(ArrayList<MP> filteredNames) {
+        this.MPsArrayList = filteredNames;
     }
 
     public void update() {
@@ -47,15 +49,31 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(@NonNull SearchAdapter.MyViewHolder holder, final int position) {
+        this.mAdapterCallback = ((AdapterCallback) context);
         final MP member = MPsArrayList.get(position);
 
         holder.name.setText(member.getName());
         holder.party.setText(member.getParty());
-        holder.image_app.setImageBitmap(member.getPhoto());
+        switch (member.getParty()) {
+            case ("NDP"):
+                holder.party.setTextColor(ContextCompat.getColor(context, R.color.NDP));
+                break;
+            case ("Liberal"):
+                holder.party.setTextColor(ContextCompat.getColor(context, R.color.Liberal));
+                break;
+            case ("Conservative"):
+                holder.party.setTextColor(ContextCompat.getColor(context, R.color.Conservative));
+                break;
+            case ("Bloc Québécois"):
+                holder.party.setTextColor(ContextCompat.getColor(context, R.color.BlocQuebequois));
+                break;
+        }
+//        holder.image_app.setImageBitmap(member.getPhoto());
 
         holder.ll_.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mAdapterCallback.onMethodCallback(member);
                 Intent intent = new Intent(context, MPCardActivity.class);
                 intent.putExtra("selectedMP", member);
                 context.startActivity(intent);
@@ -70,7 +88,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHold
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name, party;
-        ImageView image_app;
+//        ImageView image_app;
         LinearLayout ll_;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -78,7 +96,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHold
 
             name = itemView.findViewById(R.id.name);
             party = itemView.findViewById(R.id.party);
-            image_app = itemView.findViewById(R.id.image);
+//            image_app = itemView.findViewById(R.id.image);
             ll_ = itemView.findViewById(R.id.lyt_parent);
         }
     }

@@ -25,4 +25,8 @@
     <color name="OurMPLogo">#3F7819</color>
     <color name="OurMPGrey">#808080</color>
     <color name="OurMPLightGrey">#CCCCCC</color>
+    <color name="NDP">#F58220</color>
+    <color name="Liberal">#D71B1E</color>
+    <color name="Conservative">#1A4682</color>
+    <color name="BlocQuebequois">#42B7BF</color>
 </resources>

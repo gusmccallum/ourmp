@@ -36,7 +36,7 @@ public class NetworkingService {
     static Handler networkHander = new Handler(Looper.getMainLooper());
 
     interface NetworkingListener{
-        void APINetworkListner(String jsonString); //status = 0
+        void APINetworkListener(String jsonString); //status = 0
         void APINetworkingListerForImage(Bitmap image);//status = 0
         void APIMPMoreInfoListener(String jsonString); // status = 4
         void APIBallotListener(String jsonString);//status = 1
@@ -142,7 +142,7 @@ public class NetworkingService {
                                 //send data to main thread
                                 if(status == 0)
                                 {
-                                    listener.APINetworkListner(finalJson);
+                                    listener.APINetworkListener(finalJson);
                                 }
                                 else if(status == 1)
                                 {
