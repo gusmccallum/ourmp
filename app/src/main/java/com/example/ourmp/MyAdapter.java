@@ -1,5 +1,7 @@
 package com.example.ourmp;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,8 +36,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>
     {
         Bill bill = billList.get(position);
         holder.billNumber.setText(bill.getBillNum());
-        holder.billSession.setText(bill.getBillSession());
+        holder.billSession.setText("Session: " + bill.getBillSession());
         holder.billDate.setText(bill.getBillDate());
+        holder.billResult.setAllCaps(true);
         holder.billResult.setText(bill.getBillResult());
         holder.yesVote.setText(bill.getYesVotes());
         holder.noVote.setText(bill.getNoVotes());
