@@ -82,7 +82,12 @@ public class LogIn extends BaseActivity {
                     ((MainApplication)getApplication()).setLogInStatus(true);
                     DBManager dbManager = ((MainApplication)getApplication()).getDbManager();
                     dbManager.setUserID(((MainApplication)getApplication()).getRealmApp().currentUser().getId());
-                    Toast.makeText(getBaseContext(), "Used logged in successfully.", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getBaseContext(), "Used logged in successfully.", Toast.LENGTH_LONG).show();
+
+                    Intent homeIntent = new Intent();
+                    homeIntent.setClass(getApplicationContext(), MainActivity.class);
+                    startActivity(homeIntent);
+                    Toast.makeText(getApplicationContext(), "User logged in successfully.", Toast.LENGTH_LONG).show();
 
                 }
                 else
