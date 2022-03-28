@@ -4,6 +4,7 @@ import static io.realm.Realm.getApplicationContext;
 
 import android.app.Application;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.amplifyframework.AmplifyException;
 import com.amplifyframework.api.aws.AWSApiPlugin;
@@ -45,6 +46,18 @@ public class MainApplication extends Application {
 
     public boolean getLogInStatus() {
         return isLoggedIn;
+    }
+
+    public void logOut() {
+        app.currentUser().logOutAsync(it -> {
+            if (it.isSuccess()) {
+                Toast.makeText(getApplicationContext(), "Logged Out.", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(getApplicationContext(), "Error logging out: " + it.getError().toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        isLoggedIn = false;
     }
 
     @Override

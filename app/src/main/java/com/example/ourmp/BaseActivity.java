@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -19,6 +20,9 @@ public class BaseActivity extends AppCompatActivity
 {
     protected DrawerLayout drawerLayout;
     ActionBarDrawerToggle toggle;
+    MenuItem logInLogOut;
+
+
 
 
 
@@ -28,9 +32,9 @@ public class BaseActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
 
-        if (( (MainApplication)getApplication()).getLogInStatus() == true) {
 
-        }
+
+
 
         drawerLayout = findViewById(R.id.drawerLayout);
         NavigationView navigationView = findViewById(R.id.navView);
@@ -38,7 +42,18 @@ public class BaseActivity extends AppCompatActivity
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        Menu menu = navigationView.getMenu();
+        logInLogOut = menu.findItem(R.id.login);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+        if (( (MainApplication)getApplication()).getLogInStatus() == true) {
+            logInLogOut.setTitle("Log Out");
+        }
+        else {
+            logInLogOut.setTitle("Log In");
+        }
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener()
         {
@@ -74,7 +89,14 @@ public class BaseActivity extends AppCompatActivity
 
                 if (item.getItemId() == R.id.login)
                 {
-                    intent = new Intent(BaseActivity.this, LogIn.class);
+                    if (logInLogOut.getTitle().equals("Log In")) {
+                        intent = new Intent(BaseActivity.this, LogIn.class);
+                    }
+                    else {
+                        ((MainApplication)getApplication()).logOut();
+                    }
+
+
                 }
 
                 if (item.getItemId() == R.id.events)
@@ -84,7 +106,7 @@ public class BaseActivity extends AppCompatActivity
 
                 if (item.getItemId() == R.id.settings)
                 {
-                    Toast.makeText(getApplicationContext(), "Clicked Settings", Toast.LENGTH_SHORT).show();
+
                     //intent = new Intent(BaseActivity.this, Settings.class);
                 }
 
