@@ -49,13 +49,6 @@ public class MPCardActivity extends BaseActivity
         replaceContentLayout(R.layout.activity_mpcard);
 
 
-        try {
-            Amplify.addPlugin(new AWSApiPlugin()); // UNCOMMENT this line once backend is deployed
-            Amplify.addPlugin(new AWSDataStorePlugin());
-            Amplify.configure(getApplicationContext());
-        } catch (AmplifyException error) {
-        }
-
         mpObj = getIntent().getParcelableExtra("selectedMP");
 
         progressDialog = new ProgressDialog(this);
