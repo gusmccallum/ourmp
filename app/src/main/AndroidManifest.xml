@@ -49,6 +49,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.ourmp.MPCardActivity" />
         </activity>-->
+        <activity
+            android:name=".BillCardActivity"/>
         <activity android:name=".LocationActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

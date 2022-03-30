@@ -17,7 +17,8 @@ import java.util.concurrent.Executors;
 public class NetworkingService {
     String findMPURL = "https://represent.opennorth.ca/representatives/house-of-commons/?point=";
 
-    String listOfBills = "https://api.openparliament.ca/bills/?session=44-1&format=json&limit=100";
+    //String listOfBills = "https://api.openparliament.ca/bills/?session=44-1&format=json&limit=100";
+    String listOfBills = "https://api.openparliament.ca/bills/?introduced__gt=2018-01-01&format=json&limit=200";
     String listOfMPs = "https://represent.opennorth.ca/representatives/house-of-commons/?limit=50";
 
 
@@ -42,6 +43,7 @@ public class NetworkingService {
         void APIVoteListener(String jsonString); //status = 2
         void APIMPDescListener(String jsonString); // status = 3
         void APIBillsListener(String jsonString); //status = 5
+        void APIMoreBillInfoListener(String jsonString); //status = 6
     }
 
     NetworkingListener listener;
@@ -99,6 +101,10 @@ public class NetworkingService {
         connect(completeURL);
 
     }
+    public void fetchMoreBillInfo(String url){
+        status = 6;
+        connect(url);
+    }
 
     private void connect(String completeURL) {
         networkingExecutor.execute(new Runnable() {
@@ -146,6 +152,8 @@ public class NetworkingService {
                                     listener.APIMPMoreInfoListener(finalJson);
                                 }else if(status == 5){
                                     listener.APIBillsListener(finalJson);
+                                }else if(status == 6){
+                                    listener.APIMoreBillInfoListener(finalJson);
                                 }
                             }
                         });

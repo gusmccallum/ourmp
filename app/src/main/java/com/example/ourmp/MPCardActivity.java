@@ -173,6 +173,11 @@ public class MPCardActivity extends BaseActivity
 
     }
 
+    @Override
+    public void APIMoreBillInfoListener(String jsonString) {
+
+    }
+
     public void SNSBtnClicked(View view){
         if (mpObj.getTwitter().isEmpty()) {
             Toast.makeText(this, "No Twitter found for MP.", Toast.LENGTH_SHORT).show();

@@ -18,13 +18,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ActivityFeedRecyclerAdapter  extends
-        RecyclerView.Adapter<ActivityFeedRecyclerAdapter.ActivityFeedViewHolder> {
+public class BillFeedRecyclerAdapter  extends
+        RecyclerView.Adapter<BillFeedRecyclerAdapter.BillFeedViewHolder> {
     ArrayList<Activity> activities;
     Context context;
-    public ActivityFeedRecyclerAdapter(ArrayList<Activity> list, Context context){
+    BillFeedRecyclerAdapter.OnItemClickListener listener;
+    public interface OnItemClickListener {
+        void onItemClick(Activity bill);
+    }
+
+    public BillFeedRecyclerAdapter(ArrayList<Activity> list, Context context){
         this.activities = list;
         this.context = context;
+        listener = (OnItemClickListener) context;
     }
 
     public void setFilter(ArrayList<Activity> filteredBills) {
@@ -37,28 +43,25 @@ public class ActivityFeedRecyclerAdapter  extends
 
     @NonNull
     @Override
-    public ActivityFeedViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.activity_feed_row, parent,false);
-        return new ActivityFeedViewHolder(view);
+    public BillFeedViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.activity_bill_search_row, parent,false);
+        return new BillFeedViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ActivityFeedRecyclerAdapter.ActivityFeedViewHolder holder, final int i) {
+    public void onBindViewHolder(@NonNull BillFeedRecyclerAdapter.BillFeedViewHolder holder, final int i) {
         if(activities.get(i).activityPicture != null){
             holder.activityPicture.setImageBitmap(activities.get(i).activityPicture);
         }else{
             holder.activityPicture.setImageResource(R.drawable.law);
         }
         holder.activityTitle.setText(String.valueOf(activities.get(i).activityTitle));
-        holder.activityDescription.setText(String.valueOf(activities.get(i).activityDescription));
         holder.activityDate.setText(String.valueOf(activities.get(i).activityDate));
         final Activity temp = activities.get(i);
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, BillCardActivity.class);
-                intent.putExtra("bill", temp);
-                context.startActivity(intent);
+                listener.onItemClick(temp);
             }
         });
     }
@@ -68,19 +71,19 @@ public class ActivityFeedRecyclerAdapter  extends
         return activities.size();
     }
 
-    public static class ActivityFeedViewHolder extends RecyclerView.ViewHolder{
+    public static class BillFeedViewHolder extends RecyclerView.ViewHolder{
         LinearLayout linearLayout;
         TextView activityTitle;
-        TextView activityDescription;
         TextView activityDate;
         ImageView activityPicture;
-        public ActivityFeedViewHolder(@NonNull View view){
+        public BillFeedViewHolder(@NonNull View view){
             super(view);
             linearLayout = view.findViewById(R.id.linearLayout);
             activityTitle = view.findViewById(R.id.activityTitle);
-            activityDescription = view.findViewById(R.id.activityDescription);
             activityDate = view.findViewById(R.id.activityDate);
             activityPicture = view.findViewById(R.id.activityPicture);
         }
     }
+
+
 }
