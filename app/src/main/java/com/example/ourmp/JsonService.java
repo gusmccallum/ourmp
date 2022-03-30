@@ -50,7 +50,8 @@ public class JsonService{
                 String billDesc = BillObject.getJSONObject("name").getString("en");
                 String billDate = BillObject.getString("introduced");
                 String billSession = BillObject.getString("session");
-                bills.add(new Activity(null, billNumber + " was introduced in session " + billSession, billDesc, billDate));
+                String billURL = BillObject.getString("url");
+                bills.add(new Activity(null, billNumber + " was introduced in session " + billSession, billDesc, billDate, billURL));
             }
 
         } catch (JSONException e) {
@@ -180,6 +181,24 @@ public class JsonService{
             e.printStackTrace();
         }
         return desc;
+
+    }
+
+    public Bill parseMoreBillInfo(String jsonString){
+        try{
+            JSONObject jsonObject = new JSONObject(jsonString);
+            String number = jsonObject.getString("number");
+            String session = jsonObject.getString("session");
+            String date = jsonObject.getString("introduced");
+            String result = jsonObject.getString("status_code");
+            String desc = jsonObject.getJSONObject("name").getString("en");
+
+            Bill bill = new Bill(number, session, date, result, desc, "0", "0");
+            return bill;
+        }catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
 
     }
 }

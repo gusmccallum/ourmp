@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CompareBillActivity">
+    tools:context=".BillCardActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -69,20 +69,119 @@
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
                 android:text="Description"/>
+            <Button
+                android:id="@+id/billpage_subscribe_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/billpage_view"
+                android:background="@drawable/mpcard_button"
+                android:gravity="center"
+                android:text="@string/subscribe"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                app:backgroundTint="@null" />
 
+            <View
+                android:id="@+id/billpage_view"
+                android:layout_width="50dp"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true" />
+
+            <Button
+                android:id="@+id/bill_compare_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_toEndOf="@+id/billpage_view"
+                android:background="@drawable/mpcard_button"
+                android:gravity="center"
+                android:text="@string/compare_btn"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:onClick="clickCompareButton"
+                app:backgroundTint="@null" />
 
         </RelativeLayout>
 
 
     </RelativeLayout>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/search_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="50.0dip"
+        android:clipToPadding="false"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardCornerRadius="3.0dip"
+        app:cardElevation="1.0dip"
+        app:layout_constraintBottom_toBottomOf="@id/billguideline4"
+        app:layout_constraintBottom_toTopOf="@+id/billguideline5"
+        app:layout_constraintEnd_toEndOf="@+id/billguideline4"
+        app:layout_constraintStart_toStartOf="@+id/billguideline4"
+        android:visibility="invisible">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal"
+            >
+
+            <EditText
+
+                android:id="@+id/search_bill_input"
+                android:layout_width="0.0dip"
+                android:layout_height="fill_parent"
+                android:layout_weight="1.0"
+                android:background="@android:color/transparent"
+                android:hint="Search"
+                android:paddingLeft="15dp"
+                android:imeOptions="actionSearch"
+                android:maxLines="1"
+                android:singleLine="true" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:scrollingCache="true"
+        app:layout_constraintBottom_toBottomOf="@id/billguideline5"
+        app:layout_constraintBottom_toTopOf="@+id/billguideline6"
+        app:layout_constraintEnd_toEndOf="@+id/billguideline5"
+        app:layout_constraintStart_toStartOf="@+id/billguideline5">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/billsList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
     <RelativeLayout
+        android:id="@+id/comparedBill"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="@+id/billguideline4"
         app:layout_constraintStart_toStartOf="@+id/billguideline4"
         app:layout_constraintTop_toTopOf="@+id/billguideline4"
         android:layout_margin="10dp"
+        android:visibility="invisible"
         android:background="@drawable/mpcard_background">
 
         <LinearLayout
@@ -143,10 +242,23 @@
 
 
     </RelativeLayout>
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/billguideline4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.5" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/billguideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.6" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/billguideline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="1" />
 </androidx.constraintlayout.widget.ConstraintLayout>

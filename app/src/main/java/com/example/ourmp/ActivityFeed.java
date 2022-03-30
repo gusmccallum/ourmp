@@ -56,14 +56,6 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
         super.onCreate(savedInstanceState);
         replaceContentLayout(R.layout.activity_feed);
 
-        //connect to database
-        try {
-            Amplify.addPlugin(new AWSApiPlugin()); // UNCOMMENT this line once backend is deployed
-            Amplify.addPlugin(new AWSDataStorePlugin());
-            Amplify.configure(getApplicationContext());
-        } catch (AmplifyException error) {
-        }
-
         //check if user log in or not
         if (((MainApplication)getApplication()).getLogInStatus() == true) {
             dbManager = ((MainApplication)getApplication()).getDbManager();
@@ -82,8 +74,9 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
             jsonService = ( (MainApplication)getApplication()).getJsonService();
             networkingService.listener = this;
 
+            /*
             //Toast.makeText(this, mpNames.get(0), Toast.LENGTH_SHORT).show();
-            /*allMPs = ((MainApplication) getApplication()).allMPs;
+            allMPs = ((MainApplication) getApplication()).allMPs;
 
             //networkingService.fetchBillsData();
             for(int i=0; i<allMPs.size();i++) {
@@ -115,6 +108,11 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
         recyclerAdapter.notifyDataSetChanged();
         //adapter = new ActivityFeedBaseAdapter(activities, this);
         //activityList.setAdapter(adapter);
+
+    }
+
+    @Override
+    public void APIMoreBillInfoListener(String jsonString) {
 
     }
 
@@ -160,7 +158,7 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
             }
 
             for(int i=0; i<allBallotFromMP.size(); i++){
-                activities.add(new Activity(allMPs.get(currentMP).getPhoto(), "MP " + allMPs.get(currentMP).getName(), "Voted " + allBallotFromMP.get(i).getBallot() + " on " + allBallotFromMP.get(i).getBillNum(), allBallotFromMP.get(i).getDate()));
+                activities.add(new Activity(allMPs.get(currentMP).getPhoto(), "MP " + allMPs.get(currentMP).getName(), "Voted " + allBallotFromMP.get(i).getBallot() + " on " + allBallotFromMP.get(i).getBillNum(), allBallotFromMP.get(i).getDate(), ""));
             }
             tempbollotArray.clear();
             allBallotFromMP.clear();
