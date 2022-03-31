@@ -200,6 +200,11 @@ public class CompareMPActivity extends BaseActivity
     }
 
     @Override
+    public void APIParseBillVote(String jsonString) {
+
+    }
+
+    @Override
     public void onItemClick(MP mpObj) {
         mpObj2 = mpObj;
         nestedView.setVisibility(View.GONE);

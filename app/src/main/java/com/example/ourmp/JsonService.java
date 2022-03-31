@@ -193,12 +193,38 @@ public class JsonService{
             String result = jsonObject.getString("status_code");
             String desc = jsonObject.getJSONObject("name").getString("en");
 
-            Bill bill = new Bill(number, session, date, result, desc, "0", "0");
+            JSONArray voteURLs = jsonObject.getJSONArray("vote_urls");
+            String voteURL = "";
+            if (voteURLs.length() > 0){
+                voteURL = voteURLs.getString(0);
+            }
+
+            Bill bill = new Bill(number, session, date, result, desc, "0", "0", voteURL);
             return bill;
         }catch (JSONException e) {
             e.printStackTrace();
             return null;
         }
 
+    }
+
+    public ArrayList<PartyVote> parseBillVote(String jsonString){
+        ArrayList<PartyVote> allVotes = new ArrayList<>(0);
+
+        try{
+            JSONObject jsonObject = new JSONObject(jsonString);// root
+            JSONArray VotesArray = jsonObject.getJSONArray("party_votes");
+
+            for (int i = 0 ; i< VotesArray.length(); i++){
+                JSONObject VoteObject = VotesArray.getJSONObject(i);
+                String partyName = VoteObject.getJSONObject("party").getJSONObject("short_name").getString("en");
+                String partyVote = VoteObject.getString("vote");
+                PartyVote vote = new PartyVote(partyName, partyVote);
+                allVotes.add(vote);
+            }
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return allVotes;
     }
 }

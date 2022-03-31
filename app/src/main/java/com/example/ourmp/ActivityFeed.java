@@ -116,6 +116,11 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
 
     }
 
+    @Override
+    public void APIParseBillVote(String jsonString) {
+
+    }
+
 
     @Override
     public void APINetworkingListerForImage(Bitmap image) {

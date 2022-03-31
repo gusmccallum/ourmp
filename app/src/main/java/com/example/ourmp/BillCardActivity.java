@@ -1,5 +1,6 @@
 package com.example.ourmp;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.Editable;
@@ -7,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,11 +19,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.amplifyframework.datastore.generated.model.Subscribed;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class BillCardActivity extends BaseActivity implements NetworkingService.NetworkingListener, BillFeedRecyclerAdapter.OnItemClickListener {
+public class BillCardActivity extends BaseActivity implements NetworkingService.NetworkingListener{
     NetworkingService networkingService;
     JsonService jsonService;
     DBManager dbManager;
@@ -33,12 +37,16 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
     Bill bill = null, comparedBill = null;
 
     Button compareBtn;
-    CardView searchBar;
-    RecyclerView results;
-    EditText searchText;
-    ArrayList<Activity> activities = new ArrayList<>();
-    BillFeedRecyclerAdapter recyclerAdapter;
+    ArrayList<PartyVote> partyVotes = new ArrayList<>();
     RelativeLayout comparedBillView;
+    RelativeLayout noVoteView;
+
+    TextView conservativeVote;
+    TextView liberalVote;
+    TextView ndpVote;
+    TextView greenVote;
+
+    ProgressBar progressBar;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,47 +67,16 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
         billDesc2 = findViewById(R.id.bill_desc2);
         billDescription2 = findViewById(R.id.bill_description2);
         compareBtn = findViewById(R.id.bill_compare_btn);
-        searchBar = findViewById(R.id.search_bar);
         comparedBillView = findViewById(R.id.comparedBill);
+        noVoteView = findViewById(R.id.novotes);
 
-        results = findViewById(R.id.billsList);
-        recyclerAdapter = new BillFeedRecyclerAdapter(activities, this);
-        results.setAdapter(recyclerAdapter);
-        results.setLayoutManager(new LinearLayoutManager(this));
+        conservativeVote = findViewById(R.id.conservative);
+        liberalVote = findViewById(R.id.liberal);
+        ndpVote = findViewById(R.id.ndp);
+        greenVote = findViewById(R.id.green);
+        progressBar = findViewById(R.id.progressBar);
 
-        searchText = findViewById(R.id.search_bill_input);
-        searchText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                filterQuery(editable.toString());
-            }
-        });
-    }
-
-    public void filterQuery(String text) {
-        if (!text.isEmpty()) {
-            ArrayList<Activity> filteredBills = new ArrayList<>();
-            results.setVisibility(View.VISIBLE);
-            for (Activity bill : this.activities) {
-                if (bill.activityTitle.toLowerCase().contains(text.toLowerCase())) {
-                    filteredBills.add(bill);
-                    recyclerAdapter.update();
-                }
-            }
-            this.recyclerAdapter.setFilter(filteredBills);
-        } else {
-            results.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -134,44 +111,49 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
 
     @Override
     public void APIBillsListener(String jsonString) {
-        ArrayList<Activity> temp = new ArrayList<>();
-        temp = jsonService.parseFindBills(jsonString);
-        activities.addAll(temp);
-        activities.sort(Comparator.comparing(obj -> obj.activityDate));
-        Collections.reverse(activities);
-        recyclerAdapter.notifyDataSetChanged();
-        //adapter = new ActivityFeedBaseAdapter(activities, this);
-        //activityList.setAdapter(adapter);
     }
 
     @Override
     public void APIMoreBillInfoListener(String jsonString) {
-        if(bill == null) {
-            bill = jsonService.parseMoreBillInfo(jsonString);
-            billTitle.setText("Bill Number: " + bill.getBillNum());
-            String description = "Session: " + bill.getBillSession() + "\nStatus: " + bill.getBillResult() + "\nDate: " + bill.getBillDate();
-            billDesc.setText(description);
-            billDescription.setText("Description: " + bill.getBillDesc());
-            networkingService.fetchBillsData();
-        }else{
-            comparedBill = jsonService.parseMoreBillInfo(jsonString);
-            billTitle2.setText("Bill Number: " + comparedBill.getBillNum());
-            String description = "Session: " + comparedBill.getBillSession() + "\nStatus: " + comparedBill.getBillResult() + "\nDate: " + comparedBill.getBillDate();
-            billDesc2.setText(description);
-            billDescription2.setText("Description: " + comparedBill.getBillDesc());
+        bill = jsonService.parseMoreBillInfo(jsonString);
+        billTitle.setText("Bill Number: " + bill.getBillNum());
+        String description = "Session: " + bill.getBillSession() + "\nStatus: " + bill.getBillResult() + "\nDate: " + bill.getBillDate();
+        billDesc.setText(description);
+        billDescription.setText("Description: " + bill.getBillDesc());
+        if(bill.getVoteURl() != "") {
+            networkingService.fetchBillVotes(bill.getVoteURl());
         }
-    }
 
-    public void clickCompareButton(View view){
-        searchBar.setVisibility(View.VISIBLE);
-        comparedBillView.setVisibility(View.INVISIBLE);
     }
 
     @Override
-    public void onItemClick(Activity bill) {
-        searchBar.setVisibility(View.INVISIBLE);
-        results.setVisibility(View.INVISIBLE);
-        networkingService.fetchMoreBillInfo(bill.url);
-        comparedBillView.setVisibility(View.VISIBLE);
+    public void APIParseBillVote(String jsonString) {
+        partyVotes = jsonService.parseBillVote(jsonString);
+        int countYes = 0;
+        for(int i=0; i<partyVotes.size(); i++){
+            if(partyVotes.get(i).name.equals("Conservative")){
+                conservativeVote.setText(partyVotes.get(i).vote);
+            }else if(partyVotes.get(i).name.equals("Green")){
+                greenVote.setText(partyVotes.get(i).vote);
+            }else if(partyVotes.get(i).name.equals("NDP")){
+                ndpVote.setText(partyVotes.get(i).vote);
+            }else if(partyVotes.get(i).name.equals("Liberal")){
+                liberalVote.setText(partyVotes.get(i).vote);
+            }
+            if(partyVotes.get(i).vote.equals("Yes")){
+                countYes+=20;
+            }
+
+        }
+
+        progressBar.setProgress(countYes);
+    }
+
+    public void clickCompareButton(View view){
+        if(bill.getVoteURl() == ""){
+            noVoteView.setVisibility(View.VISIBLE);
+        }else {
+            comparedBillView.setVisibility(View.VISIBLE);
+        }
     }
 }
