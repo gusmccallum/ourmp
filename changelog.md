@@ -13,6 +13,9 @@ Week of March 27, 2022
 ## **Search**
 - Continued developing search history
 
+## **Livestream**
+- Began developing livestream feature
+
 ## **API calls**
 - Continued researching optimizing API calls using volley
 
