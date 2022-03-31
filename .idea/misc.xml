@@ -33,7 +33,7 @@
         <entry key="app/src/main/res/drawable/btn_bg.xml" value="0.227" />
         <entry key="app/src/main/res/layout/activity_ballot_list.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_bill_search_row.xml" value="0.259375" />
-        <entry key="app/src/main/res/layout/activity_billcard.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/activity_billcard.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_compare_bill.xml" value="0.26145833333333335" />
         <entry key="app/src/main/res/layout/activity_compare_mp.xml" value="0.26145833333333335" />
         <entry key="app/src/main/res/layout/activity_feed.xml" value="0.1" />

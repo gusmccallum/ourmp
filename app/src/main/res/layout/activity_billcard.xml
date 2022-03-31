@@ -80,6 +80,7 @@
                 android:text="@string/subscribe"
                 android:textColor="@color/black"
                 android:textSize="12sp"
+                android:onClick="clickSubscribeButton"
                 app:backgroundTint="@null" />
 
             <View

@@ -122,7 +122,7 @@ public class DBManager {
                         List<String> Bills = item.getSubscribedBills();
                         Bills.add(BillID);
                         Subscribed updatedItem = item.copyOfBuilder()
-                                .subscribedMPs(Bills)
+                                .subscribedBills(Bills)
                                 .build();
 
                         Amplify.DataStore.save(
