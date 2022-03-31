@@ -1,17 +1,21 @@
 
 # **Changelog**
 
-Week of March 20, 2022
+Week of March 27, 2022
 
-## **Contact MP**
-- Added email ability
+## **Activity Feed**
+- Activity Feed populated with MP and Bill updates when user has subscribed to them
 
-## **Special Case Name Fetching**
-- Added handling for special characters and name discrepancies in MP names
+## **Compare Legislation**
+- Bill info card developed
+- Compare bill layout developed
 
-## **Events**
-- Improved bill info card to include bill number, description, date, votes...
+## **Search**
+- Continued developing search history
 
-## **Back End**
-- Pushed a fix to allow all group members to configure and use Amplify
+## **API calls**
+- Continued researching optimizing API calls using volley
+
+## **Amplify Bug Fix**
+- Isolated issue with Amplify updates, investigating fix now
 
