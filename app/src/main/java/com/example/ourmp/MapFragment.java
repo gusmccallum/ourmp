@@ -214,8 +214,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         if(address != null)
         //after showing location on a map, pass the postal code to location activity
             mCallback.MPCardLocation(address.getLatitude(), address.getLongitude());
-        else
-            mCallback.MPCardLocation(45.388929, -75.701603);
     }
 
     //To implement interface?
