@@ -107,8 +107,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
                                     //store the first result in Address object
                                     address = addressList.get(0);
                                     //set latlng using lat, lng from address object
-                                    //latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                                    latLng = new LatLng(43.707343,-79.394242);
+                                    latLng = new LatLng(address.getLatitude(), address.getLongitude());
                                     if(address.getCountryName().equals("Canada")){
                                         //show the map only the result is in Canada
                                         supportMapFragment.getMapAsync(MapFragment.this);
@@ -202,18 +201,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback{
         //clear google map in case it has a marker
         googleMap.clear();
         //add circle around the address on a map
-        Circle circle = googleMap.addCircle(new CircleOptions()
+        /*Circle circle = googleMap.addCircle(new CircleOptions()
                 .center(latLng)
                 .radius(500)
                 .strokeColor(Color.RED)
-                .fillColor(0x30ff0000));
+                .fillColor(0x30ff0000));*/
         //add red marker on the location
         googleMap.addMarker(markerOptions.position(latLng));
         //move camera to the location
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
 
+        if(address != null)
         //after showing location on a map, pass the postal code to location activity
-        mCallback.MPCardLocation(address.getLatitude(), address.getLongitude());
+            mCallback.MPCardLocation(address.getLatitude(), address.getLongitude());
+        else
+            mCallback.MPCardLocation(45.388929, -75.701603);
     }
 
     //To implement interface?
