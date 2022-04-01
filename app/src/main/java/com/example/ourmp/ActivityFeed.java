@@ -74,15 +74,6 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
             jsonService = ( (MainApplication)getApplication()).getJsonService();
             networkingService.listener = this;
 
-            /*
-            //Toast.makeText(this, mpNames.get(0), Toast.LENGTH_SHORT).show();
-            allMPs = ((MainApplication) getApplication()).allMPs;
-
-            //networkingService.fetchBillsData();
-            for(int i=0; i<allMPs.size();i++) {
-                currentMP = i;
-                networkingService.fetchMoreMPInfo(allMPs.get(currentMP).getName());
-            }*/
         }else{
             Toast.makeText(this, "Sign in to view Activity Feed", Toast.LENGTH_SHORT).show();
         }
@@ -113,6 +104,12 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
 
     @Override
     public void APIMoreBillInfoListener(String jsonString) {
+        Bill temp = jsonService.parseMoreBillInfo(jsonString);
+        activities.add(new Activity(null, "Bill " + temp.getBillNum() + " is " + temp.getBillResult(), temp.getBillDesc(), temp.getBillDate(), ""));
+    }
+
+    @Override
+    public void APIParseBillVote(String jsonString) {
 
     }
 
@@ -181,6 +178,17 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
                 networkingService.fetchMoreMPInfo(subscribedMPs.get(i));
             }
         }
+
+        List<String> subscribedBills = cbReturnSub.getSubscribedBills();
+        if (subscribedBills != null){
+            for(int i = 0; i < subscribedBills.size(); i++){
+                networkingService.fetchMoreBillInfo(subscribedBills.get(i));
+            }
+        }
+
+        activities.sort(Comparator.comparing(obj -> obj.activityDate));
+        Collections.reverse(activities);
+        recyclerAdapter.notifyDataSetChanged();
     }
 
     public static class DownloadImage extends AsyncTask<String, Void, Bitmap> {

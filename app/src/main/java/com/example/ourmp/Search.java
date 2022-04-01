@@ -218,6 +218,11 @@ public class Search extends BaseActivity implements NetworkingService.Networking
 
     }
 
+    @Override
+    public void APIParseBillVote(String jsonString) {
+
+    }
+
     public static class DownloadImage extends AsyncTask<String, Void, Bitmap> {
         MP member;
 

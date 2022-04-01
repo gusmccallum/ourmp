@@ -80,6 +80,7 @@
                 android:text="@string/subscribe"
                 android:textColor="@color/black"
                 android:textSize="12sp"
+                android:onClick="clickSubscribeButton"
                 app:backgroundTint="@null" />
 
             <View
@@ -97,82 +98,30 @@
                 android:layout_toEndOf="@+id/billpage_view"
                 android:background="@drawable/mpcard_button"
                 android:gravity="center"
+                android:onClick="clickCompareButton"
                 android:text="@string/compare_btn"
                 android:textColor="@color/black"
                 android:textSize="15sp"
-                android:onClick="clickCompareButton"
                 app:backgroundTint="@null" />
 
         </RelativeLayout>
 
 
     </RelativeLayout>
-    <androidx.cardview.widget.CardView
-        android:id="@+id/search_bar"
-        android:layout_width="fill_parent"
-        android:layout_height="50.0dip"
-        android:clipToPadding="false"
-        app:cardBackgroundColor="@android:color/white"
-        app:cardCornerRadius="3.0dip"
-        app:cardElevation="1.0dip"
-        app:layout_constraintBottom_toBottomOf="@id/billguideline4"
-        app:layout_constraintBottom_toTopOf="@+id/billguideline5"
+    <RelativeLayout
+        android:id="@+id/novotes"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="@+id/billguideline4"
         app:layout_constraintStart_toStartOf="@+id/billguideline4"
+        app:layout_constraintTop_toTopOf="@+id/billguideline4"
+        android:gravity="center"
         android:visibility="invisible">
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="horizontal"
-            >
-
-            <EditText
-
-                android:id="@+id/search_bill_input"
-                android:layout_width="0.0dip"
-                android:layout_height="fill_parent"
-                android:layout_weight="1.0"
-                android:background="@android:color/transparent"
-                android:hint="Search"
-                android:paddingLeft="15dp"
-                android:imeOptions="actionSearch"
-                android:maxLines="1"
-                android:singleLine="true" />
-
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:clipToPadding="false"
-        android:fillViewport="true"
-        android:scrollingCache="true"
-        app:layout_constraintBottom_toBottomOf="@id/billguideline5"
-        app:layout_constraintBottom_toTopOf="@+id/billguideline6"
-        app:layout_constraintEnd_toEndOf="@+id/billguideline5"
-        app:layout_constraintStart_toStartOf="@+id/billguideline5">
-
-        <LinearLayout
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/billsList"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
-
+            android:text="No Votes Found!" />
+    </RelativeLayout>
     <RelativeLayout
         android:id="@+id/comparedBill"
         android:layout_width="match_parent"
@@ -185,61 +134,91 @@
         android:background="@drawable/mpcard_background">
 
         <LinearLayout
-            android:id="@+id/billpage2_linear1"
+            android:id="@+id/parties"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             >
-            <ImageView
-                android:id="@+id/bill_image2"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/law"
-                />
+            <TextView
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:text="Liberal"
+                android:textColor="@color/red"
+                android:gravity="center"></TextView>
+            <TextView
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:text="Conservative"
+                android:textColor="@color/blue"
+                android:gravity="center"></TextView>
+            <TextView
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:text="NDP"
+                android:textColor="@color/green"
+                android:gravity="center"></TextView>
+            <TextView
+                android:layout_width="90dp"
+                android:layout_height="wrap_content"
+                android:text="Green"
+                android:textColor="@color/maroon"
+                android:gravity="center"></TextView>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/voteYesorNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@id/parties"
+            >
+            <TextView
+                android:id="@+id/liberal"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:textColor="@color/red"
+                android:gravity="center"></TextView>
+            <TextView
+                android:id="@+id/conservative"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:textColor="@color/blue"
+                android:gravity="center"></TextView>
+            <TextView
+                android:id="@+id/ndp"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:textColor="@color/green"
+                android:gravity="center"></TextView>
+            <TextView
+                android:id="@+id/green"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:textColor="@color/maroon"
+                android:gravity="center"></TextView>
         </LinearLayout>
 
-        <RelativeLayout
-            android:id="@+id/billpage2_linear2"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_alignBottom="@+id/billpage2_linear1"
-            android:layout_alignParentEnd="true"
-            android:layout_toEndOf="@+id/billpage2_linear1">
-
-            <TextView
-                android:id="@+id/bill_number2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="Tittle"
-                android:textSize="20sp" />
-
-
-            <TextView
-                android:id="@+id/bill_desc2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/bill_number2"
-                android:textSize="15sp"
-                android:text="Description"/>
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/billpage2_linear3"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/billpage2_linear1">
-
-            <TextView
-                android:id="@+id/bill_description2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:text="Description"/>
-
-        </RelativeLayout>
-
+        <LinearLayout
+            android:layout_below="@id/voteYesorNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/yes_icon"/>
+            <ProgressBar
+                android:layout_centerInParent="true"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="160dp"
+                android:layout_height="100dp"
+                android:progress="0"
+                android:max="100"
+                android:id="@+id/progressBar"
+                android:indeterminate="false"/>
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/no_icon"/>
+        </LinearLayout>
 
     </RelativeLayout>
 

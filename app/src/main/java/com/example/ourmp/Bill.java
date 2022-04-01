@@ -9,9 +9,10 @@ public class Bill
     private String billDesc;
     private String yesVotes;
     private String noVotes;
+    private String voteURL;
     private boolean expanded;
 
-    public Bill(String billNum, String billSession, String billDate, String billResult, String billDesc, String yesVotes, String noVotes)
+    public Bill(String billNum, String billSession, String billDate, String billResult, String billDesc, String yesVotes, String noVotes, String voteURL)
     {
         this.billNum = billNum;
         this.billSession = billSession;
@@ -21,6 +22,11 @@ public class Bill
         this.yesVotes = yesVotes;
         this.noVotes = noVotes;
         this.expanded = false;
+        if(voteURL != "") {
+            this.voteURL = "https://api.openparliament.ca" + voteURL + "?format=json";
+        }else{
+            this.voteURL = "";
+        }
     }
 
     public String getBillNum()
@@ -102,4 +108,6 @@ public class Bill
     {
         this.expanded = expanded;
     }
+
+    public String getVoteURl(){ return voteURL; };
 }
