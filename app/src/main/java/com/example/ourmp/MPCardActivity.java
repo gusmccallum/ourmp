@@ -180,7 +180,7 @@ public class MPCardActivity extends BaseActivity
 
     @Override
     public void APIMPDescListener(String jsonString) {
-        String desc = jsonService.parseMPDesc(jsonString);
+        String desc = jsonService.parseMPDesc(jsonString, mpObj.getName());
         mpInfo.setText(desc);
         //networkingService.fetchBallot(mpObj.getBallotURL());
         VolleyFetchBallotAPI();
