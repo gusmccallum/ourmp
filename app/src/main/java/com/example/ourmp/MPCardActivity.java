@@ -114,7 +114,7 @@ public class MPCardActivity extends BaseActivity
     }
 
     @Override
-    public void APINetworkListner(String jsonString) {
+    public void APINetworkListener(String jsonString) {
     }
 
     @Override
@@ -188,6 +188,16 @@ public class MPCardActivity extends BaseActivity
 
     @Override
     public void APIBillsListener(String jsonString) {
+
+    }
+
+    @Override
+    public void APIMoreBillInfoListener(String jsonString) {
+
+    }
+
+    @Override
+    public void APIParseBillVote(String jsonString) {
 
     }
 
