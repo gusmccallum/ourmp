@@ -146,12 +146,17 @@ public class JsonService{
 
         try{
             JSONObject jsonObject = new JSONObject(jsonMP);// root
-            /*JSONObject descObject = jsonObject.getJSONObject("description");
-            String str = descObject.getString("en");*/
-            String date = jsonObject.getString("date");
 
+            //save date if there is info
+            if(jsonObject.getString("date").equals("null")){
+                ballot.setDate("");
+            }
+            else{
+                ballot.setDate(jsonObject.getString("date"));
+            }
+
+            //set bill number if there is info
            if(jsonObject.getString("bill_url").equals("null")){
-               ballot.setDate("");
                ballot.setBillNum("null");
            }
            else{
@@ -159,7 +164,6 @@ public class JsonService{
                String[] temp = str.split("/");
                str = temp[3];
 
-               ballot.setDate(date);
                ballot.setBillNum(str);
            }
 
