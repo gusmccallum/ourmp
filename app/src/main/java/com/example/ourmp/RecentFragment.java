@@ -79,7 +79,7 @@ public  class RecentFragment extends Fragment
                             String billDesc = BillObject.getJSONObject("description").getString("en");
                             String yesVotes = BillObject.getString("yea_total");
                             String noVotes = BillObject.getString("nay_total");
-                            billList.add(new Bill(billNum, billSession, billDate, billResult, billDesc, yesVotes, noVotes));
+                            billList.add(new Bill(billNum, billSession, billDate, billResult, billDesc, yesVotes, noVotes, ""));
                         }
                     }
 

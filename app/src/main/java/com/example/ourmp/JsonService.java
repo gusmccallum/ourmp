@@ -50,7 +50,8 @@ public class JsonService{
                 String billDesc = BillObject.getJSONObject("name").getString("en");
                 String billDate = BillObject.getString("introduced");
                 String billSession = BillObject.getString("session");
-                bills.add(new Activity(null, billNumber + " was introduced in session " + billSession, billDesc, billDate));
+                String billURL = BillObject.getString("url");
+                bills.add(new Activity(null, billNumber + " was introduced in session " + billSession, billDesc, billDate, billURL));
             }
 
         } catch (JSONException e) {
@@ -145,12 +146,17 @@ public class JsonService{
 
         try{
             JSONObject jsonObject = new JSONObject(jsonMP);// root
-            /*JSONObject descObject = jsonObject.getJSONObject("description");
-            String str = descObject.getString("en");*/
-            String date = jsonObject.getString("date");
 
+            //save date if there is info
+            if(jsonObject.getString("date").equals("null")){
+                ballot.setDate("");
+            }
+            else{
+                ballot.setDate(jsonObject.getString("date"));
+            }
+
+            //set bill number if there is info
            if(jsonObject.getString("bill_url").equals("null")){
-               ballot.setDate("");
                ballot.setBillNum("null");
            }
            else{
@@ -158,7 +164,6 @@ public class JsonService{
                String[] temp = str.split("/");
                str = temp[3];
 
-               ballot.setDate(date);
                ballot.setBillNum(str);
            }
 
@@ -167,19 +172,71 @@ public class JsonService{
         }
         return ballot;
     }
-    public String parseMPDesc(String jsonString){
+    public String parseMPDesc(String jsonString, String mpName){
         String desc = "" ;
         try{
             JSONObject jsonObject = new JSONObject(jsonString);// root
             JSONObject queryObject = jsonObject.getJSONObject("query");
             JSONArray searchArray = queryObject.getJSONArray("search");
 
-            desc = searchArray.getJSONObject(0).getString("snippet");
+            int index = 0;
+            for(int i =0; i<searchArray.length(); i++){
+                String title = searchArray.getJSONObject(i).getString("title");
+                if(title.equals(mpName)){
+                    index = i;
+                    i = searchArray.length();
+                }
+            }
+            desc = searchArray.getJSONObject(index).getString("snippet");
             desc = Html.fromHtml(desc).toString();
         }catch (JSONException e) {
             e.printStackTrace();
         }
         return desc;
 
+    }
+
+    public Bill parseMoreBillInfo(String jsonString){
+        try{
+            JSONObject jsonObject = new JSONObject(jsonString);
+            String number = jsonObject.getString("number");
+            String session = jsonObject.getString("session");
+            String date = jsonObject.getString("introduced");
+            String result = jsonObject.getString("status_code");
+            String desc = jsonObject.getJSONObject("name").getString("en");
+
+            JSONArray voteURLs = jsonObject.getJSONArray("vote_urls");
+            String voteURL = "";
+            if (voteURLs.length() > 0){
+                voteURL = voteURLs.getString(0);
+            }
+
+            Bill bill = new Bill(number, session, date, result, desc, "0", "0", voteURL);
+            return bill;
+        }catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    public ArrayList<PartyVote> parseBillVote(String jsonString){
+        ArrayList<PartyVote> allVotes = new ArrayList<>(0);
+
+        try{
+            JSONObject jsonObject = new JSONObject(jsonString);// root
+            JSONArray VotesArray = jsonObject.getJSONArray("party_votes");
+
+            for (int i = 0 ; i< VotesArray.length(); i++){
+                JSONObject VoteObject = VotesArray.getJSONObject(i);
+                String partyName = VoteObject.getJSONObject("party").getJSONObject("short_name").getString("en");
+                String partyVote = VoteObject.getString("vote");
+                PartyVote vote = new PartyVote(partyName, partyVote);
+                allVotes.add(vote);
+            }
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return allVotes;
     }
 }

@@ -17,7 +17,8 @@ import java.util.concurrent.Executors;
 public class NetworkingService {
     String findMPURL = "https://represent.opennorth.ca/representatives/house-of-commons/?point=";
 
-    String listOfBills = "https://api.openparliament.ca/bills/?session=44-1&format=json&limit=100";
+    //String listOfBills = "https://api.openparliament.ca/bills/?session=44-1&format=json&limit=100";
+    String listOfBills = "https://api.openparliament.ca/bills/?introduced__gt=2021-01-01&format=json";
     String listOfMPs = "https://represent.opennorth.ca/representatives/house-of-commons/?limit=50";
 
 
@@ -35,13 +36,15 @@ public class NetworkingService {
     static Handler networkHander = new Handler(Looper.getMainLooper());
 
     interface NetworkingListener{
-        void APINetworkListner(String jsonString); //status = 0
+        void APINetworkListener(String jsonString); //status = 0
         void APINetworkingListerForImage(Bitmap image);//status = 0
         void APIMPMoreInfoListener(String jsonString); // status = 4
         void APIBallotListener(String jsonString);//status = 1
         void APIVoteListener(String jsonString); //status = 2
         void APIMPDescListener(String jsonString); // status = 3
         void APIBillsListener(String jsonString); //status = 5
+        void APIMoreBillInfoListener(String jsonString); //status = 6
+        void APIParseBillVote(String jsonString);
     }
 
     NetworkingListener listener;
@@ -99,6 +102,15 @@ public class NetworkingService {
         connect(completeURL);
 
     }
+    public void fetchMoreBillInfo(String url){
+        status = 6;
+        connect(url);
+    }
+
+    public void fetchBillVotes(String url){
+        status = 7;
+        connect(url);
+    }
 
     private void connect(String completeURL) {
         networkingExecutor.execute(new Runnable() {
@@ -130,7 +142,7 @@ public class NetworkingService {
                                 //send data to main thread
                                 if(status == 0)
                                 {
-                                    listener.APINetworkListner(finalJson);
+                                    listener.APINetworkListener(finalJson);
                                 }
                                 else if(status == 1)
                                 {
@@ -146,6 +158,10 @@ public class NetworkingService {
                                     listener.APIMPMoreInfoListener(finalJson);
                                 }else if(status == 5){
                                     listener.APIBillsListener(finalJson);
+                                }else if(status == 6){
+                                    listener.APIMoreBillInfoListener(finalJson);
+                                }else if(status == 7){
+                                    listener.APIParseBillVote(finalJson);
                                 }
                             }
                         });

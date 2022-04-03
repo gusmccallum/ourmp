@@ -19,5 +19,6 @@
     <string name="compare">Compare</string>
     <string name="open">Open</string>
     <string name="closed">Close</string>
+    <string name="hyperlink"><u>learn more...</u></string>
 
 </resources>

@@ -14,8 +14,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -93,7 +91,7 @@ public class CompareMPActivity extends BaseActivity
         recyclerView1.setAdapter(adapter1);
 
 
-        recyclerView_event = findViewById(R.id.recyclerView_data);
+        recyclerView_event = findViewById(R.id.recyclerView_MPs);
         recyclerView_event.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
 
         getMPsList();
@@ -122,7 +120,7 @@ public class CompareMPActivity extends BaseActivity
     }
 
     @Override
-    public void APINetworkListner(String jsonString) {
+    public void APINetworkListener(String jsonString) {
 
     }
 
@@ -195,6 +193,16 @@ public class CompareMPActivity extends BaseActivity
     }
 
     @Override
+    public void APIMoreBillInfoListener(String jsonString) {
+
+    }
+
+    @Override
+    public void APIParseBillVote(String jsonString) {
+
+    }
+
+    @Override
     public void onItemClick(MP mpObj) {
         mpObj2 = mpObj;
         nestedView.setVisibility(View.GONE);
@@ -228,7 +236,7 @@ public class CompareMPActivity extends BaseActivity
                         member.setParty(jsonObject1.getString("party_name"));
                         member.setPhotoURL(jsonObject1.getString("photo_url"));
                         member.setRiding(jsonObject1.getString("district_name"));
-                        new Search.DownloadImage(member).execute(member.getPhotoURL());
+//                        new Search.DownloadImage(member).execute(member.getPhotoURL());
 
                          MPArrayList.add(member);
                     }

@@ -12,7 +12,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -32,76 +34,109 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class Search extends BaseActivity implements NetworkingService.NetworkingListener {
+public class Search extends BaseActivity implements NetworkingService.NetworkingListener, SearchAdapter.AdapterCallback {
 
+    String str_url = "https://represent.opennorth.ca/representatives/house-of-commons/?limit=500";
+    EditText SearchText;
+
+    ArrayList<MP> searchHistoryMPs = new ArrayList<>();
+    RecyclerView recyclerViewHistoryMPs;
     NetworkingService networkingService;
     JsonService jsonService;
-    RecyclerView activityList;
-    ArrayList<Activity> activities = new ArrayList<>();
-    ActivityFeedBaseAdapter billsAdapter;
-    ActivityFeedRecyclerAdapter recyclerAdapter;
+
+    RecyclerView recyclerViewBills;
+    ArrayList<Activity> activitiesBills = new ArrayList<>();
+    ActivityFeedRecyclerAdapter recyclerAdapterBills;
 
     ArrayList<MP> MPArrayList = new ArrayList<>();
-    RecyclerView recyclerView_event;
-    EditText SearchText;
-    private SearchAdapter adapter;
-    String str_url = "https://represent.opennorth.ca/representatives/house-of-commons/?limit=500";
+    RecyclerView recyclerViewMPs;
+
+    private SearchAdapter adapterMPs;
+    private SearchAdapter historyAdapterMPs;
+
+    LinearLayout RecentSearchTitle;
+    Button ClearRecentSearch;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_search);
         replaceContentLayout(R.layout.activity_search);
 
+        RecentSearchTitle = findViewById(R.id.recyclerView_history_Title);
+        ClearRecentSearch = findViewById(R.id.clear_recent_search);
 
         //initialize networking service and json service
-        networkingService = ( (MainApplication)getApplication()).getNetworkingService();
-        jsonService = ( (MainApplication)getApplication()).getJsonService();
+        networkingService = ((MainApplication)getApplication()).getNetworkingService();
+        jsonService = ((MainApplication)getApplication()).getJsonService();
         networkingService.listener = this;
 
-        activityList = findViewById(R.id.activityList);
-        recyclerAdapter = new ActivityFeedRecyclerAdapter(activities, this);
-        activityList.setAdapter(recyclerAdapter);
-        activityList.setLayoutManager(new LinearLayoutManager(this));
+        // Bills list
+        recyclerViewBills = findViewById(R.id.recyclerView_Bills);
+        recyclerAdapterBills = new ActivityFeedRecyclerAdapter(activitiesBills, this);
+        recyclerViewBills.setAdapter(recyclerAdapterBills);
+        recyclerViewBills.setLayoutManager(new LinearLayoutManager(this));
         networkingService.fetchBillsData();
 
-
+        // MPs list
         MPArrayList = new ArrayList<>();
-        recyclerView_event = findViewById(R.id.recyclerView_data);
-        recyclerView_event.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
-
+        recyclerViewMPs = findViewById(R.id.recyclerView_MPs);
+        recyclerViewMPs.setLayoutManager(new LinearLayoutManager(this));
+        adapterMPs = new SearchAdapter(MPArrayList, Search.this);
+        recyclerViewMPs.setAdapter(adapterMPs);
         getMPsList();
-        this.SearchText = (EditText) findViewById(R.id.search_input);
-        this.SearchText.addTextChangedListener(new TextWatcher() {
 
+        // MPs Search History
+        recyclerViewHistoryMPs = findViewById(R.id.recyclerView_history_MPs);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setReverseLayout(true);
+        linearLayoutManager.setStackFromEnd(true);
+        recyclerViewHistoryMPs.setLayoutManager(linearLayoutManager);
+        historyAdapterMPs = new SearchAdapter(searchHistoryMPs, Search.this);
+        recyclerViewHistoryMPs.setAdapter(historyAdapterMPs);
+
+        // get history from local Prefs
+        ArrayList<MP> MPsFromStorage = PrefConfig.readListFromPref(getApplicationContext());
+        if (MPsFromStorage != null) {
+            RecentSearchTitle.setVisibility(View.VISIBLE);
+            for (int i = 0; i < MPsFromStorage.size(); i++) {
+                searchHistoryMPs.add(MPsFromStorage.get(i));
+                Log.d(searchHistoryMPs.get(i).getName(), "onCreate: ");
+            }
+            historyAdapterMPs.update();
+        }
+
+        this.SearchText = findViewById(R.id.search_input);
+        this.SearchText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
-
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
-
             @Override
             public void afterTextChanged(Editable editable) {
                 filterQuery(editable.toString());
             }
         });
 
+        // Clear search history
+        ClearRecentSearch.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                RecentSearchTitle.setVisibility(View.GONE);
+                recyclerViewHistoryMPs.setVisibility(View.GONE);
+                PrefConfig.deleteListInPref(getApplicationContext());
+                searchHistoryMPs.clear();
+                historyAdapterMPs.update();
+            }
+        });
     }
 
     private void getMPsList() {
-        final ProgressDialog progressDialog = new ProgressDialog(Search.this);
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Loading...");
-        progressDialog.show();
+
         StringRequest stringRequest = new StringRequest(Request.Method.GET, str_url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
-                    MPArrayList = new ArrayList<>();
-
                     JSONObject jsonObject = new JSONObject(response);
                     JSONArray jsonArrayMps = jsonObject.getJSONArray("objects");
 
@@ -112,26 +147,20 @@ public class Search extends BaseActivity implements NetworkingService.Networking
                         member.setParty(jsonObject1.getString("party_name"));
                         member.setPhotoURL(jsonObject1.getString("photo_url"));
                         member.setRiding(jsonObject1.getString("district_name"));
-                        new DownloadImage(member).execute(member.getPhotoURL());
+//                        new DownloadImage(member).execute(member.getPhotoURL());
 
                         MPArrayList.add(member);
                     }
 
-                    adapter = (new SearchAdapter(MPArrayList, Search.this));
-                    recyclerView_event.setAdapter(adapter);
+                    adapterMPs.update();
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    progressDialog.dismiss();
                 }
-
-                progressDialog.dismiss();
-
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
-                progressDialog.dismiss();
             }
         });
 
@@ -145,97 +174,121 @@ public class Search extends BaseActivity implements NetworkingService.Networking
 
     public void filterQuery(String text) {
         if (!text.isEmpty()) {
-            recyclerView_event.setVisibility(View.VISIBLE);
-            activityList.setVisibility(View.VISIBLE);
+            RecentSearchTitle.setVisibility(View.GONE);
+            recyclerViewHistoryMPs.setVisibility(View.GONE);
+            recyclerViewMPs.setVisibility(View.VISIBLE);
+            recyclerViewBills.setVisibility(View.VISIBLE);
             ArrayList<MP> filteredNames = new ArrayList<>();
             for (MP mp : this.MPArrayList) {
                 if (mp.getName().toLowerCase().contains(text.toLowerCase())) {
                     filteredNames.add(mp);
-                    adapter.update();
+                    adapterMPs.update();
                 }
             }
-            this.adapter.setFilter(filteredNames);
+            this.adapterMPs.setFilter(filteredNames);
 
             ArrayList<Activity> filteredBills = new ArrayList<>();
-            for (Activity bill : this.activities) {
+            for (Activity bill : this.activitiesBills) {
                 if (bill.activityTitle.toLowerCase().contains(text.toLowerCase())) {
                     filteredBills.add(bill);
-                    recyclerAdapter.update();
+                    recyclerAdapterBills.update();
                 }
             }
-            this.recyclerAdapter.setFilter(filteredBills);
+            this.recyclerAdapterBills.setFilter(filteredBills);
         } else {
-            recyclerView_event.setVisibility(View.GONE);
-            activityList.setVisibility(View.GONE);
+            if (searchHistoryMPs.size() > 0) {
+                RecentSearchTitle.setVisibility(View.VISIBLE);
+                recyclerViewHistoryMPs.setVisibility(View.VISIBLE);
+            }
+            recyclerViewMPs.setVisibility(View.GONE);
+            recyclerViewBills.setVisibility(View.GONE);
         }
     }
 
     @Override
-    public void APINetworkListner(String jsonString) {
-
+    public void APINetworkListener(String jsonString) {
     }
 
     @Override
     public void APINetworkingListerForImage(Bitmap image) {
-
     }
 
     @Override
     public void APIMPMoreInfoListener(String jsonString) {
-
     }
 
     @Override
     public void APIBallotListener(String jsonString) {
-
     }
 
     @Override
     public void APIVoteListener(String jsonString) {
-
     }
 
     @Override
     public void APIMPDescListener(String jsonString) {
-
     }
 
     @Override
     public void APIBillsListener(String jsonString) {
-        ArrayList<Activity> temp = new ArrayList<>();
+        ArrayList<Activity> temp;
         temp = jsonService.parseFindBills(jsonString);
-        activities.addAll(temp);
-        activities.sort(Comparator.comparing(obj -> obj.activityDate));
-        Collections.reverse(activities);
-        recyclerAdapter.notifyDataSetChanged();
-        //adapter = new ActivityFeedBaseAdapter(activities, this);
-        //activityList.setAdapter(adapter);
+        activitiesBills.addAll(temp);
+        activitiesBills.sort(Comparator.comparing(obj -> obj.activityDate));
+        Collections.reverse(activitiesBills);
+        recyclerAdapterBills.update();
+    }
+
+    @Override
+    public void APIMoreBillInfoListener(String jsonString) {
 
     }
 
-    public static class DownloadImage extends AsyncTask<String, Void, Bitmap> {
-        MP member;
+    @Override
+    public void APIParseBillVote(String jsonString) {
 
-        public DownloadImage(MP member) {
-            this.member = member;
-        }
+    }
 
-        protected Bitmap doInBackground(String... urls) {
-            String imageURL = urls[0];
-            Bitmap bimage = null;
-            try {
-                InputStream in = new java.net.URL(imageURL).openStream();
-                bimage = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error Message", e.getMessage());
-                e.printStackTrace();
+    @Override
+    public void onMethodCallback(MP selectedMP) {
+        for (int i = 0; i < searchHistoryMPs.size(); i++) {
+            if(searchHistoryMPs.get(i).getName().equals(selectedMP.getName())) {
+                searchHistoryMPs.remove(i);
             }
-            return bimage;
         }
+        searchHistoryMPs.add(selectedMP);
 
-        protected void onPostExecute(Bitmap result) {
-            member.setPhoto(result);
-        }
+        // add history to local Prefs
+        PrefConfig.writeListInPref(getApplicationContext(), searchHistoryMPs);
+
+        // Set search bar to empty and update history adapter
+        this.SearchText.setText("");
+        historyAdapterMPs.update();
     }
+//
+//    public static class DownloadImage extends AsyncTask<String, Void, Bitmap> {
+//        MP member;
+//
+//        public DownloadImage(MP member) {
+//            this.member = member;
+//        }
+//
+//        protected Bitmap doInBackground(String... urls) {
+//            String imageURL = urls[0];
+//            Bitmap bimage = null;
+//            try {
+//                InputStream in = new java.net.URL(imageURL).openStream();
+//                bimage = BitmapFactory.decodeStream(in);
+//            } catch (Exception e) {
+//                Log.e("Error Message", e.getMessage());
+//                e.printStackTrace();
+//            }
+//            return bimage;
+//        }
+//
+//        protected void onPostExecute(Bitmap result) {
+//            member.setPhoto(result);
+//        }
+//    }
 
 }

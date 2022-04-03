@@ -60,4 +60,6 @@ dependencies {
     // Support for Java 8 features
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.10'
 
+    // Save data to Shared Preferences
+    implementation 'com.google.code.gson:gson:2.9.0'
 }

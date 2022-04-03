@@ -82,7 +82,7 @@ public class LocationActivity extends BaseActivity
     }
 
     @Override
-    public void APINetworkListner(String jsonString) {
+    public void APINetworkListener(String jsonString) {
         //after fetching api, create MP object based on the retrieved info
         mpObj = jsonService.parseFindMPAPI(jsonString);
 
@@ -129,6 +129,16 @@ public class LocationActivity extends BaseActivity
 
     @Override
     public void APIBillsListener(String jsonString) {
+
+    }
+
+    @Override
+    public void APIMoreBillInfoListener(String jsonString) {
+
+    }
+
+    @Override
+    public void APIParseBillVote(String jsonString) {
 
     }
 

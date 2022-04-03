@@ -89,7 +89,7 @@ public class SignUp extends BaseActivity {
             {
 
                 Log.v("User","Registered with email successfully");
-                Toast.makeText(getApplicationContext(), "Account created successfully!", Toast.LENGTH_LONG).show();
+
 
                 Credentials credentials = Credentials.emailPassword(email,password);
                 ( (MainApplication)getApplication()).getRealmApp().loginAsync(credentials, new App.Callback<User>() {
@@ -102,13 +102,18 @@ public class SignUp extends BaseActivity {
                             DBManager dbManager = ((MainApplication)getApplication()).getDbManager();
                             dbManager.setUserID(((MainApplication)getApplication()).getRealmApp().currentUser().getId());
                             dbManager.addNewUserSubscription();
-                            Toast.makeText(getBaseContext(), "Used logged in successfully.", Toast.LENGTH_LONG).show();
+
+                            Intent homeIntent = new Intent();
+                            homeIntent.setClass(getApplicationContext(), MainActivity.class);
+                            startActivity(homeIntent);
+                            Toast.makeText(getApplicationContext(), "Account created successfully!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "User logged in successfully.", Toast.LENGTH_LONG).show();
 
                         }
                         else
                         {
                             Log.v("User","Failed to Login");
-                            Toast.makeText(getBaseContext(), "Used login failed. Error: ", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getBaseContext(), "User login failed. Error: ", Toast.LENGTH_LONG).show();
                         }
                     }
                 });

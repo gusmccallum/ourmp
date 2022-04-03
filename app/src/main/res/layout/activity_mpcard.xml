@@ -119,14 +119,32 @@
                 android:layout_toEndOf="@+id/party_txt"
                 android:textSize="18sp" />
 
-
-            <TextView
-                android:id="@+id/mppage_info_txt"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/mppage_party_txt"
-                android:layout_marginTop="30dp"
-                android:textSize="12sp" />
+                android:layout_below="@+id/mppage_party_txt">
+
+                <TextView
+                    android:id="@+id/mppage_info_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/wikiLink"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/mppage_info_txt"
+                    android:background="@drawable/mpcard_background"
+                    android:onClick="WikiBtnClicked"
+                    android:text="@string/hyperlink"
+                    android:textAllCaps="false"
+                    android:textColor="@color/blue"
+                    android:textSize="15sp"
+                    app:backgroundTint="@null" />
+            </RelativeLayout>
 
         </RelativeLayout>
 

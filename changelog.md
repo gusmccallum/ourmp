@@ -1,21 +1,24 @@
 
 # **Changelog**
 
-Week of March 13, 2022
+Week of March 27, 2022
 
-## **Back End**
+## **Activity Feed**
+- Activity Feed populated with MP and Bill updates when user has subscribed to them
 
-- Implemented DB CRUD methods for activities to access
-- Implemented callback to allow activities to update from DB methods
+## **Compare Legislation**
+- Bill info card developed
+- Compare bill layout developed
 
-## **Sidebar**
-- Implemented sidebar menu in all layouts
+## **Search**
+- Continued developing search history
 
-## **Calendar**
-- Implemented calendar/event feature layout
+## **Livestream**
+- Began developing livestream feature
 
-## **Sign Up and Login**
-- Implemented DB features to add newly created user to DB on sign up
+## **API calls**
+- Continued researching optimizing API calls using volley
 
-## **Compare MP**
-- Implemented compare MP feature
+## **Amplify Bug Fix**
+- Isolated issue with Amplify updates, investigating fix now
+
