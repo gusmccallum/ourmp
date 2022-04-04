@@ -70,114 +70,7 @@ public class DBManager {
 
     // Update Methods
 
-    public void changeSubscribedUserId() {
-
-
-        Amplify.DataStore.query(Subscribed2.class, Where.matches(Subscribed2.USER_ID.eq(userID)),
-                //query subscribed object matching with userID
-                items -> {
-
-                        Subscribed2 item = items.next();
-
-                        Subscribed2 updatedItem = item.copyOfBuilder()
-                                .userId("123456789")
-                                .build();
-                        //created updated subscribed object with new MP name
-                        //save the data
-                        Amplify.DataStore.save(
-                                updatedItem,
-                                success -> {
-                                    Log.i("Amplify", "Item updated: " + success.item().getId());
-                                },
-                                error -> {
-                                    Log.e("Amplify", "Could not save item to DataStore", error);
-                                }
-                        );
-
-                },
-                failure -> {
-                    Log.e("Amplify", "Could not query DataStore", failure);
-                }
-        );
-        userID = "123456789";
-    }
-
-    public void changeSubscribedUserId2() {
-
-
-        Amplify.DataStore.query(Subscribed2.class, Where.matches(Subscribed2.USER_ID.eq(userID)),
-                //query subscribed object matching with userID
-                items -> {
-
-                    Subscribed2 item = items.next();
-
-                    Subscribed2 updatedItem = item.copyOfBuilder()
-                            .userId("987654321")
-                            .build();
-                    //created updated subscribed object with new MP name
-                    //save the data
-                    Amplify.DataStore.save(
-                            updatedItem,
-                            success -> {
-                                Log.i("Amplify", "Item updated: " + success.item().getId());
-                            },
-                            error -> {
-                                Log.e("Amplify", "Could not save item to DataStore", error);
-                            }
-                    );
-
-                },
-                failure -> {
-                    Log.e("Amplify", "Could not query DataStore", failure);
-                }
-        );
-        userID = "987654321";
-    }
-
     public void addMPSubscription(String MPName) {
-        /*Amplify.DataStore.stop(
-                () -> Log.i("OurMP", "DataStore stopped"),
-                error -> Log.e("OurMP", "Error stopping DataStore", error)
-        );
-        Amplify.DataStore.start(
-                () -> Log.i("OurMP", "DataStore started"),
-                error -> Log.e("OurMP", "Error starting DataStore", error)
-        );*/
-        /*Amplify.DataStore.query(Subscribed.class, Where.matches(Subscribed.USER_ID.eq(userID)),
-                //query subscribed object matching with userID
-                items -> {
-                    while (items.hasNext()) {
-                        Subscribed item = items.next();
-                        //found matched object with the userid
-                        List<String> MPNames;
-                        if (item.getSubscribedMPs() != null) {
-                            MPNames = item.getSubscribedMPs();
-                        }
-                        else {
-                            MPNames = new ArrayList<String>();
-                            MPNames.add(MPName);
-                        }
-                        Subscribed updatedItem = item.copyOfBuilder()
-                                .subscribedMPs(MPNames)
-                                .build();
-                        //created updated subscribed object with new MP name
-                        //save the data
-                        Amplify.DataStore.save(
-                                updatedItem,
-                                success -> {
-                                    Log.i("Amplify", "Item updated: " + success.item().getId());
-                                    subObjCallbackInstance.getSub(item);
-                                },
-                                error -> {
-                                    Log.e("Amplify", "Could not save item to DataStore", error);
-                                }
-                        );
-                    }
-                },
-                failure -> {
-                    Log.e("Amplify", "Could not query DataStore", failure);
-                }
-        );*/
         Amplify.DataStore.query(Subscribed2.class, Where.matches(Subscribed2.USER_ID.eq(userID)),
                 //query subscribed object matching with userID
                 items -> {
@@ -215,15 +108,6 @@ public class DBManager {
     }
 
     public void addBillSubscription(String BillID) {
-        /*Amplify.DataStore.stop(
-                () -> Log.i("OurMP", "DataStore stopped"),
-                error -> Log.e("OurMP", "Error stopping DataStore", error)
-        );
-        Amplify.DataStore.start(
-                () -> Log.i("OurMP", "DataStore started"),
-                error -> Log.e("OurMP", "Error starting DataStore", error)
-        );*/
-
         Amplify.DataStore.query(Subscribed2.class, Where.matches(Subscribed2.USER_ID.eq(userID)),
                 items -> {
                     while (items.hasNext()) {
@@ -315,44 +199,7 @@ public class DBManager {
         );
     }
 
-    public void removeUserId() {
-        Amplify.DataStore.query(Subscribed2.class, Where.matches(Subscribed2.USER_ID.eq(userID)),
-                items -> {
-                    //found matched userid
-                        Subscribed2 item = items.next();
-
-                            Subscribed2 updatedItem = item.copyOfBuilder()
-                                    .userId("")
-                                    //added @nullable in the method so that MPNames can be 0 after removal
-                                    .build();
-
-                            Amplify.DataStore.save(
-                                    updatedItem,
-                                    success -> {
-                                        Log.i("Amplify", "Item updated: " + success.item().getId());
-                                    },
-                                    error -> {
-                                        Log.e("Amplify", "Could not save item to DataStore", error);
-                                    }
-                            );
-
-
-                },
-                failure -> {
-                    Log.e("Amplify", "Could not query DataStore", failure);
-                }
-        );
-    }
-
     public void removeBillSubscription(String BillID) {
-        /*Amplify.DataStore.stop(
-                () -> Log.i("OurMP", "DataStore stopped"),
-                error -> Log.e("OurMP", "Error stopping DataStore", error)
-        );
-        Amplify.DataStore.start(
-                () -> Log.i("OurMP", "DataStore started"),
-                error -> Log.e("OurMP", "Error starting DataStore", error)
-        );*/
         Amplify.DataStore.query(Subscribed2.class, Where.matches(Subscribed2.USER_ID.eq(userID)),
                 items -> {
                     while (items.hasNext()) {
@@ -361,7 +208,11 @@ public class DBManager {
                         int rmIndex = Bills.indexOf(BillID);
 
                         if (rmIndex != -1) {
-                            Bills.set(rmIndex, "");
+                            Bills.remove(rmIndex);
+
+                            if (Bills.size() == 0) {
+                                Bills = null;
+                            }
 
                             Subscribed2 updatedItem = item.copyOfBuilder()
                                     .subscribedBills(Bills)
@@ -386,7 +237,6 @@ public class DBManager {
                 }
         );
     }
-
 
 }
 
