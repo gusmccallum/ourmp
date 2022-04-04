@@ -1,29 +1,17 @@
 package com.example.ourmp;
 
-import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.amplifyframework.datastore.generated.model.Subscribed;
-
-import org.w3c.dom.Text;
+import com.amplifyframework.datastore.generated.model.Subscribed2;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 public class BillCardActivity extends BaseActivity implements NetworkingService.NetworkingListener, DBManager.subObjCallback{
     NetworkingService networkingService;
@@ -196,7 +184,7 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
     }
 
     @Override
-    public void getSub(Subscribed cbReturnSub) {
+    public void getSub(Subscribed2 cbReturnSub) {
 
     }
 }

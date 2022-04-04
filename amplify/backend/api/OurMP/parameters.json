@@ -1,5 +1,6 @@
 {
   "AppSyncApiName": "OurMP",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
-  "DynamoDBEnableServerSideEncryption": false
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthModeLastUpdated": "2022-04-04T01:26:53.237Z"
 }

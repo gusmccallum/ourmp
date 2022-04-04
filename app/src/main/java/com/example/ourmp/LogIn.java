@@ -10,6 +10,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+
 import io.realm.mongodb.App;
 import io.realm.mongodb.Credentials;
 import io.realm.mongodb.User;
@@ -21,6 +25,8 @@ public class LogIn extends BaseActivity {
     Button btn_logInFacebook;
     EditText edit_email;
     EditText edit_password;
+
+    GoogleSignInClient googleSignInClient;
 
 
 
@@ -101,7 +107,12 @@ public class LogIn extends BaseActivity {
     }
 
     private void logUserInGoogle() {
-    //TODO: SSO Google Login
+    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+    .requestIdToken(getString(R.string.server_client_id))
+    .requestEmail()
+    .build();
+
+    googleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
     private void logUserInFacebook() {

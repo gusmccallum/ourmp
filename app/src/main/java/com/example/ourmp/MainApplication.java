@@ -40,6 +40,8 @@ public class MainApplication extends Application {
         return jsonService;
     }
 
+    public ArrayList<String> searchHistoryMPs = new ArrayList<>();
+
     public void setLogInStatus(boolean status) {
         isLoggedIn = status;
     }
@@ -75,6 +77,10 @@ public class MainApplication extends Application {
             Log.e("Amplify", "Could not initialize Amplify", error);
         }
         app = new App(new AppConfiguration.Builder(appID).build());
+
+        Amplify.DataStore.clear(
+                () -> Log.i("OurMP", "DataStore is cleared."),
+                failure -> Log.e("OurMP", "Failed to clear DataStore."));
 
 
     }

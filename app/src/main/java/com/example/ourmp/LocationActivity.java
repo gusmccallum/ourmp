@@ -10,14 +10,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.amplifyframework.AmplifyException;
-import com.amplifyframework.api.aws.AWSApiPlugin;
-import com.amplifyframework.core.Amplify;
-import com.amplifyframework.datastore.AWSDataStorePlugin;
-import com.amplifyframework.datastore.generated.model.Subscribed;
+import com.amplifyframework.datastore.generated.model.Subscribed2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -189,7 +184,7 @@ public class LocationActivity extends BaseActivity
     }
 
     @Override
-    public void getSub(Subscribed cbReturnSub) {
+    public void getSub(Subscribed2 cbReturnSub) {
         String MPName = mpName.getText().toString();
         List<String> subscribedMPs = cbReturnSub.getSubscribedMPs();
         if (subscribedMPs != null) {

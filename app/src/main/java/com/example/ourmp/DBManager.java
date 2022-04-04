@@ -4,18 +4,12 @@ package com.example.ourmp;
 
 import android.util.Log;
 
-import androidx.annotation.Nullable;
-
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.core.model.query.Where;
-import com.amplifyframework.datastore.generated.model.Subscribed;
+import com.amplifyframework.datastore.generated.model.Subscribed2;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class DBManager {
 
@@ -31,7 +25,7 @@ public class DBManager {
 
     // Callback definition
     public interface subObjCallback {
-        void getSub(Subscribed cbReturnSub);
+        void getSub(Subscribed2 cbReturnSub);
     }
 
     // Callback setter
@@ -43,7 +37,7 @@ public class DBManager {
     // Create Methods
 
     public void addNewUserSubscription() {
-        Subscribed item = Subscribed.builder()
+        Subscribed2 item = Subscribed2.builder()
                 .userId(userID)
                 .build();
         Amplify.DataStore.save(
@@ -60,10 +54,10 @@ public class DBManager {
     // Read Methods
 
     public void getSubscriptionObject() {
-        Amplify.DataStore.query(Subscribed.class, Where.matches(Subscribed.USER_ID.eq(userID)),
+        Amplify.DataStore.query(Subscribed2.class, Where.matches(Subscribed2.USER_ID.eq(userID)),
                 items -> {
                     while (items.hasNext()) {
-                        Subscribed item = items.next();
+                        Subscribed2 item = items.next();
                         Log.i("Amplify", "Id: " + item.getId() + " - User ID: " + item.getUserId());
                         subObjCallbackInstance.getSub(item);
                     }
@@ -77,21 +71,21 @@ public class DBManager {
     // Update Methods
 
     public void addMPSubscription(String MPName) {
-        Amplify.DataStore.query(Subscribed.class, Where.matches(Subscribed.USER_ID.eq(userID)),
+        Amplify.DataStore.query(Subscribed2.class, Where.matches(Subscribed2.USER_ID.eq(userID)),
                 //query subscribed object matching with userID
                 items -> {
-                    while (items.hasNext()) {
-                        Subscribed item = items.next();
+                        Subscribed2 item = items.next();
                         //found matched object with the userid
                         List<String> MPNames;
                         if (item.getSubscribedMPs() != null) {
                             MPNames = item.getSubscribedMPs();
+                            MPNames.add(MPName);
                         }
                         else {
                             MPNames = new ArrayList<String>();
                             MPNames.add(MPName);
                         }
-                        Subscribed updatedItem = item.copyOfBuilder()
+                        Subscribed2 updatedItem = item.copyOfBuilder()
                                 .subscribedMPs(MPNames)
                                 .build();
                         //created updated subscribed object with new MP name
@@ -106,7 +100,7 @@ public class DBManager {
                                     Log.e("Amplify", "Could not save item to DataStore", error);
                                 }
                         );
-                    }
+
                 },
                 failure -> {
                     Log.e("Amplify", "Could not query DataStore", failure);
@@ -115,13 +109,20 @@ public class DBManager {
     }
 
     public void addBillSubscription(String BillID) {
-        Amplify.DataStore.query(Subscribed.class, Where.matches(Subscribed.USER_ID.eq(userID)),
+        Amplify.DataStore.query(Subscribed2.class, Where.matches(Subscribed2.USER_ID.eq(userID)),
                 items -> {
                     while (items.hasNext()) {
-                        Subscribed item = items.next();
-                        List<String> Bills = item.getSubscribedBills();
-                        Bills.add(BillID);
-                        Subscribed updatedItem = item.copyOfBuilder()
+                        Subscribed2 item = items.next();
+                        List<String> Bills;
+                        if (item.getSubscribedBills() != null) {
+                            Bills = item.getSubscribedBills();
+                            Bills.add(BillID);
+                        }
+                        else {
+                            Bills = new ArrayList<String>();
+                            Bills.add(BillID);
+                        }
+                        Subscribed2 updatedItem = item.copyOfBuilder()
                                 .subscribedBills(Bills)
                                 .build();
 
@@ -147,10 +148,10 @@ public class DBManager {
     // Delete methods
 
     public void deleteUser() {
-        Amplify.DataStore.query(Subscribed.class, Where.matches(Subscribed.USER_ID.eq(userID)),
+        Amplify.DataStore.query(Subscribed2.class, Where.matches(Subscribed2.USER_ID.eq(userID)),
                 items -> {
                     while (items.hasNext()) {
-                        Subscribed toDeleteItem = items.next();
+                        Subscribed2 toDeleteItem = items.next();
                         Amplify.DataStore.delete(toDeleteItem,
                                 deleted -> {
                                     Log.i("Amplify", "Deleted item.");
@@ -168,18 +169,20 @@ public class DBManager {
     }
 
     public void removeMPSubscription(String MPName) {
-        Amplify.DataStore.query(Subscribed.class, Where.matches(Subscribed.USER_ID.eq(userID)),
+        Amplify.DataStore.query(Subscribed2.class, Where.matches(Subscribed2.USER_ID.eq(userID)),
                 items -> {
                     //found matched userid
-                    while (items.hasNext()) {
-                        Subscribed item = items.next();
+                        Subscribed2 item = items.next();
                         List<String> MPNames = item.getSubscribedMPs();
                         int rmIndex = MPNames.indexOf(MPName);
 
                         if (rmIndex != -1) {
                             MPNames.remove(rmIndex);
+                            if (MPNames.size() == 0) {
+                                MPNames = null;
+                            }
 
-                            Subscribed updatedItem = item.copyOfBuilder()
+                            Subscribed2 updatedItem = item.copyOfBuilder()
                                     .subscribedMPs(MPNames)
                                     //added @nullable in the method so that MPNames can be 0 after removal
                                     .build();
@@ -196,7 +199,7 @@ public class DBManager {
                         } else {
                             Log.e("Amplify", "MP Name not found in subscriptions.");
                         }
-                    }
+
                 },
                 failure -> {
                     Log.e("Amplify", "Could not query DataStore", failure);
@@ -205,17 +208,21 @@ public class DBManager {
     }
 
     public void removeBillSubscription(String BillID) {
-        Amplify.DataStore.query(Subscribed.class, Where.matches(Subscribed.USER_ID.eq(userID)),
+        Amplify.DataStore.query(Subscribed2.class, Where.matches(Subscribed2.USER_ID.eq(userID)),
                 items -> {
                     while (items.hasNext()) {
-                        Subscribed item = items.next();
+                        Subscribed2 item = items.next();
                         List<String> Bills = item.getSubscribedBills();
                         int rmIndex = Bills.indexOf(BillID);
 
                         if (rmIndex != -1) {
                             Bills.remove(rmIndex);
 
-                            Subscribed updatedItem = item.copyOfBuilder()
+                            if (Bills.size() == 0) {
+                                Bills = null;
+                            }
+
+                            Subscribed2 updatedItem = item.copyOfBuilder()
                                     .subscribedBills(Bills)
                                     .build();
 
@@ -238,5 +245,6 @@ public class DBManager {
                 }
         );
     }
+
 }
 
