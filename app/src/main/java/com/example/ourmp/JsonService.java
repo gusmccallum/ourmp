@@ -146,12 +146,17 @@ public class JsonService{
 
         try{
             JSONObject jsonObject = new JSONObject(jsonMP);// root
-            /*JSONObject descObject = jsonObject.getJSONObject("description");
-            String str = descObject.getString("en");*/
-            String date = jsonObject.getString("date");
 
+            //save date if there is info
+            if(jsonObject.getString("date").equals("null")){
+                ballot.setDate("");
+            }
+            else{
+                ballot.setDate(jsonObject.getString("date"));
+            }
+
+            //set bill number if there is info
            if(jsonObject.getString("bill_url").equals("null")){
-               ballot.setDate("");
                ballot.setBillNum("null");
            }
            else{
@@ -159,7 +164,6 @@ public class JsonService{
                String[] temp = str.split("/");
                str = temp[3];
 
-               ballot.setDate(date);
                ballot.setBillNum(str);
            }
 
@@ -168,14 +172,22 @@ public class JsonService{
         }
         return ballot;
     }
-    public String parseMPDesc(String jsonString){
+    public String parseMPDesc(String jsonString, String mpName){
         String desc = "" ;
         try{
             JSONObject jsonObject = new JSONObject(jsonString);// root
             JSONObject queryObject = jsonObject.getJSONObject("query");
             JSONArray searchArray = queryObject.getJSONArray("search");
 
-            desc = searchArray.getJSONObject(0).getString("snippet");
+            int index = 0;
+            for(int i =0; i<searchArray.length(); i++){
+                String title = searchArray.getJSONObject(i).getString("title");
+                if(title.equals(mpName)){
+                    index = i;
+                    i = searchArray.length();
+                }
+            }
+            desc = searchArray.getJSONObject(index).getString("snippet");
             desc = Html.fromHtml(desc).toString();
         }catch (JSONException e) {
             e.printStackTrace();

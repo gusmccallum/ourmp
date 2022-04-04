@@ -15,6 +15,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amplifyframework.datastore.generated.model.Subscribed2;
+import com.amplifyframework.AmplifyException;
+import com.amplifyframework.api.aws.AWSApiPlugin;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.AWSDataStorePlugin;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +44,7 @@ public class MPCardActivity extends BaseActivity
     ImageView img;
     Button snsBtn, emailBtn, phoneBtn, subscribeBtn, compareBtn;
     MP mpObj;
-    ArrayList<Ballot> allBallotFromMP = new ArrayList<>(0);
+    ArrayList<Ballot> allBallotFromMP;
     ArrayList<Ballot> tempbollotArray = new ArrayList<>(0);
     ArrayList<Ballot> validBollotList = new ArrayList<>(0);
     BallotsAdapter adapter;
@@ -106,24 +122,22 @@ public class MPCardActivity extends BaseActivity
         mpObj.setBallotURL(tempMp.getBallotURL());
         mpObj.setTwitter(tempMp.getTwitter());
         //there might not be twitter info, in case it's empty string
-        //it will send a toast to notify user
+
         networkingService.fetchMPDesc(mpObj.getName());
     }
 
     @Override
     public void APIBallotListener(String jsonString) {
-        allBallotFromMP = jsonService.parseBallots(jsonString);
+       /* allBallotFromMP = jsonService.parseBallots(jsonString);
         for(int i=0; i<allBallotFromMP.size(); i++){
             networkingService.fetchVote(allBallotFromMP.get(i).getVoteURL());
-        }
-
+        }*/
     }
-
     @Override
     public void APIVoteListener(String jsonString) {
         tempbollotArray.add(jsonService.parseVote(jsonString));
         //list date and bill desc, same size with allBollotFromMP
-        if(tempbollotArray.size() == allBallotFromMP.size()){
+        if(tempbollotArray.size() == 40){
             //copy all date and bill number
             for(int i=0; i<allBallotFromMP.size(); i++){
 
@@ -158,9 +172,10 @@ public class MPCardActivity extends BaseActivity
 
     @Override
     public void APIMPDescListener(String jsonString) {
-        String desc = jsonService.parseMPDesc(jsonString);
+        String desc = jsonService.parseMPDesc(jsonString, mpObj.getName());
         mpInfo.setText(desc);
-        networkingService.fetchBallot(mpObj.getBallotURL());
+        //networkingService.fetchBallot(mpObj.getBallotURL());
+        VolleyFetchBallotAPI();
     }
 
     @Override
@@ -267,6 +282,142 @@ public class MPCardActivity extends BaseActivity
                 }
             });
         }
-        }
     }
+    public void VolleyFetchBallotAPI(){
+
+        final String url = "https://api.openparliament.ca/" + mpObj.getBallotURL() + "&limit=40";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try{
+                    allBallotFromMP = new ArrayList<>();
+
+                    JSONObject jsonObject = new JSONObject(response);// root
+                    JSONArray BallotArray = jsonObject.getJSONArray("objects");
+
+                    for (int i = 0 ; i< BallotArray.length(); i++){
+                        Ballot newBallot = new Ballot();
+                        JSONObject BallotObject = BallotArray.getJSONObject(i);
+
+                        newBallot.setBallot(BallotObject.getString("ballot"));
+                        newBallot.setPoliticianURL(BallotObject.getString("politician_url"));
+                        newBallot.setVoteURL(BallotObject.getString("vote_url"));
+
+                        if(!newBallot.getBallot().equals("Yes") && !newBallot.getBallot().equals("No")){
+                            newBallot.setBallot("");
+                        }
+
+                        allBallotFromMP.add(newBallot);
+                        //VolleyFetchVoteAPI(i, "https://api.openparliament.ca"+newBallot.getVoteURL());
+                        networkingService.fetchVote(newBallot.getVoteURL());
+
+                    }
+
+                }catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        RetryPolicy retryPolicy = new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        stringRequest.setRetryPolicy(retryPolicy);
+        requestQueue.add(stringRequest);
+
+    }
+
+    public void WikiBtnClicked(View view) {
+        Intent twitterIntent =new Intent("android.intent.action.VIEW",
+                Uri.parse("https://en.wikipedia.org/wiki/"+mpObj.getName()));
+        startActivity(twitterIntent);
+    }
+
+    /*ublic void VolleyFetchVoteAPI(int index, String voteurl){
+
+            //String voteUrl = "https://api.openparliament.ca" + url;
+
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, voteurl, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                   // Ballot ballot = new Ballot();
+
+                    try{
+                        JSONObject jsonObject = new JSONObject(response);// root
+                        String date = jsonObject.getString("date");
+
+                        if(jsonObject.getString("bill_url").equals("null")){
+                            allBallotFromMP.get(index).setDate("");
+                            allBallotFromMP.get(index).setBillNum("null");
+                        }
+                        else{
+                            String str = jsonObject.getString("bill_url");
+                            String[] temp = str.split("/");
+                            str = temp[3];
+
+                            allBallotFromMP.get(index).setDate(date);
+                            allBallotFromMP.get(index).setBillNum(str);
+                        }
+                        //tempbollotArray.add(ballot);
+                        //allBallotFromMP.add(newBallot);
+
+                    }catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                }
+            });
+
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            RetryPolicy retryPolicy = new DefaultRetryPolicy(
+                    0,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+            stringRequest.setRetryPolicy(retryPolicy);
+            requestQueue.add(stringRequest);
+            //Volley.newRequestQueue(getApplicationContext()).add(stringRequest);
+
+        //copy bill number and date to allBallot
+            for(int i=0; i<allBallotFromMP.size(); i++){
+
+                if(!tempbollotArray.get(i).getBillNum().equals("null")){
+                    allBallotFromMP.get(i).setBillNum(tempbollotArray.get(i).getBillNum());
+                    allBallotFromMP.get(i).setDate(tempbollotArray.get(i).getDate());
+
+                }
+
+            }
+            //choose ballots only that has valid bill number
+            for(int j=0; j<allBallotFromMP.size(); j++){
+                if(allBallotFromMP.get(j).getBillNum() != null){
+                    validBollotList.add(allBallotFromMP.get(j));
+                }
+            }
+
+            ArrayList<Ballot> shortBallotList = new ArrayList<>(0);
+            if(validBollotList.size() > 5){
+                for(int j=0; j<5; j++){
+                    shortBallotList.add(validBollotList.get(j));
+                }
+                adapter = new BallotsAdapter(this, shortBallotList);
+            }else{
+                adapter = new BallotsAdapter(this, validBollotList);
+            }
+
+            recyclerView.setAdapter(adapter);
+            progressDialog.dismiss();
+
+    }*/
+}
 

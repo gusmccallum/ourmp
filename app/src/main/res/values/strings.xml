@@ -19,6 +19,7 @@
     <string name="compare">Compare</string>
     <string name="open">Open</string>
     <string name="closed">Close</string>
+    <string name="hyperlink"><u>learn more...</u></string>
 
     <string name="server_client_id">402829839097-ns301o7m5mg24fonor4af6jl87mops8e.apps.googleusercontent.com</string>
 
