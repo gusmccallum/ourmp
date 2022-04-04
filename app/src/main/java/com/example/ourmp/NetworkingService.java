@@ -45,6 +45,7 @@ public class NetworkingService {
         void APIBillsListener(String jsonString); //status = 5
         void APIMoreBillInfoListener(String jsonString); //status = 6
         void APIParseBillVote(String jsonString);
+        void APINetworkingListerForImage2(Bitmap image);
     }
 
     NetworkingListener listener;
@@ -190,6 +191,29 @@ public class NetworkingService {
                         @Override
                         public void run() {
                             listener.APINetworkingListerForImage(imageData);
+                        }
+                    });
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+    public void getImageData2(String imgURL){
+        String completeURL = imgURL;
+        networkingExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL urlObj = new URL(completeURL);
+                    InputStream in = ((InputStream)urlObj.getContent());
+                    Bitmap imageData = BitmapFactory.decodeStream(in);
+                    networkHander.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            listener.APINetworkingListerForImage2(imageData);
                         }
                     });
                 } catch (MalformedURLException e) {

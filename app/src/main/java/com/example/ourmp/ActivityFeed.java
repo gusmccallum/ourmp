@@ -104,6 +104,11 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
 
     }
 
+    @Override
+    public void APINetworkingListerForImage2(Bitmap image) {
+
+    }
+
 
     @Override
     public void APINetworkingListerForImage(Bitmap image) {

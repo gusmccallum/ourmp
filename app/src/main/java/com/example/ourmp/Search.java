@@ -250,6 +250,12 @@ public class Search extends BaseActivity implements NetworkingService.Networking
     }
 
     @Override
+
+    public void APINetworkingListerForImage2(Bitmap image) {
+
+    }
+
+    @Override
     public void onMethodCallback(MP selectedMP) {
         for (int i = 0; i < searchHistoryMPs.size(); i++) {
             if(searchHistoryMPs.get(i).getName().equals(selectedMP.getName())) {

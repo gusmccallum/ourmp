@@ -145,6 +145,11 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
         progressBar.setProgress(countYes);
     }
 
+    @Override
+    public void APINetworkingListerForImage2(Bitmap image) {
+
+    }
+
     public void clickCompareButton(View view){
         if(bill.getVoteURl() == ""){
             noVoteView.setVisibility(View.VISIBLE);

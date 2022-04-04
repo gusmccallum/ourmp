@@ -50,7 +50,7 @@ public class CompareSearchAdapter extends RecyclerView.Adapter<CompareSearchAdap
 
         holder.name.setText(member.getName());
         holder.party.setText(member.getParty());
-        holder.image_app.setImageBitmap(member.getPhoto());
+//        holder.image_app.setImageBitmap(member.getPhoto());
 
         holder.ll_.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,7 +67,7 @@ public class CompareSearchAdapter extends RecyclerView.Adapter<CompareSearchAdap
 
     public static class TasksViewHolder extends RecyclerView.ViewHolder {
         TextView name, party;
-        ImageView image_app;
+        //ImageView image_app;
         LinearLayout ll_;
 
         public TasksViewHolder(@NonNull View itemView) {
@@ -75,7 +75,7 @@ public class CompareSearchAdapter extends RecyclerView.Adapter<CompareSearchAdap
 
             name = itemView.findViewById(R.id.name);
             party = itemView.findViewById(R.id.party);
-            image_app = itemView.findViewById(R.id.image);
+           // image_app = itemView.findViewById(R.id.image);
             ll_ = itemView.findViewById(R.id.lyt_parent);
         }
     }
