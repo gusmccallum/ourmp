@@ -4,12 +4,8 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,7 +19,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -64,7 +59,7 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
 
 
             //initialize views
-            activityList = findViewById(R.id.activityList);
+            activityList = findViewById(R.id.recyclerView_Bills);
             recyclerAdapter = new ActivityFeedRecyclerAdapter(activities, this);
             activityList.setAdapter(recyclerAdapter);
             activityList.setLayoutManager(new LinearLayoutManager(this));
@@ -86,7 +81,7 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
     }
 
     @Override
-    public void APINetworkListner(String jsonString) {
+    public void APINetworkListener(String jsonString) {
     }
 
     @Override
@@ -110,6 +105,11 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
 
     @Override
     public void APIParseBillVote(String jsonString) {
+
+    }
+
+    @Override
+    public void APINetworkingListerForImage2(Bitmap image) {
 
     }
 

@@ -88,7 +88,7 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
     }
 
     @Override
-    public void APINetworkListner(String jsonString) {
+    public void APINetworkListener(String jsonString) {
 
     }
 
@@ -155,6 +155,11 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
         }
 
         progressBar.setProgress(countYes);
+    }
+
+    @Override
+    public void APINetworkingListerForImage2(Bitmap image) {
+
     }
 
     public void clickCompareButton(View view){

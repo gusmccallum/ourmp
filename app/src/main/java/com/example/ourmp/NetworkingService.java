@@ -36,7 +36,7 @@ public class NetworkingService {
     static Handler networkHander = new Handler(Looper.getMainLooper());
 
     interface NetworkingListener{
-        void APINetworkListner(String jsonString); //status = 0
+        void APINetworkListener(String jsonString); //status = 0
         void APINetworkingListerForImage(Bitmap image);//status = 0
         void APIMPMoreInfoListener(String jsonString); // status = 4
         void APIBallotListener(String jsonString);//status = 1
@@ -45,6 +45,7 @@ public class NetworkingService {
         void APIBillsListener(String jsonString); //status = 5
         void APIMoreBillInfoListener(String jsonString); //status = 6
         void APIParseBillVote(String jsonString);
+        void APINetworkingListerForImage2(Bitmap image);
     }
 
     NetworkingListener listener;
@@ -142,7 +143,7 @@ public class NetworkingService {
                                 //send data to main thread
                                 if(status == 0)
                                 {
-                                    listener.APINetworkListner(finalJson);
+                                    listener.APINetworkListener(finalJson);
                                 }
                                 else if(status == 1)
                                 {
@@ -190,6 +191,29 @@ public class NetworkingService {
                         @Override
                         public void run() {
                             listener.APINetworkingListerForImage(imageData);
+                        }
+                    });
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+    public void getImageData2(String imgURL){
+        String completeURL = imgURL;
+        networkingExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL urlObj = new URL(completeURL);
+                    InputStream in = ((InputStream)urlObj.getContent());
+                    Bitmap imageData = BitmapFactory.decodeStream(in);
+                    networkHander.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            listener.APINetworkingListerForImage2(imageData);
                         }
                     });
                 } catch (MalformedURLException e) {

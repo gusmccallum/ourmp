@@ -14,8 +14,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -56,7 +54,7 @@ public class CompareMPActivity extends BaseActivity
     EditText SearchText;
     NestedScrollView nestedView;
     ArrayList<Ballot> allBallotFromMP = new ArrayList<>(0);
-    ArrayList<Ballot> tempbollotArray;
+    ArrayList<Ballot> tempbollotArray = new ArrayList<>(0);
     ProgressDialog progressDialog;
     RelativeLayout mp2_relative;
 
@@ -93,13 +91,13 @@ public class CompareMPActivity extends BaseActivity
         recyclerView1.setAdapter(adapter1);
 
 
-        recyclerView_event = findViewById(R.id.recyclerView_data);
+        recyclerView_event = findViewById(R.id.recyclerView_MPs);
         recyclerView_event.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
 
         getMPsList();
 
 
-        this.SearchText = (EditText) findViewById(R.id.search_input);
+        this.SearchText = findViewById(R.id.search_input);
         this.SearchText.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -122,30 +120,27 @@ public class CompareMPActivity extends BaseActivity
     }
 
     @Override
-    public void APINetworkListner(String jsonString) {
+    public void APINetworkListener(String jsonString) {
 
     }
 
     @Override
     public void APINetworkingListerForImage(Bitmap image) {
-        mp1_img.setImageBitmap(image);
+       mp1_img.setImageBitmap(image);
     }
 
     @Override
     public void APIMPMoreInfoListener(String jsonString) {
         MP tempMp = jsonService.parseMoreInfoAPI(jsonString);
         mpObj2.setBallotURL(tempMp.getBallotURL());
-        networkingService.fetchBallot(mpObj2.getBallotURL());
+        networkingService.getImageData2(mpObj2.getPhotoURL());
+        //networkingService.fetchBallot(mpObj2.getBallotURL());
+        VolleyFetchBallotAPI();
     }
 
     @Override
     public void APIBallotListener(String jsonString) {
-        tempbollotArray = new ArrayList<>(0);
 
-        allBallotFromMP = jsonService.parseBallots(jsonString);
-        for(int i=0; i<allBallotFromMP.size(); i++){
-            networkingService.fetchVote(allBallotFromMP.get(i).getVoteURL());
-        }
     }
 
     @Override
@@ -154,7 +149,7 @@ public class CompareMPActivity extends BaseActivity
 
         tempbollotArray.add(jsonService.parseVote(jsonString));
         //list date and bill desc, same size with allBollotFromMP
-        if(tempbollotArray.size() == allBallotFromMP.size()){
+        if(tempbollotArray.size() == 40){
             //copy all date and bill number
             for(int i=0; i<allBallotFromMP.size(); i++){
 
@@ -205,13 +200,16 @@ public class CompareMPActivity extends BaseActivity
     }
 
     @Override
+    public void APINetworkingListerForImage2(Bitmap image) {
+        mp2_img.setImageBitmap(image);
+    }
+
+    @Override
     public void onItemClick(MP mpObj) {
         mpObj2 = mpObj;
         nestedView.setVisibility(View.GONE);
-        mp2_img.setImageBitmap(mpObj2.getPhoto());
         mp2_name.setText(mpObj2.getName());
         mpObj2.setParty(mpObj.getParty());
-
         progressDialog = new ProgressDialog(CompareMPActivity.this);
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading vote list...");
@@ -238,10 +236,10 @@ public class CompareMPActivity extends BaseActivity
                         member.setParty(jsonObject1.getString("party_name"));
                         member.setPhotoURL(jsonObject1.getString("photo_url"));
                         member.setRiding(jsonObject1.getString("district_name"));
-                        new Search.DownloadImage(member).execute(member.getPhotoURL());
 
-                         MPArrayList.add(member);
+                        MPArrayList.add(member);
                     }
+
 
                     searchAdapter = (new CompareSearchAdapter(MPArrayList, CompareMPActivity.this));
                     recyclerView_event.setAdapter(searchAdapter);
@@ -282,28 +280,54 @@ public class CompareMPActivity extends BaseActivity
     }
 
 
-    public static class DownloadImage extends AsyncTask<String, Void, Bitmap> {
-        MP member;
+    public void VolleyFetchBallotAPI(){
 
-        public DownloadImage(MP member) {
-            this.member = member;
-        }
+        final String url = "https://api.openparliament.ca/" + mpObj2.getBallotURL() + "&limit=40";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try{
+                    allBallotFromMP = new ArrayList<>();
 
-        protected Bitmap doInBackground(String... urls) {
-            String imageURL = urls[0];
-            Bitmap bimage = null;
-            try {
-                InputStream in = new java.net.URL(imageURL).openStream();
-                bimage = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error Message", e.getMessage());
-                e.printStackTrace();
+                    JSONObject jsonObject = new JSONObject(response);// root
+                    JSONArray BallotArray = jsonObject.getJSONArray("objects");
+
+                    for (int i = 0 ; i< BallotArray.length(); i++){
+                        Ballot newBallot = new Ballot();
+                        JSONObject BallotObject = BallotArray.getJSONObject(i);
+
+                        newBallot.setBallot(BallotObject.getString("ballot"));
+                        newBallot.setPoliticianURL(BallotObject.getString("politician_url"));
+                        newBallot.setVoteURL(BallotObject.getString("vote_url"));
+
+                        if(!newBallot.getBallot().equals("Yes") && !newBallot.getBallot().equals("No")){
+                            newBallot.setBallot("");
+                        }
+
+                        allBallotFromMP.add(newBallot);
+                        //VolleyFetchVoteAPI(i, "https://api.openparliament.ca"+newBallot.getVoteURL());
+                        networkingService.fetchVote(newBallot.getVoteURL());
+
+                    }
+
+                }catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
-            return bimage;
-        }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        });
 
-        protected void onPostExecute(Bitmap result) {
-            member.setPhoto(result);
-        }
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        RetryPolicy retryPolicy = new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        stringRequest.setRetryPolicy(retryPolicy);
+        requestQueue.add(stringRequest);
+
     }
 }
