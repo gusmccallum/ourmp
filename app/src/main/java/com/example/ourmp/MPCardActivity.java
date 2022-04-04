@@ -1,6 +1,5 @@
 package com.example.ourmp;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,11 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amplifyframework.AmplifyException;
-import com.amplifyframework.api.aws.AWSApiPlugin;
-import com.amplifyframework.core.Amplify;
-import com.amplifyframework.datastore.AWSDataStorePlugin;
-import com.amplifyframework.datastore.generated.model.Subscribed;
+import com.amplifyframework.datastore.generated.model.Subscribed2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -232,15 +227,17 @@ public class MPCardActivity extends BaseActivity
             if(subscribeBtn.getText().toString().equals("Subscribe")){
                 //follow the MP and change the text to unfollow
                 dbManager.addMPSubscription(mpName.getText().toString());
-                subscribeBtn.setText(R.string.unfollow);
-                Toast.makeText(this, "Subscribed!", Toast.LENGTH_SHORT).show();
+                subscribeBtn.setText("Subscribed");
+                subscribeBtn.setEnabled(false);
+                //Toast.makeText(this, "Subscribed!", Toast.LENGTH_SHORT).show();
             }
             //if user already followed the MP and wants to unfollow
             else{
                 //unfollow and change the text to subscribe
                 dbManager.removeMPSubscription(mpName.getText().toString());
-                subscribeBtn.setText(R.string.subscribe);
-                Toast.makeText(this, "Unfollowed!", Toast.LENGTH_SHORT).show();
+                subscribeBtn.setText("Unsubscribed");
+                subscribeBtn.setEnabled(false);
+                //Toast.makeText(this, "Unsubscribed!", Toast.LENGTH_SHORT).show();
             }
 
 
@@ -253,7 +250,7 @@ public class MPCardActivity extends BaseActivity
     }
 
     @Override
-    public void getSub(Subscribed cbReturnSub) {
+    public void getSub(Subscribed2 cbReturnSub) {
         String MPName = mpName.getText().toString();
         List<String> subscribedMPs = cbReturnSub.getSubscribedMPs();
         if (subscribedMPs != null) {

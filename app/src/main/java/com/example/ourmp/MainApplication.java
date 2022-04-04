@@ -78,6 +78,10 @@ public class MainApplication extends Application {
         }
         app = new App(new AppConfiguration.Builder(appID).build());
 
+        Amplify.DataStore.clear(
+                () -> Log.i("OurMP", "DataStore is cleared."),
+                failure -> Log.e("OurMP", "Failed to clear DataStore."));
+
 
     }
 }

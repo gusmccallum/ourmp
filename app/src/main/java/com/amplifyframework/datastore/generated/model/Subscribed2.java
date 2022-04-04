@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.Objects;
 
-import androidx.annotation.Nullable;
 import androidx.core.util.ObjectsCompat;
 
 import com.amplifyframework.core.model.AuthStrategy;
@@ -18,32 +17,24 @@ import com.amplifyframework.core.model.annotations.ModelConfig;
 import com.amplifyframework.core.model.annotations.ModelField;
 import com.amplifyframework.core.model.query.predicate.QueryField;
 
-
 import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 
-/** This is an auto generated class representing the Subscribed type in your schema. */
+/** This is an auto generated class representing the Subscribed2 type in your schema. */
 @SuppressWarnings("all")
-@ModelConfig(pluralName = "Subscribeds", authRules = {
+@ModelConfig(pluralName = "Subscribed2s", authRules = {
   @AuthRule(allow = AuthStrategy.PUBLIC, operations = { ModelOperation.CREATE, ModelOperation.UPDATE, ModelOperation.DELETE, ModelOperation.READ })
 })
-public final class Subscribed implements Model {
-  /* static final QueryField ID = field("Subscribed", "id");
-  public static final QueryField USER_ID = field("Subscribed", "userId");
-  public static final QueryField SUBSCRIBED_M_PS = field("Subscribed", "subscribedMPs");
-  public static final QueryField SUBSCRIBED_BILLS = field("Subscribed", "subscribedBills");
-  */
-  public static final QueryField ID = field("id");
-  public static final QueryField USER_ID = field("userId");
-  public static final QueryField SUBSCRIBED_M_PS = field("subscribedMPs");
-  public static final QueryField SUBSCRIBED_BILLS = field("subscribedBills");
+public final class Subscribed2 implements Model {
+  public static final QueryField ID = field("Subscribed2", "id");
+  public static final QueryField USER_ID = field("Subscribed2", "userId");
+  public static final QueryField SUBSCRIBED_M_PS = field("Subscribed2", "subscribedMPs");
+  public static final QueryField SUBSCRIBED_BILLS = field("Subscribed2", "subscribedBills");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="String", isRequired = true) String userId;
   private final @ModelField(targetType="String") List<String> subscribedMPs;
   private final @ModelField(targetType="String") List<String> subscribedBills;
-  /*private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
-  private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;*/
-  private @ModelField(targetType="AWSDateTime") Temporal.DateTime createdAt;
-  private @ModelField(targetType="AWSDateTime") Temporal.DateTime updatedAt;
+  private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime createdAt;
+  private @ModelField(targetType="AWSDateTime", isReadOnly = true) Temporal.DateTime updatedAt;
   public String getId() {
       return id;
   }
@@ -68,7 +59,7 @@ public final class Subscribed implements Model {
       return updatedAt;
   }
   
-  private Subscribed(String id, String userId, List<String> subscribedMPs, List<String> subscribedBills) {
+  private Subscribed2(String id, String userId, List<String> subscribedMPs, List<String> subscribedBills) {
     this.id = id;
     this.userId = userId;
     this.subscribedMPs = subscribedMPs;
@@ -82,13 +73,13 @@ public final class Subscribed implements Model {
       } else if(obj == null || getClass() != obj.getClass()) {
         return false;
       } else {
-      Subscribed subscribed = (Subscribed) obj;
-      return ObjectsCompat.equals(getId(), subscribed.getId()) &&
-              ObjectsCompat.equals(getUserId(), subscribed.getUserId()) &&
-              ObjectsCompat.equals(getSubscribedMPs(), subscribed.getSubscribedMPs()) &&
-              ObjectsCompat.equals(getSubscribedBills(), subscribed.getSubscribedBills()) &&
-              ObjectsCompat.equals(getCreatedAt(), subscribed.getCreatedAt()) &&
-              ObjectsCompat.equals(getUpdatedAt(), subscribed.getUpdatedAt());
+      Subscribed2 subscribed2 = (Subscribed2) obj;
+      return ObjectsCompat.equals(getId(), subscribed2.getId()) &&
+              ObjectsCompat.equals(getUserId(), subscribed2.getUserId()) &&
+              ObjectsCompat.equals(getSubscribedMPs(), subscribed2.getSubscribedMPs()) &&
+              ObjectsCompat.equals(getSubscribedBills(), subscribed2.getSubscribedBills()) &&
+              ObjectsCompat.equals(getCreatedAt(), subscribed2.getCreatedAt()) &&
+              ObjectsCompat.equals(getUpdatedAt(), subscribed2.getUpdatedAt());
       }
   }
   
@@ -108,7 +99,7 @@ public final class Subscribed implements Model {
   @Override
    public String toString() {
     return new StringBuilder()
-      .append("Subscribed {")
+      .append("Subscribed2 {")
       .append("id=" + String.valueOf(getId()) + ", ")
       .append("userId=" + String.valueOf(getUserId()) + ", ")
       .append("subscribedMPs=" + String.valueOf(getSubscribedMPs()) + ", ")
@@ -131,8 +122,8 @@ public final class Subscribed implements Model {
    * @param id the id of the existing item this instance will represent
    * @return an instance of this model with only ID populated
    */
-  public static Subscribed justId(String id) {
-    return new Subscribed(
+  public static Subscribed2 justId(String id) {
+    return new Subscribed2(
       id,
       null,
       null,
@@ -152,7 +143,7 @@ public final class Subscribed implements Model {
   
 
   public interface BuildStep {
-    Subscribed build();
+    Subscribed2 build();
     BuildStep id(String id);
     BuildStep subscribedMPs(List<String> subscribedMPs);
     BuildStep subscribedBills(List<String> subscribedBills);
@@ -165,10 +156,10 @@ public final class Subscribed implements Model {
     private List<String> subscribedMPs;
     private List<String> subscribedBills;
     @Override
-     public Subscribed build() {
+     public Subscribed2 build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
         
-        return new Subscribed(
+        return new Subscribed2(
           id,
           userId,
           subscribedMPs,
@@ -183,13 +174,13 @@ public final class Subscribed implements Model {
     }
     
     @Override
-     public BuildStep subscribedMPs(@Nullable List<String> subscribedMPs) {
+     public BuildStep subscribedMPs(List<String> subscribedMPs) {
         this.subscribedMPs = subscribedMPs;
         return this;
     }
     
     @Override
-     public BuildStep subscribedBills(@Nullable List<String> subscribedBills) {
+     public BuildStep subscribedBills(List<String> subscribedBills) {
         this.subscribedBills = subscribedBills;
         return this;
     }
@@ -206,7 +197,7 @@ public final class Subscribed implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, String userId, @Nullable List<String> subscribedMPs, @Nullable List<String> subscribedBills) {
+    private CopyOfBuilder(String id, String userId, List<String> subscribedMPs, List<String> subscribedBills) {
       super.id(id);
       super.userId(userId)
         .subscribedMPs(subscribedMPs)
@@ -219,12 +210,12 @@ public final class Subscribed implements Model {
     }
     
     @Override
-     public CopyOfBuilder subscribedMPs(@Nullable List<String> subscribedMPs) {
+     public CopyOfBuilder subscribedMPs(List<String> subscribedMPs) {
       return (CopyOfBuilder) super.subscribedMPs(subscribedMPs);
     }
     
     @Override
-     public CopyOfBuilder subscribedBills(@Nullable List<String> subscribedBills) {
+     public CopyOfBuilder subscribedBills(List<String> subscribedBills) {
       return (CopyOfBuilder) super.subscribedBills(subscribedBills);
     }
   }

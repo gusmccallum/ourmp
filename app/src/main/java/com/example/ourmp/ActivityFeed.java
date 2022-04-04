@@ -9,11 +9,7 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.amplifyframework.AmplifyException;
-import com.amplifyframework.api.aws.AWSApiPlugin;
-import com.amplifyframework.core.Amplify;
-import com.amplifyframework.datastore.AWSDataStorePlugin;
-import com.amplifyframework.datastore.generated.model.Subscribed;
+import com.amplifyframework.datastore.generated.model.Subscribed2;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -165,7 +161,7 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
     }
 
     @Override
-    public void getSub(Subscribed cbReturnSub) {
+    public void getSub(Subscribed2 cbReturnSub) {
         List<String> subscribedMPs = cbReturnSub.getSubscribedMPs();
         if (subscribedMPs != null) {
             for (int i = 0; i < subscribedMPs.size(); i++) {
