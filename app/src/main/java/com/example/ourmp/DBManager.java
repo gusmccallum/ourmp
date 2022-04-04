@@ -79,6 +79,7 @@ public class DBManager {
                         List<String> MPNames;
                         if (item.getSubscribedMPs() != null) {
                             MPNames = item.getSubscribedMPs();
+                            MPNames.add(MPName);
                         }
                         else {
                             MPNames = new ArrayList<String>();
@@ -112,8 +113,15 @@ public class DBManager {
                 items -> {
                     while (items.hasNext()) {
                         Subscribed2 item = items.next();
-                        List<String> Bills = item.getSubscribedBills();
-                        Bills.add(BillID);
+                        List<String> Bills;
+                        if (item.getSubscribedBills() != null) {
+                            Bills = item.getSubscribedBills();
+                            Bills.add(BillID);
+                        }
+                        else {
+                            Bills = new ArrayList<String>();
+                            Bills.add(BillID);
+                        }
                         Subscribed2 updatedItem = item.copyOfBuilder()
                                 .subscribedBills(Bills)
                                 .build();
