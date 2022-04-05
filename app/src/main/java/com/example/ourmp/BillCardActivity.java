@@ -162,7 +162,7 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
         if (((MainApplication)getApplication()).getLogInStatus() == true) {
             DBManager dbManager = ((MainApplication)getApplication()).getDbManager();
             //if the button = subscribe which means user has not followed the MP yet
-            String url = "https://api.openparliament.ca/bills/" + bill.getBillNum() + "/" + bill.getBillSession() + "/?format=json";
+            String url = "https://api.openparliament.ca/bills/" + bill.getBillSession() + "/" + bill.getBillNum() + "/?format=json";
             if(subscribeBtn.getText().toString().equals("Subscribe")){
                 //follow the MP and change the text to unfollow
                 dbManager.addBillSubscription(url);
