@@ -143,25 +143,25 @@
                 android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:text="Liberal"
-                android:textColor="@color/red"
+                android:textColor="@color/Liberal"
                 android:gravity="center"></TextView>
             <TextView
                 android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:text="Conservative"
-                android:textColor="@color/blue"
+                android:textColor="@color/Conservative"
                 android:gravity="center"></TextView>
             <TextView
                 android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:text="NDP"
-                android:textColor="@color/green"
+                android:textColor="@color/NDP"
                 android:gravity="center"></TextView>
             <TextView
                 android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:text="Green"
-                android:textColor="@color/maroon"
+                android:textColor="@color/green"
                 android:gravity="center"></TextView>
         </LinearLayout>
         <LinearLayout
@@ -175,25 +175,25 @@
                 android:id="@+id/liberal"
                 android:layout_width="90dp"
                 android:layout_height="90dp"
-                android:textColor="@color/red"
+                android:textColor="@color/Liberal"
                 android:gravity="center"></TextView>
             <TextView
                 android:id="@+id/conservative"
                 android:layout_width="90dp"
                 android:layout_height="90dp"
-                android:textColor="@color/blue"
+                android:textColor="@color/Conservative"
                 android:gravity="center"></TextView>
             <TextView
                 android:id="@+id/ndp"
                 android:layout_width="90dp"
                 android:layout_height="90dp"
-                android:textColor="@color/green"
+                android:textColor="@color/NDP"
                 android:gravity="center"></TextView>
             <TextView
                 android:id="@+id/green"
                 android:layout_width="90dp"
                 android:layout_height="90dp"
-                android:textColor="@color/maroon"
+                android:textColor="@color/green"
                 android:gravity="center"></TextView>
         </LinearLayout>
 

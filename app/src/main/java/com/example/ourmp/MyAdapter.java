@@ -44,6 +44,16 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>
         holder.noVote.setText(bill.getNoVotes());
         holder.billDesc.setText(bill.getBillDesc());
 
+        if (billList.get(position).getBillResult().equals("Passed"))
+        {
+            holder.billResult.setTextColor(Color.GREEN);
+        }
+
+        if (billList.get(position).getBillResult().equals("Failed"))
+        {
+            holder.billResult.setTextColor(Color.RED);
+        }
+
         boolean isExpanded = billList.get(position).isExpanded();
         holder.expandableLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
     }

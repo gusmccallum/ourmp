@@ -19,14 +19,14 @@
     <color name="aqua">#00FFFF</color>
     <color name="lime">#00FF00</color>
     <color name="teal">#008080</color>
-    <color name="green">#008000</color>
+    <color name="green">#007143</color>
     <color name="blue">#0000FF</color>
     <color name="navy">#000080</color>
     <color name="OurMPLogo">#3F7819</color>
     <color name="OurMPGrey">#808080</color>
     <color name="OurMPLightGrey">#CCCCCC</color>
-    <color name="NDP">#F58220</color>
-    <color name="Liberal">#D71B1E</color>
-    <color name="Conservative">#1A4682</color>
-    <color name="BlocQuebequois">#42B7BF</color>
+    <color name="NDP">#f58220</color>
+    <color name="Liberal">#d71b1e</color>
+    <color name="Conservative">#0f2d52</color>
+    <color name="BlocQuebequois">#231e56</color>
 </resources>
