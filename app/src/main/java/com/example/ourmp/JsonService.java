@@ -131,7 +131,7 @@ public class JsonService{
                 if(!ballot.equals("Yes") && !ballot.equals("No")){
                     ballot = "";
                 }
-                Ballot newBallot = new Ballot(ballot, mpURL, voteUrl, null, null);
+                Ballot newBallot = new Ballot(ballot, mpURL, voteUrl, null, null, null, null);
                 allBallotFromMP.add(newBallot);
             }
         }catch (JSONException e) {
@@ -166,6 +166,16 @@ public class JsonService{
 
                ballot.setBillNum(str);
            }
+
+           //set bill session
+            if(jsonObject.getString("session").equals("null")){
+                ballot.setSession("null");
+            }
+            else{
+                ballot.setSession(jsonObject.getString("session"));
+            }
+
+            ballot.setDesc(jsonObject.getJSONObject("description").getString("en"));
 
         }catch (JSONException e) {
             e.printStackTrace();
