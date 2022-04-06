@@ -72,12 +72,12 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
             dbManager = ((MainApplication)getApplication()).getDbManager();
             dbManager.getSubscriptionObject();
             dbManager.setSubObjCallbackInstance(this);
-/*
+
             progressDialog = new ProgressDialog(this);
             progressDialog.setCancelable(false);
             progressDialog.setMessage("Loading...");
             progressDialog.show();
-*/
+
 
             //initialize views
             activityList = findViewById(R.id.recyclerView_Bills);
@@ -217,6 +217,7 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
                     activities.add(new Activity(allMPs.get(currentMP).getPhoto(), "MP " + allMPs.get(currentMP).getName(), "Voted " + allBallotFromMP.get(i).getBallot() + " on " + allBallotFromMP.get(i).getBillNum(), allBallotFromMP.get(i).getDate(), ""));
                 }
             }
+            progressDialog.dismiss();
             tempbollotArray.clear();
             allBallotFromMP.clear();
             activities.sort(Comparator.comparing(obj -> obj.activityDate));
