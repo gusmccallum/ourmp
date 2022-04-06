@@ -121,6 +121,14 @@
         app:layout_constraintStart_toStartOf="@+id/LoginEmailLogin_btn"
         app:layout_constraintTop_toBottomOf="@+id/LoginGoogle_btn" />
 
-
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/botNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bot_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

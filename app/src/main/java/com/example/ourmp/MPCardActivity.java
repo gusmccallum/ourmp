@@ -111,6 +111,30 @@ public class MPCardActivity extends BaseActivity
         networkingService.getImageData(mpObj.getPhotoURL());
         networkingService.fetchMoreMPInfo(mpObj.getName());
 
+        /*if (mpParty.getText().toString() == "Conservative")
+        {
+            mpName.setTextColor(getResources().getColor(R.color.Conservative, null));
+        }
+
+        if (mpParty.getText().toString() == "Liberal")
+        {
+            mpName.setTextColor(getResources().getColor(R.color.Liberal, null));
+        }
+
+        if (mpParty.getText().toString() == "NDP")
+        {
+            mpName.setTextColor(getResources().getColor(R.color.NDP, null));
+        }
+
+        if (mpParty.getText().toString() == "Bloc Québécois")
+        {
+            mpName.setTextColor(getResources().getColor(R.color.BlocQuebequois, null));
+        }
+
+        if (mpParty.getText().toString() == "Green")
+        {
+            mpName.setTextColor(getResources().getColor(R.color.green, null));
+        }*/
     }
 
     @Override
