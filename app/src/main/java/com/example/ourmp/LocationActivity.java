@@ -219,4 +219,5 @@ public class LocationActivity extends BaseActivity
     public void APINetworkingListerForImage2(Bitmap image) {
 
     }
+
 }

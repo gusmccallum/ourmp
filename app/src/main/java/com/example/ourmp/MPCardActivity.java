@@ -241,7 +241,7 @@ public class MPCardActivity extends BaseActivity
     }
 
     public void SubscribeBtnClickedInMPCard(View view) {
-        //if(check if logged - yes)
+           //if(check if logged - yes)
         if (((MainApplication)getApplication()).getLogInStatus() == true) {
             DBManager dbManager = ((MainApplication)getApplication()).getDbManager();
             //if the button = subscribe which means user has not followed the MP yet

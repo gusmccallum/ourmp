@@ -101,7 +101,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:visibility="gone"
         android:background="@drawable/btn_bg_sso"
         android:drawableStart="@drawable/ic_google"
         android:text="Log In with Google"

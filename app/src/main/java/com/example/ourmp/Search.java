@@ -250,6 +250,7 @@ public class Search extends BaseActivity implements NetworkingService.Networking
     }
 
     @Override
+
     public void APINetworkingListerForImage2(Bitmap image) {
 
     }
