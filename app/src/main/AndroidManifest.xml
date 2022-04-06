@@ -78,6 +78,9 @@
         <activity android:name=".SignUp" />
         <activity android:name=".LogIn" />
         <activity android:name=".Events" />
+        <activity android:name=".Settings" />
+        <activity android:name=".SettingsBill" />
+        <activity android:name=".SettingsMP" />
     </application>
 
 </manifest>

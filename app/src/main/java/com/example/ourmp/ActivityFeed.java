@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -53,6 +54,7 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
     ArrayList<Ballot> tempbollotArray = new ArrayList<>(0);
     ArrayList<Ballot> validBollotList = new ArrayList<>(0);
     ProgressDialog progressDialog;
+    TextView emptyMessage;
 
 
     @Override

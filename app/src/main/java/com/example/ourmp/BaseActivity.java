@@ -107,7 +107,7 @@ public class BaseActivity extends AppCompatActivity
                 if (item.getItemId() == R.id.settings)
                 {
 
-                    //intent = new Intent(BaseActivity.this, Settings.class);
+                    intent = new Intent(BaseActivity.this, Settings.class);
                 }
 
                 startActivity(intent);
