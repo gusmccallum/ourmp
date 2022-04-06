@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 
@@ -15,7 +17,8 @@ public class Activity  implements Comparable<Activity>, Parcelable {
     String activityStatus;
     String url;
 
-    public Activity(Bitmap pic, String title, String desc, String date, String url){
+    public Activity(@Nullable Bitmap pic, @Nullable String title, @Nullable String desc,
+                    String date, @Nullable String url){
         this.activityPicture = pic;
         this.activityTitle = title;
         this.activityDescription = desc;

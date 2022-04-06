@@ -1,25 +1,28 @@
 package com.example.ourmp;
-import android.content.Intent;
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.amplifyframework.AmplifyException;
-import com.amplifyframework.api.aws.AWSApiPlugin;
-import com.amplifyframework.core.Amplify;
-import com.amplifyframework.datastore.AWSDataStorePlugin;
-import com.amplifyframework.datastore.generated.model.Subscribed;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
+import com.amplifyframework.datastore.generated.model.Subscribed2;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,10 +48,14 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
     ArrayList<Activity> activities = new ArrayList<>();
     ArrayList<MP> allMPs;
     ArrayList<String> mpNames;
+    List<String> subscribedMPs;
     MP mpObj;
     int currentMP = 0;
     ArrayList<Ballot> allBallotFromMP = new ArrayList<>(0);
     ArrayList<Ballot> tempbollotArray = new ArrayList<>(0);
+    ArrayList<Ballot> validBollotList = new ArrayList<>(0);
+    ProgressDialog progressDialog;
+    TextView emptyMessage;
 
 
     @Override
@@ -61,7 +68,12 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
             dbManager = ((MainApplication)getApplication()).getDbManager();
             dbManager.getSubscriptionObject();
             dbManager.setSubObjCallbackInstance(this);
-
+/*
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage("Loading...");
+            progressDialog.show();
+*/
 
             //initialize views
             activityList = findViewById(R.id.recyclerView_Bills);
@@ -129,19 +141,29 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
         activities.sort(Comparator.comparing(obj -> obj.activityDate));
         Collections.reverse(activities);
         recyclerAdapter.notifyDataSetChanged();
-        //adapter = new ActivityFeedBaseAdapter(activities, this);
-        //activityList.setAdapter(adapter);
-
     }
 
     @Override
     public void APIMoreBillInfoListener(String jsonString) {
         Bill temp = jsonService.parseMoreBillInfo(jsonString);
         activities.add(new Activity(null, "Bill " + temp.getBillNum() + " is " + temp.getBillResult(), temp.getBillDesc(), temp.getBillDate(), ""));
+        recyclerAdapter.notifyDataSetChanged();
+        if (subscribedMPs != null) {
+            for (int i = 0; i < subscribedMPs.size(); i++) {
+                currentMP = i;
+                networkingService.fetchMoreMPInfo(subscribedMPs.get(i));
+            }
+        }
+        //progressDialog.dismiss();
     }
 
     @Override
     public void APIParseBillVote(String jsonString) {
+
+    }
+
+    @Override
+    public void APINetworkingListerForImage2(Bitmap image) {
 
     }
 
@@ -165,6 +187,7 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
         allMPs.get(currentMP).setBallotURL(tempMp.getBallotURL());
         new DownloadImage(allMPs.get(currentMP)).execute(allMPs.get(currentMP).getPhotoURL());
         networkingService.fetchBallot(allMPs.get(currentMP).getBallotURL());
+        //VolleyFetchBallotAPI();
     }
 
     @Override
@@ -173,7 +196,6 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
         for(int i=0; i<allBallotFromMP.size(); i++){
             networkingService.fetchVote(allBallotFromMP.get(i).getVoteURL());
         }
-
     }
 
     @Override
@@ -186,14 +208,17 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
                 allBallotFromMP.get(i).setDate(tempbollotArray.get(i).getDate());
             }
 
-            for(int i=0; i<allBallotFromMP.size(); i++){
-                activities.add(new Activity(allMPs.get(currentMP).getPhoto(), "MP " + allMPs.get(currentMP).getName(), "Voted " + allBallotFromMP.get(i).getBallot() + " on " + allBallotFromMP.get(i).getBillNum(), allBallotFromMP.get(i).getDate(), ""));
+            for(int i=0; i<allBallotFromMP.size(); i++) {
+                if (!allBallotFromMP.get(i).getBillNum().equals("null")) {
+                    activities.add(new Activity(allMPs.get(currentMP).getPhoto(), "MP " + allMPs.get(currentMP).getName(), "Voted " + allBallotFromMP.get(i).getBallot() + " on " + allBallotFromMP.get(i).getBillNum(), allBallotFromMP.get(i).getDate(), ""));
+                }
             }
             tempbollotArray.clear();
             allBallotFromMP.clear();
             activities.sort(Comparator.comparing(obj -> obj.activityDate));
             Collections.reverse(activities);
             recyclerAdapter.notifyDataSetChanged();
+            //progressDialog.dismiss();
         }
     }
 
@@ -202,25 +227,14 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
     }
 
     @Override
-    public void getSub(Subscribed cbReturnSub) {
-        List<String> subscribedMPs = cbReturnSub.getSubscribedMPs();
-        if (subscribedMPs != null) {
-            for (int i = 0; i < subscribedMPs.size(); i++) {
-                currentMP = i;
-                networkingService.fetchMoreMPInfo(subscribedMPs.get(i));
-            }
-        }
-
+    public void getSub(Subscribed2 cbReturnSub) {
+        subscribedMPs = cbReturnSub.getSubscribedMPs();
         List<String> subscribedBills = cbReturnSub.getSubscribedBills();
         if (subscribedBills != null){
             for(int i = 0; i < subscribedBills.size(); i++){
                 networkingService.fetchMoreBillInfo(subscribedBills.get(i));
             }
         }
-
-        activities.sort(Comparator.comparing(obj -> obj.activityDate));
-        Collections.reverse(activities);
-        recyclerAdapter.notifyDataSetChanged();
     }
 
     public static class DownloadImage extends AsyncTask<String, Void, Bitmap> {
@@ -247,4 +261,5 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
             member.setPhoto(result);
         }
     }
+
 }

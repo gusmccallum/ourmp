@@ -1,29 +1,17 @@
 package com.example.ourmp;
 
-import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.amplifyframework.datastore.generated.model.Subscribed;
-
-import org.w3c.dom.Text;
+import com.amplifyframework.datastore.generated.model.Subscribed2;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 public class BillCardActivity extends BaseActivity implements NetworkingService.NetworkingListener, DBManager.subObjCallback{
     NetworkingService networkingService;
@@ -38,6 +26,7 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
     Button compareBtn;
     Button subscribeBtn;
     ArrayList<PartyVote> partyVotes = new ArrayList<>();
+    ArrayList<Activity> activitiesBills = new ArrayList<>(0);
     RelativeLayout comparedBillView;
     RelativeLayout noVoteView;
 
@@ -59,13 +48,12 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
             dbManager.getSubscriptionObject();
             dbManager.setSubObjCallbackInstance(this);
         }
+
         networkingService = ( (MainApplication)getApplication()).getNetworkingService();
         jsonService = ( (MainApplication)getApplication()).getJsonService();
+        networkingService.listener = this;
         dbManager = ((MainApplication) getApplication()).getDbManager();
         dbManager.setSubObjCallbackInstance(BillCardActivity.this);
-        networkingService.listener = this;
-
-
 
         billTitle = findViewById(R.id.bill_number);
         billDesc = findViewById(R.id.bill_desc);
@@ -82,9 +70,6 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
         progressBar = findViewById(R.id.progressBar);
 
         networkingService.fetchMoreBillInfo(activity.url);
-
-
-
     }
 
     @Override
@@ -124,6 +109,11 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
     @Override
     public void APIMoreBillInfoListener(String jsonString) {
         bill = jsonService.parseMoreBillInfo(jsonString);
+        if(bill.getBillResult().equals("")){
+            bill.setBillDate(activity.activityDate);
+            bill.setBillDesc(activity.activityDescription);
+            bill.setBillResult("unknown");
+        }
         billTitle.setText("Bill Number: " + bill.getBillNum());
         String description = "Session: " + bill.getBillSession() + "\nStatus: " + bill.getBillResult() + "\nDate: " + bill.getBillDate();
         billDesc.setText(description);
@@ -157,6 +147,11 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
         progressBar.setProgress(countYes);
     }
 
+    @Override
+    public void APINetworkingListerForImage2(Bitmap image) {
+
+    }
+
     public void clickCompareButton(View view){
         if(bill.getVoteURl() == ""){
             noVoteView.setVisibility(View.VISIBLE);
@@ -169,7 +164,7 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
         if (((MainApplication)getApplication()).getLogInStatus() == true) {
             DBManager dbManager = ((MainApplication)getApplication()).getDbManager();
             //if the button = subscribe which means user has not followed the MP yet
-            String url = "https://api.openparliament.ca/bills/" + bill.getBillNum() + "/" + bill.getBillSession() + "/?format=json";
+            String url = "https://api.openparliament.ca/bills/" + bill.getBillSession() + "/" + bill.getBillNum() + "/?format=json";
             if(subscribeBtn.getText().toString().equals("Subscribe")){
                 //follow the MP and change the text to unfollow
                 dbManager.addBillSubscription(url);
@@ -191,7 +186,7 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
     }
 
     @Override
-    public void getSub(Subscribed cbReturnSub) {
+    public void getSub(Subscribed2 cbReturnSub) {
 
     }
 }

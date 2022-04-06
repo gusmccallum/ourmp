@@ -24,6 +24,17 @@ android {
         }
     }
 
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
+
 
 
     compileOptions {
@@ -39,7 +50,20 @@ realm{
     syncEnabled = true
 }
 
+
+
 dependencies {
+
+
+    // Google SSO
+    implementation 'com.google.android.gms:play-services-auth:20.1.0'
+
+    // Google REST API Dependencies
+    implementation 'com.google.api-client:google-api-client:1.30.5'
+    implementation 'com.google.api-client:google-api-client-android:1.30.5'
+    implementation 'com.google.apis:google-api-services-people:v1-rev99-1.22.0'
+
+
 
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.4.0'
@@ -53,9 +77,9 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:19.0.1'
 
     // Amplify plugins
-    implementation 'com.amplifyframework:core:1.6.5'
-    implementation 'com.amplifyframework:aws-api:1.6.5'
-    implementation 'com.amplifyframework:aws-datastore:1.6.5'
+    implementation 'com.amplifyframework:core:1.33.0'
+    implementation 'com.amplifyframework:aws-api:1.33.0'
+    implementation 'com.amplifyframework:aws-datastore:1.33.0'
 
     // Support for Java 8 features
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.10'

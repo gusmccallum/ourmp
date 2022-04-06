@@ -9,23 +9,40 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 
 import io.realm.mongodb.App;
 import io.realm.mongodb.Credentials;
 import io.realm.mongodb.User;
+import io.realm.mongodb.auth.GoogleAuthType;
 
 public class LogIn extends BaseActivity {
 
     Button btn_logInEmail;
-    Button btn_logInGoogle;
+    SignInButton btn_logInGoogle;
     Button btn_logInFacebook;
     EditText edit_email;
     EditText edit_password;
+
+    GoogleSignInClient googleSignInClient;
+
+    ActivityResultLauncher<Intent> resultLauncher;
+
+    private static final int RC_SIGN_IN = 9001;
+    private static final String TAG = "LogIn";
 
 
 
@@ -33,6 +50,26 @@ public class LogIn extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         replaceContentLayout(R.layout.activity_login);
+
+        //Set up Google SSO options
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.server_client_id))
+                .requestEmail()
+                .build();
+
+        googleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        resultLauncher =
+                registerForActivityResult(
+                        new ActivityResultContracts.StartActivityForResult(),
+                        new ActivityResultCallback<ActivityResult>() {
+                            @Override
+                            public void onActivityResult(ActivityResult result) {
+                                Task<GoogleSignInAccount> task =
+                                        GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                                handleSignInResult(task);
+                            }
+                        });
 
         edit_email = (EditText) findViewById(R.id.LoginEmail_edit);
         edit_password = (EditText) findViewById(R.id.LoginPassword_edit);
@@ -57,7 +94,8 @@ public class LogIn extends BaseActivity {
             }
         });
 
-        btn_logInGoogle = (Button) findViewById(R.id.LoginGoogle_btn);
+        btn_logInGoogle = findViewById(R.id.LoginGoogle_btn);
+        btn_logInGoogle.setSize(SignInButton.SIZE_WIDE);
         btn_logInGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,8 +174,38 @@ public class LogIn extends BaseActivity {
 
     }
 
+
+    // Google SSO Methods
+
     private void logUserInGoogle() {
-    //TODO: SSO Google Login
+        Intent signInIntent = googleSignInClient.getSignInIntent();
+
+        resultLauncher.launch(signInIntent);
+    }
+
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            if (completedTask.isSuccessful()) {
+                GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+                String token = account.getIdToken();
+                Credentials googleCredentials =
+                        Credentials.google(token, GoogleAuthType.ID_TOKEN);
+                ((MainApplication)getApplication()).getRealmApp().loginAsync(googleCredentials, it -> {
+                    if (it.isSuccess()) {
+                        Log.v("AUTH",
+                                "Successfully logged in to MongoDB Realm using Google OAuth.");
+                    } else {
+                        Log.e("AUTH",
+                                "Failed to log in to MongoDB Realm: ", it.getError());
+                    }
+                });
+            } else {
+                Log.e("AUTH", "Google Auth failed: "
+                        + completedTask.getException().toString());
+            }
+        } catch (ApiException e) {
+            Log.w("AUTH", "Failed to log in with Google OAuth: " + e.getMessage());
+        }
     }
 
     private void logUserInFacebook() {

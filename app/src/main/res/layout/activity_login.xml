@@ -96,14 +96,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/LoginEmailLogin_btn" />
 
-    <Button
+
+    <com.google.android.gms.common.SignInButton
         android:id="@+id/LoginGoogle_btn"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:visibility="gone"
         android:background="@drawable/btn_bg_sso"
-        android:drawableStart="@drawable/ic_google"
         android:text="Log In with Google"
         app:layout_constraintEnd_toEndOf="@+id/LoginEmailLogin_btn"
         app:layout_constraintStart_toStartOf="@+id/LoginEmailLogin_btn"

@@ -17,8 +17,8 @@ import java.util.concurrent.Executors;
 public class NetworkingService {
     String findMPURL = "https://represent.opennorth.ca/representatives/house-of-commons/?point=";
 
-    //String listOfBills = "https://api.openparliament.ca/bills/?session=44-1&format=json&limit=100";
-    String listOfBills = "https://api.openparliament.ca/bills/?introduced__gt=2021-01-01&format=json";
+    String listOfBills = "https://api.openparliament.ca/bills/?session=44-1&format=json&limit=100";
+    //String listOfBills = "https://api.openparliament.ca/bills/?introduced__gt=2021-01-01&format=json";
     String listOfMPs = "https://represent.opennorth.ca/representatives/house-of-commons/?limit=50";
 
 
@@ -45,6 +45,7 @@ public class NetworkingService {
         void APIBillsListener(String jsonString); //status = 5
         void APIMoreBillInfoListener(String jsonString); //status = 6
         void APIParseBillVote(String jsonString);
+        void APINetworkingListerForImage2(Bitmap image);
     }
 
     NetworkingListener listener;
@@ -190,6 +191,29 @@ public class NetworkingService {
                         @Override
                         public void run() {
                             listener.APINetworkingListerForImage(imageData);
+                        }
+                    });
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+    public void getImageData2(String imgURL){
+        String completeURL = imgURL;
+        networkingExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL urlObj = new URL(completeURL);
+                    InputStream in = ((InputStream)urlObj.getContent());
+                    Bitmap imageData = BitmapFactory.decodeStream(in);
+                    networkHander.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            listener.APINetworkingListerForImage2(imageData);
                         }
                     });
                 } catch (MalformedURLException e) {
