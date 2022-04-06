@@ -137,6 +137,11 @@ public class LocationActivity extends BaseActivity
 
     }
 
+    @Override
+    public void APINetworkingListerForImage2(Bitmap image) {
+
+    }
+
 
     public void ClosedBtnClicked(View view) {
         //when close button clicked, set the mp card invisible and bring to the back

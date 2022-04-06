@@ -193,6 +193,11 @@ public class MPCardActivity extends BaseActivity
 
     }
 
+    @Override
+    public void APINetworkingListerForImage2(Bitmap image) {
+
+    }
+
     public void SNSBtnClicked(View view){
         if (mpObj.getTwitter().isEmpty()) {
             Toast.makeText(this, "No Twitter found for MP.", Toast.LENGTH_SHORT).show();
