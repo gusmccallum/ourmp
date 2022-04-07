@@ -136,6 +136,7 @@ public class SignUp extends BaseActivity {
                             DBManager dbManager = ((MainApplication)getApplication()).getDbManager();
                             dbManager.setUserID(((MainApplication)getApplication()).getRealmApp().currentUser().getId());
                             dbManager.addNewUserSubscription();
+                            dbManager.getSubscriptionObject();
 
                             Intent homeIntent = new Intent();
                             homeIntent.setClass(getApplicationContext(), MainActivity.class);
