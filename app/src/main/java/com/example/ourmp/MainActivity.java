@@ -15,6 +15,7 @@ public class MainActivity extends BaseActivity {
     Button btn_activityFeed;
     Button btn_signup;
     Button btn_login;
+    Button btn_event;
     Button btn_create;
     Button btn_read;
     Button btn_update;
