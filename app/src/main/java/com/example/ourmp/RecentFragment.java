@@ -53,7 +53,7 @@ public  class RecentFragment extends Fragment
 
     private void initData()
     {
-        String url = "https://api.openparliament.ca/votes/?session=44-1&format=json";
+        String url = "https://api.openparliament.ca/votes/?session=43-2&format=json";
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>()
         {
