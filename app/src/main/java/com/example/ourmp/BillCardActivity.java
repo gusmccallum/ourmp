@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.amplifyframework.datastore.generated.model.Subscribed2;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BillCardActivity extends BaseActivity implements NetworkingService.NetworkingListener, DBManager.subObjCallback{
     NetworkingService networkingService;
@@ -187,6 +188,25 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
 
     @Override
     public void getSub(Subscribed2 cbReturnSub) {
+        List<String> subscribedBills = cbReturnSub.getSubscribedBills();
+        if (subscribedBills != null) {
+            runOnUiThread(() -> {
+                for (int i = 0; i < subscribedBills.size(); i++) {
+                    String[] temp = subscribedBills.get(i).split("/");
+                    String billNum = temp[5];
+                    String[] temp2 = activity.activityTitle.split(" ");
+                    String currentBillNum = temp2[0];
+                    if (currentBillNum.equals(billNum)) {
+                        if (subscribeBtn.getText().toString().equals("Subscribe")) {
+                            subscribeBtn.setText("Unsubscribe");
+                        }
+                    }
+                    else {
+                        subscribeBtn.setText("Subscribe");
+                    }
+                }
 
+            });
+        }
     }
 }
