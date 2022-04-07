@@ -185,7 +185,7 @@ public class MPCardActivity extends BaseActivity
                 }
 
                 ArrayList<Ballot> shortBallotList = new ArrayList<>(0);
-                if(validBollotList.size() > 5){
+                if(validBollotList.size() > 3){
                     for(int j=0; j<5; j++){
                         shortBallotList.add(validBollotList.get(j));
                     }
