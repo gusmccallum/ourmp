@@ -22,6 +22,13 @@ public class ActivityFeedRecyclerAdapter  extends
         RecyclerView.Adapter<ActivityFeedRecyclerAdapter.ActivityFeedViewHolder> {
     ArrayList<Activity> activities;
     Context context;
+
+    public interface AdapterCallback {
+        void onMethodCallback(Activity yourValue);
+    }
+
+    private ActivityFeedRecyclerAdapter.AdapterCallback mAdapterCallback;
+
     public ActivityFeedRecyclerAdapter(ArrayList<Activity> list, Context context){
         this.activities = list;
         this.context = context;
@@ -44,6 +51,9 @@ public class ActivityFeedRecyclerAdapter  extends
 
     @Override
     public void onBindViewHolder(@NonNull ActivityFeedRecyclerAdapter.ActivityFeedViewHolder holder, final int i) {
+        this.mAdapterCallback = ((ActivityFeedRecyclerAdapter.AdapterCallback) context);
+        final Activity bill = activities.get(i);
+
         if(activities.get(i).activityPicture != null){
             holder.activityPicture.setImageBitmap(activities.get(i).activityPicture);
         }else{
@@ -56,6 +66,7 @@ public class ActivityFeedRecyclerAdapter  extends
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mAdapterCallback.onMethodCallback(bill);
                 Intent intent = new Intent(context, BillCardActivity.class);
                 intent.putExtra("bill", temp);
                 context.startActivity(intent);

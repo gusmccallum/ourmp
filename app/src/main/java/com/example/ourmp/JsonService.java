@@ -157,7 +157,7 @@ public class JsonService{
 
             //set bill number if there is info
            if(jsonObject.getString("bill_url").equals("null")){
-               ballot.setBillNum("null");
+               ballot.setBillNum("empty");
            }
            else{
                String str = jsonObject.getString("bill_url");
@@ -212,7 +212,8 @@ public class JsonService{
             String number = jsonObject.getString("number");
             String session = jsonObject.getString("session");
             String date = jsonObject.getString("introduced");
-            String result = jsonObject.getString("status_code");
+            //String result = jsonObject.getString("status_code");
+            String result = jsonObject.getJSONObject("status").getString("en");
             String desc = jsonObject.getJSONObject("name").getString("en");
 
             JSONArray voteURLs = jsonObject.getJSONArray("vote_urls");
