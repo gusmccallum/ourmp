@@ -153,7 +153,7 @@ public class CompareMPActivity extends BaseActivity
             //copy all date and bill number
             for(int i=0; i<allBallotFromMP.size(); i++){
 
-                if(!tempbollotArray.get(i).getBillNum().equals("null")){
+                if(!tempbollotArray.get(i).getBillNum().equals("empty")){
                     allBallotFromMP.get(i).setBillNum(tempbollotArray.get(i).getBillNum());
                     allBallotFromMP.get(i).setDate(tempbollotArray.get(i).getDate());
 
