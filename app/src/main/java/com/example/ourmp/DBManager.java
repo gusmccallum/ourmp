@@ -2,7 +2,10 @@ package com.example.ourmp;
 
 
 
+import android.content.Context;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.core.model.query.Where;
@@ -14,6 +17,7 @@ import java.util.List;
 public class DBManager {
 
     String userID = "";
+    //DBInterface mCallback;
 
     public void setUserID(String ID) {
         userID = ID;
@@ -60,6 +64,7 @@ public class DBManager {
                         Subscribed2 item = items.next();
                         Log.i("Amplify", "Id: " + item.getId() + " - User ID: " + item.getUserId());
                         subObjCallbackInstance.getSub(item);
+                        //mCallback.getDBCallback(item);
                     }
                 },
                 failure -> {
@@ -245,6 +250,7 @@ public class DBManager {
                 }
         );
     }
+
 
 }
 

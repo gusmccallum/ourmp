@@ -34,7 +34,7 @@ public class BallotsAdapter extends RecyclerView.Adapter<BallotsAdapter.TasksVie
 
         if(ballot.getBallot().equals("")){
             holder.voted_txt.setText("");
-            holder.ballot_txt.setText("Didn't vote on ");
+            holder.ballot_txt.setText("Didn't vote");
         }
         else{
             holder.ballot_txt.setText(ballot.getBallot());
