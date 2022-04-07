@@ -157,7 +157,7 @@ public class JsonService{
 
             //set bill number if there is info
            if(jsonObject.getString("bill_url").equals("null")){
-               ballot.setBillNum("null");
+               ballot.setBillNum("empty");
            }
            else{
                String str = jsonObject.getString("bill_url");
