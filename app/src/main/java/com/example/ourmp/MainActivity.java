@@ -63,6 +63,7 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+        /*
         btn_activityFeed = (Button)findViewById(R.id.MainActivityFeed_btn);
         btn_activityFeed.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +82,7 @@ public class MainActivity extends BaseActivity {
                 signUpIntent.setClass(getApplicationContext(), SignUp.class);
                 startActivity(signUpIntent);
             }
-        });
+        }); */
 
         btn_login = (Button)findViewById(R.id.MainLogIn_btn);
         btn_login.setOnClickListener(new View.OnClickListener() {

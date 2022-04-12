@@ -45,7 +45,6 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
 
     //Views
     RecyclerView activityList;
-    ActivityFeedBaseAdapter adapter;
     ActivityFeedRecyclerAdapter recyclerAdapter;
 
     //Variables holding data
@@ -72,11 +71,13 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
             dbManager = ((MainApplication)getApplication()).getDbManager();
             dbManager.getSubscriptionObject();
             dbManager.setSubObjCallbackInstance(this);
-
+            /*
             progressDialog = new ProgressDialog(this);
             progressDialog.setCancelable(false);
             progressDialog.setMessage("Loading...");
             progressDialog.show();
+
+             */
 
 
             //initialize views

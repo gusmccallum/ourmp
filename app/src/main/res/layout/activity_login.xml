@@ -104,6 +104,8 @@
         android:layout_marginTop="40dp"
         android:background="@drawable/btn_bg_sso"
         android:text="Log In with Google"
+
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="@+id/LoginEmailLogin_btn"
         app:layout_constraintStart_toStartOf="@+id/LoginEmailLogin_btn"
         app:layout_constraintTop_toBottomOf="@+id/LoginTitle3_txt" />
