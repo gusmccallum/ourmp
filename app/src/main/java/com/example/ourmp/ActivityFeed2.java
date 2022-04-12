@@ -168,6 +168,7 @@ public class ActivityFeed2 extends BaseActivity implements DBManager.subObjCallb
                     String date = BillObject.getString("LatestBillEventDateTime");
                     String billSponsorName = BillObject.getString("SponsorPersonOfficialFirstName") + "%20" + BillObject.getString("SponsorPersonOfficialLastName");
                     Activity newBillActivity = new Activity(null, title, description, status, date, billSponsorName);
+                    activities.add(newBillActivity);
                 }
 
                 catch (JSONException e)
