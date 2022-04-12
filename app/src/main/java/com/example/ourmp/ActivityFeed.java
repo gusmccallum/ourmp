@@ -21,6 +21,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -60,15 +62,15 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
     ArrayList<Ballot> validBollotList = new ArrayList<>(0);
     ProgressDialog progressDialog;
     TextView emptyMessage;
+    private RequestQueue mRequestQueue;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         replaceContentLayout(R.layout.activity_feed);
-
-        //check if user log in or not
         if (((MainApplication)getApplication()).getLogInStatus() == true) {
+        //check if user log in or not
             dbManager = ((MainApplication)getApplication()).getDbManager();
             dbManager.getSubscriptionObject();
             dbManager.setSubObjCallbackInstance(this);
@@ -89,6 +91,9 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
             networkingService = ( (MainApplication)getApplication()).getNetworkingService();
             jsonService = ( (MainApplication)getApplication()).getJsonService();
             networkingService.listener = this;
+
+            mRequestQueue = Volley.newRequestQueue(this);
+
 
         }else{
             Toast.makeText(this, "Sign in to view Activity Feed", Toast.LENGTH_SHORT).show();
@@ -152,12 +157,6 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
         Bill temp = jsonService.parseMoreBillInfo(jsonString);
         activities.add(new Activity(null, "Bill " + temp.getBillNum() + " is " + temp.getBillResult(), temp.getBillDesc(), temp.getBillDate(), ""));
         recyclerAdapter.notifyDataSetChanged();
-        if (subscribedMPs != null) {
-            for (int i = 0; i < subscribedMPs.size(); i++) {
-                currentMP = i;
-                networkingService.fetchMoreMPInfo(subscribedMPs.get(i));
-            }
-        }
         //progressDialog.dismiss();
     }
 
@@ -222,7 +221,6 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
             activities.sort(Comparator.comparing(obj -> obj.activityDate));
             Collections.reverse(activities);
             recyclerAdapter.notifyDataSetChanged();
-            //progressDialog.dismiss();
         }
     }
 
@@ -232,11 +230,20 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
 
     @Override
     public void getSub(Subscribed2 cbReturnSub) {
-        subscribedMPs = cbReturnSub.getSubscribedMPs();
+
         List<String> subscribedBills = cbReturnSub.getSubscribedBills();
         if (subscribedBills != null){
-            for(int i = 0; i < subscribedBills.size(); i++){
-                networkingService.fetchMoreBillInfo(subscribedBills.get(i));
+            fetchBills(subscribedBills);
+        }
+
+
+
+//progressDialog.dismiss();
+        List<String> subscribedMPs = cbReturnSub.getSubscribedMPs();
+        if (subscribedMPs != null) {
+            for (int i = 0; i < subscribedMPs.size(); i++) {
+                currentMP = i;
+                networkingService.fetchMoreMPInfo(subscribedMPs.get(i));
             }
         }
     }
@@ -266,4 +273,41 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
         }
     }
 
+    private void fetchBills(List<String> billNums)
+    {
+        for(int i=0; i<billNums.size();i++) {
+            String url = "https://www.parl.ca/legisinfo/en/bill/44-1/" + billNums.get(i) + "/json";
+
+            JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                @Override
+                public void onResponse(JSONArray response) {
+                    try {
+                        JSONArray BillsArray = response;
+
+                        for (int i = 0; i < BillsArray.length(); i++) {
+                            JSONObject BillObject = BillsArray.getJSONObject(i);
+                            String billNum = BillObject.getString("NumberCode");
+                            String billSession = BillObject.getString("ParliamentNumber") + "-" + BillObject.getString("SessionNumber");
+                            String date = BillObject.getString("LatestBillEventDateTime");
+                            String billResult = BillObject.getString("StatusNameEn") + " after " + BillObject.getString("LatestCompletedMajorStageNameWithChamberSuffix");
+                            String billSponsorName = BillObject.getString("SponsorPersonOfficialFirstName") + " " + BillObject.getString("SponsorPersonOfficialLastName");
+                            String description = BillObject.getString("LongTitleEn");
+                            activities.add(new Activity(null, "Bill " + billNum + " in session " + billSession, "Bill is " + billResult + "." + description + ". Sponsored by " + billSponsorName + ".", "Updated: " + date, ""));
+
+                        }
+                        recyclerAdapter.notifyDataSetChanged();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                }
+            });
+
+            mRequestQueue.add(request);
+        }
+    }
 }
