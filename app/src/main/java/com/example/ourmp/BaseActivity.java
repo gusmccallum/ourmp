@@ -82,11 +82,6 @@ public class BaseActivity extends AppCompatActivity
                      intent = new Intent(BaseActivity.this, Search.class);
                 }
 
-                if (item.getItemId() == R.id.signup)
-                {
-                    intent = new Intent(BaseActivity.this, SignUp.class);
-                }
-
                 if (item.getItemId() == R.id.login)
                 {
                     if (logInLogOut.getTitle().equals("Log In")) {

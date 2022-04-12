@@ -148,7 +148,7 @@ public class SignUp extends BaseActivity {
                         else
                         {
                             Log.v("User","Failed to Login");
-                            Toast.makeText(getBaseContext(), "User login failed. Error: ", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getBaseContext(), "User login failed. Error: " + result.getError().getErrorMessage().toString(), Toast.LENGTH_LONG).show();
                         }
                     }
                 });
@@ -158,7 +158,7 @@ public class SignUp extends BaseActivity {
             else
             {
                 Log.v("User","Registration Failed");
-                Toast.makeText(getApplicationContext(), "Error creating account.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Error creating account."+ it.getError().getErrorMessage().toString(), Toast.LENGTH_LONG).show();
             }
         });
 
