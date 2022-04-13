@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,12 +37,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class ActivityFeed extends BaseActivity implements NetworkingService.NetworkingListener, DBManager.subObjCallback {
+public class ActivityFeed extends BaseActivity implements DBManager.subObjCallback {
 
-    //Services
-    NetworkingService networkingService;
-    JsonService jsonService;
-    DBManager dbManager;
 
     //Views
     RecyclerView activityList;
@@ -58,13 +55,24 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
     ArrayList<Ballot> tempbollotArray = new ArrayList<>(0);
     ArrayList<Ballot> validBollotList = new ArrayList<>(0);
     ProgressDialog progressDialog;
+<<<<<<< Updated upstream
     TextView emptyMessage;
+=======
+    private RequestQueue mpRequestQueue;
+    private RequestQueue billRequestQueue;
+
+    //TextView
+    TextView emptyStatus_txt;
+
+
+>>>>>>> Stashed changes
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         replaceContentLayout(R.layout.activity_feed);
+<<<<<<< Updated upstream
 
         //check if user log in or not
         if (((MainApplication)getApplication()).getLogInStatus() == true) {
@@ -78,6 +86,17 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
             progressDialog.show();
 
              */
+=======
+        if (((MainApplication)getApplication()).getLogInStatus() == true) {
+
+            emptyStatus_txt = (TextView) findViewById(R.id.ActivityFeedEmpty_txt);
+
+        //check if user log in or not
+            DBManager dbManager = ((MainApplication)getApplication()).getDbManager();
+            dbManager.getSubscriptionObject();
+            dbManager.setSubObjCallbackInstance(this);
+
+>>>>>>> Stashed changes
 
 
             //initialize views
@@ -86,11 +105,18 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
             activityList.setAdapter(recyclerAdapter);
             activityList.setLayoutManager(new LinearLayoutManager(this));
 
-            //initialize networking service and json service
-            networkingService = ( (MainApplication)getApplication()).getNetworkingService();
-            jsonService = ( (MainApplication)getApplication()).getJsonService();
-            networkingService.listener = this;
 
+<<<<<<< Updated upstream
+=======
+
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage("Loading...");
+            //progressDialog.show();
+
+            mpRequestQueue = Volley.newRequestQueue(this);
+            billRequestQueue = Volley.newRequestQueue(this);
+>>>>>>> Stashed changes
         }else{
             Toast.makeText(this, "Sign in to view Activity Feed", Toast.LENGTH_SHORT).show();
         }
@@ -162,20 +188,6 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
         //progressDialog.dismiss();
     }
 
-    @Override
-    public void APIParseBillVote(String jsonString) {
-
-    }
-
-    @Override
-    public void APINetworkingListerForImage2(Bitmap image) {
-
-    }
-
-
-    @Override
-    public void APINetworkingListerForImage(Bitmap image) {
-    }
 
     @Override
     public void APIMPMoreInfoListener(String jsonString) {
@@ -223,6 +235,10 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
             allBallotFromMP.clear();
             activities.sort(Comparator.comparing(obj -> obj.activityDate));
             Collections.reverse(activities);
+<<<<<<< Updated upstream
+=======
+            //progressDialog.dismiss();
+>>>>>>> Stashed changes
             recyclerAdapter.notifyDataSetChanged();
             //progressDialog.dismiss();
         }
@@ -236,9 +252,26 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
     public void getSub(Subscribed2 cbReturnSub) {
         subscribedMPs = cbReturnSub.getSubscribedMPs();
         List<String> subscribedBills = cbReturnSub.getSubscribedBills();
+<<<<<<< Updated upstream
         if (subscribedBills != null){
             for(int i = 0; i < subscribedBills.size(); i++){
                 networkingService.fetchMoreBillInfo(subscribedBills.get(i));
+=======
+        List<String> subscribedMPs = cbReturnSub.getSubscribedMPs();
+
+        if (subscribedBills.size() == 0 && subscribedMPs.size() == 0) {
+            runOnUiThread(() -> {
+                emptyStatus_txt.setVisibility(View.VISIBLE);
+            });
+
+        }
+        else {
+            if (subscribedBills != null){
+                fetchBills(subscribedBills);
+            }
+            if (subscribedMPs != null) {
+                fetchMPVotes(subscribedMPs);
+>>>>>>> Stashed changes
             }
         }
     }
@@ -268,4 +301,125 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
         }
     }
 
+<<<<<<< Updated upstream
+=======
+    private void fetchBills(List<String> billNums)
+    {
+        for(int i=0; i<billNums.size();i++) {
+            String url = "https://www.parl.ca/legisinfo/en/bill/44-1/" + billNums.get(i) + "/json";
+
+            JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                @Override
+                public void onResponse(JSONArray response) {
+                    try {
+                        JSONArray BillsArray = response;
+
+                        for (int i = 0; i < BillsArray.length(); i++) {
+                            JSONObject BillObject = BillsArray.getJSONObject(i);
+                            String billNum = BillObject.getString("NumberCode");
+                            String billSession = BillObject.getString("ParliamentNumber") + "-" + BillObject.getString("SessionNumber");
+                            String date = BillObject.getString("LatestBillEventDateTime");
+                            String billResult = BillObject.getString("StatusNameEn") + " after " + BillObject.getString("LatestCompletedMajorStageNameWithChamberSuffix");
+                            String billSponsorName = BillObject.getString("SponsorPersonOfficialFirstName") + " " + BillObject.getString("SponsorPersonOfficialLastName");
+                            String description = BillObject.getString("LongTitleEn");
+                            billActivities.add(new Activity(null, "Bill " + billNum + " in session " + billSession, "Bill is " + billResult + "." + description + ". Sponsored by " + billSponsorName + ".", "Updated: " + date, ""));
+
+                        }
+                        for(int i=0; i<billActivities.size();i++){
+                            activities.add(billActivities.get(i));
+                        }
+                        recyclerAdapter.notifyDataSetChanged();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                }
+            });
+            billRequestQueue.add(request);
+        }
+    }
+
+    private void fetchMPVotes(List<String> MPs) {
+        for(int i=0; i<MPs.size();i++) {
+
+            String formattedName = formatName(MPs.get(i), "-");
+
+            String url = "https://www.ourcommons.ca/Members/en/" + formattedName + "(" + ((MainApplication)getApplication()).getMPId(MPs.get(i)) + ")/votes/xml";
+
+            StringRequest request = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+
+                        }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+
+                            }
+
+                    });
+        }
+
+    }
+
+
+    public String formatName(String fullName, String replacement){
+
+        String formattedStr;
+
+        if(fullName.equals("Robert J. Morrissey")){
+            formattedStr = "Bobby Morrissey";
+        }
+        else if(fullName.equals("Candice Bergen")){
+            formattedStr = "Candice Hoeppner";
+        }
+        else{
+
+            formattedStr = fullName;
+            if(fullName.equals("Harjit S. Sajjan")){
+                formattedStr = "Harjit S Sajjan";
+            }
+            //change all non-enlgish letter to english
+            formattedStr = formattedStr.replace("\u00e9", "e")
+                    .replace("\u00e8", "e")
+                    .replace("\u00e7", "c")
+                    .replace("\u00c9", "e")
+                    .replace("\u00eb", "e");
+            //remove all '
+            formattedStr = formattedStr.replace("'", "");
+            //remove middle name with dot(.)
+            int dot = formattedStr.indexOf(".");
+            if(dot > -1){
+                //ex - Michael V. McLeod, dot=9
+                String s2 = formattedStr.substring(dot+1); //" McLeod"
+                String s1 = formattedStr.substring(0, dot-2); // "Michael"
+                formattedStr = s1+s2; //"Michael McLeod"
+            }
+        }
+
+        //replace white space with replacement - or %20
+        if(formattedStr.contains(" ")) {
+            String[] splitStr = formattedStr.trim().split("\\s+");
+            //ex) Adam, van, Koeverden
+            String str="";
+            for(int i=0; i<splitStr.length; i++){ //3
+                if(i == splitStr.length-1){
+                    str += splitStr[i]; //str = Adam-van-Koeverdeny
+                }
+                else{
+                    str += splitStr[i]+replacement; //str = Adam-van-
+                }
+            }
+            formattedStr = str;
+        }
+
+        return formattedStr;
+    }
+>>>>>>> Stashed changes
 }
