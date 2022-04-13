@@ -43,6 +43,16 @@ public class MainActivity extends BaseActivity {
 
         // Main Activity Buttons
 
+        btn_activityFeed = (Button) findViewById(R.id.MainActivityFeed_btn);
+        btn_activityFeed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent activityFeedIntent = new Intent();
+                activityFeedIntent.setClass(getApplicationContext(), ActivityFeed.class);
+                startActivity(activityFeedIntent);
+            }
+        });
+
         btn_findMP = (Button) findViewById(R.id.MainFindMP_btn);
         btn_findMP.setOnClickListener(new View.OnClickListener() {
             @Override
