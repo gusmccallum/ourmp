@@ -1,9 +1,11 @@
 package com.example.ourmp;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -15,10 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amplifyframework.datastore.generated.model.Subscribed2;
-import com.amplifyframework.AmplifyException;
-import com.amplifyframework.api.aws.AWSApiPlugin;
-import com.amplifyframework.core.Amplify;
-import com.amplifyframework.datastore.AWSDataStorePlugin;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -36,7 +34,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MPCardActivity extends BaseActivity
-        implements NetworkingService.NetworkingListener, DBManager.subObjCallback{
+        implements NetworkingService.NetworkingListener,
+        DBManager.subObjCallback{
 
     NetworkingService networkingService;
     JsonService jsonService;
@@ -51,14 +50,15 @@ public class MPCardActivity extends BaseActivity
     RecyclerView recyclerView;
     ProgressDialog progressDialog;
     DBManager dbManager;
-
+    int size;
+    boolean activity;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         replaceContentLayout(R.layout.activity_mpcard);
-
+        activity = true;
 
         mpObj = getIntent().getParcelableExtra("selectedMP");
 
@@ -68,10 +68,11 @@ public class MPCardActivity extends BaseActivity
         progressDialog.show();
 
         //Perform initial query to see if user is subscribed to MP
-        if (((MainApplication)getApplication()).getLogInStatus() == true) {
+        if (((MainApplication)getApplication()).getLogInStatus()) {
             DBManager dbManager = ((MainApplication)getApplication()).getDbManager();
             dbManager.getSubscriptionObject();
             dbManager.setSubObjCallbackInstance(this);
+
         }
 
 
@@ -97,11 +98,12 @@ public class MPCardActivity extends BaseActivity
         mpParty.setText(mpObj.getParty());
         recent_ballot_txt.setText(R.string.wait_voteList);
         moreBallot_btn.setVisibility(View.GONE);
+        compareBtn.setVisibility(View.GONE);
 
         networkingService = ( (MainApplication)getApplication()).getNetworkingService();
         jsonService = ( (MainApplication)getApplication()).getJsonService();
-        dbManager = ((MainApplication) getApplication()).getDbManager();
-        dbManager.setSubObjCallbackInstance(MPCardActivity.this);
+        //dbManager = ((MainApplication) getApplication()).getDbManager();
+        //dbManager.setSubObjCallbackInstance(MPCardActivity.this);
         networkingService.listener = this;
 
         networkingService.getImageData(mpObj.getPhotoURL());
@@ -160,39 +162,42 @@ public class MPCardActivity extends BaseActivity
     }
     @Override
     public void APIVoteListener(String jsonString) {
-        tempbollotArray.add(jsonService.parseVote(jsonString));
-        //list date and bill desc, same size with allBollotFromMP
-        if(tempbollotArray.size() == 40){
-            //copy all date and bill number
-            for(int i=0; i<allBallotFromMP.size(); i++){
+        if(activity){
+            tempbollotArray.add(jsonService.parseVote(jsonString));
+            //list date and bill desc, same size with allBollotFromMP
+            if(tempbollotArray.size() == size){
+                //copy all date and bill number
+                for(int i=0; i<allBallotFromMP.size(); i++){
 
-                if(!tempbollotArray.get(i).getBillNum().equals("null")){
-                    allBallotFromMP.get(i).setBillNum(tempbollotArray.get(i).getBillNum());
-                    allBallotFromMP.get(i).setDate(tempbollotArray.get(i).getDate());
-                    allBallotFromMP.get(i).setSession(tempbollotArray.get(i).getSession());
-                    allBallotFromMP.get(i).setDesc(tempbollotArray.get(i).getDesc());
+                    if(!tempbollotArray.get(i).getBillNum().equals("empty")){
+                        allBallotFromMP.get(i).setBillNum(tempbollotArray.get(i).getBillNum());
+                        allBallotFromMP.get(i).setDate(tempbollotArray.get(i).getDate());
+                        allBallotFromMP.get(i).setSession(tempbollotArray.get(i).getSession());
+                        allBallotFromMP.get(i).setDesc(tempbollotArray.get(i).getDesc());
+                    }
+
+                }
+                //choose ballots only that has valid bill number
+                for(int j=0; j<allBallotFromMP.size(); j++){
+                    if(allBallotFromMP.get(j).getBillNum() != null){
+                        validBollotList.add(allBallotFromMP.get(j));
+                    }
                 }
 
-            }
-            //choose ballots only that has valid bill number
-            for(int j=0; j<allBallotFromMP.size(); j++){
-                if(allBallotFromMP.get(j).getBillNum() != null){
-                    validBollotList.add(allBallotFromMP.get(j));
+                ArrayList<Ballot> shortBallotList = new ArrayList<>(0);
+                if(validBollotList.size() > 3){
+                    for(int j=0; j<5; j++){
+                        shortBallotList.add(validBollotList.get(j));
+                    }
+                    adapter = new BallotsAdapter(this, shortBallotList);
+                }else{
+                    adapter = new BallotsAdapter(this, validBollotList);
                 }
+                recent_ballot_txt.setText(R.string.recent_ballot_txt);
+                moreBallot_btn.setVisibility(View.VISIBLE);
+                compareBtn.setVisibility(View.VISIBLE);
+                recyclerView.setAdapter(adapter);
             }
-
-            ArrayList<Ballot> shortBallotList = new ArrayList<>(0);
-            if(validBollotList.size() > 5){
-                for(int j=0; j<5; j++){
-                    shortBallotList.add(validBollotList.get(j));
-                }
-                adapter = new BallotsAdapter(this, shortBallotList);
-            }else{
-                adapter = new BallotsAdapter(this, validBollotList);
-            }
-            recent_ballot_txt.setText(R.string.recent_ballot_txt);
-            moreBallot_btn.setVisibility(View.VISIBLE);
-            recyclerView.setAdapter(adapter);
         }
     }
 
@@ -266,7 +271,7 @@ public class MPCardActivity extends BaseActivity
 
     public void SubscribeBtnClickedInMPCard(View view) {
         //if(check if logged - yes)
-        if (((MainApplication)getApplication()).getLogInStatus() == true) {
+        if (((MainApplication)getApplication()).getLogInStatus()) {
             DBManager dbManager = ((MainApplication)getApplication()).getDbManager();
             //if the button = subscribe which means user has not followed the MP yet
             if(subscribeBtn.getText().toString().equals("Subscribe")){
@@ -285,7 +290,6 @@ public class MPCardActivity extends BaseActivity
                 Toast.makeText(this, "Unsubscribed!", Toast.LENGTH_SHORT).show();
             }
 
-
             dbManager.setSubObjCallbackInstance(this);
         }
         else{
@@ -299,70 +303,58 @@ public class MPCardActivity extends BaseActivity
         String MPName = mpName.getText().toString();
         List<String> subscribedMPs = cbReturnSub.getSubscribedMPs();
         if (subscribedMPs != null) {
-            runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    if (subscribedMPs.indexOf(MPName) == -1) {
-                        subscribeBtn.setText(R.string.subscribe);
-                    }
-                    else {
-                        subscribeBtn.setText(R.string.unfollow);
-                    }
+            runOnUiThread(() -> {
+                if (!subscribedMPs.contains(MPName)) {
+                    subscribeBtn.setText(R.string.subscribe);
+                }
+                else {
+                    subscribeBtn.setText(R.string.unfollow);
                 }
             });
         }
     }
     public void VolleyFetchBallotAPI(){
-
-        final String url = "https://api.openparliament.ca/" + mpObj.getBallotURL() + "&limit=40";
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
+        if(activity){
+            final String url = "https://api.openparliament.ca/" + mpObj.getBallotURL() + "&limit=40";
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, response -> {
                 try{
                     allBallotFromMP = new ArrayList<>();
 
                     JSONObject jsonObject = new JSONObject(response);// root
                     JSONArray BallotArray = jsonObject.getJSONArray("objects");
+                    size = BallotArray.length();
+                    for (int i = 0 ; i< size; i++){
+                        if(activity){
+                            Ballot newBallot = new Ballot();
+                            JSONObject BallotObject = BallotArray.getJSONObject(i);
 
-                    for (int i = 0 ; i< BallotArray.length(); i++){
-                        Ballot newBallot = new Ballot();
-                        JSONObject BallotObject = BallotArray.getJSONObject(i);
+                            newBallot.setBallot(BallotObject.getString("ballot"));
+                            newBallot.setPoliticianURL(BallotObject.getString("politician_url"));
+                            newBallot.setVoteURL(BallotObject.getString("vote_url"));
 
-                        newBallot.setBallot(BallotObject.getString("ballot"));
-                        newBallot.setPoliticianURL(BallotObject.getString("politician_url"));
-                        newBallot.setVoteURL(BallotObject.getString("vote_url"));
+                            if(!newBallot.getBallot().equals("Yes") && !newBallot.getBallot().equals("No")){
+                                newBallot.setBallot("");
+                            }
 
-                        if(!newBallot.getBallot().equals("Yes") && !newBallot.getBallot().equals("No")){
-                            newBallot.setBallot("");
+                            allBallotFromMP.add(newBallot);
+                            progressDialog.dismiss();
+                            networkingService.fetchVote(newBallot.getVoteURL());
                         }
-
-                        allBallotFromMP.add(newBallot);
-                        //VolleyFetchVoteAPI(i, "https://api.openparliament.ca"+newBallot.getVoteURL());
-                        progressDialog.dismiss();
-                        networkingService.fetchVote(newBallot.getVoteURL());
-
                     }
 
                 }catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
+            }, Throwable::printStackTrace);
 
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        RetryPolicy retryPolicy = new DefaultRetryPolicy(
-                0,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-        stringRequest.setRetryPolicy(retryPolicy);
-        requestQueue.add(stringRequest);
-
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            RetryPolicy retryPolicy = new DefaultRetryPolicy(
+                    0,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+            stringRequest.setRetryPolicy(retryPolicy);
+            requestQueue.add(stringRequest);
+        }
     }
 
     public void WikiBtnClicked(View view) {
@@ -370,6 +362,29 @@ public class MPCardActivity extends BaseActivity
                 Uri.parse("https://en.wikipedia.org/wiki/"+mpObj.getName()));
         startActivity(twitterIntent);
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        activity = false;
+    }
+
+/*    @Override
+    public void getDBCallback(Subscribed2 cbReturnSub) {
+        String MPName = mpName.getText().toString();
+        List<String> subscribedMPs = cbReturnSub.getSubscribedMPs();
+        if (subscribedMPs != null) {
+            runOnUiThread(() -> {
+                if (!subscribedMPs.contains(MPName)) {
+                    subscribeBtn.setText(R.string.subscribe);
+                }
+                else {
+                    subscribeBtn.setText(R.string.unfollow);
+                }
+            });
+        }
+    }*/
+
 
 }
 

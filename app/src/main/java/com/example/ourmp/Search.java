@@ -34,19 +34,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-public class Search extends BaseActivity implements NetworkingService.NetworkingListener, SearchAdapter.AdapterCallback {
+public class Search extends BaseActivity implements NetworkingService.NetworkingListener, SearchAdapter.AdapterCallback, ActivityFeedRecyclerAdapter.AdapterCallback {
 
     String str_url = "https://represent.opennorth.ca/representatives/house-of-commons/?limit=500";
     EditText SearchText;
 
     ArrayList<MP> searchHistoryMPs = new ArrayList<>();
     RecyclerView recyclerViewHistoryMPs;
+
+    ArrayList<Activity> searchHistoryBills = new ArrayList<>();
+    RecyclerView recyclerViewHistoryBills;
+
     NetworkingService networkingService;
     JsonService jsonService;
 
     RecyclerView recyclerViewBills;
     ArrayList<Activity> activitiesBills = new ArrayList<>();
     ActivityFeedRecyclerAdapter recyclerAdapterBills;
+    ActivityFeedRecyclerAdapter historyAdapterBills;
 
     ArrayList<MP> MPArrayList = new ArrayList<>();
     RecyclerView recyclerViewMPs;
@@ -77,6 +82,15 @@ public class Search extends BaseActivity implements NetworkingService.Networking
         recyclerViewBills.setLayoutManager(new LinearLayoutManager(this));
         networkingService.fetchBillsData();
 
+        // Bills Search History
+        recyclerViewHistoryBills = findViewById(R.id.recyclerView_history_Bills);
+        LinearLayoutManager linearLayoutManagerBills = new LinearLayoutManager(this);
+        linearLayoutManagerBills.setReverseLayout(true);
+        linearLayoutManagerBills.setStackFromEnd(true);
+        recyclerViewHistoryBills.setLayoutManager(linearLayoutManagerBills);
+        historyAdapterBills = new ActivityFeedRecyclerAdapter(searchHistoryBills, Search.this);
+        recyclerViewHistoryBills.setAdapter(historyAdapterBills);
+
         // MPs list
         MPArrayList = new ArrayList<>();
         recyclerViewMPs = findViewById(R.id.recyclerView_MPs);
@@ -94,13 +108,24 @@ public class Search extends BaseActivity implements NetworkingService.Networking
         historyAdapterMPs = new SearchAdapter(searchHistoryMPs, Search.this);
         recyclerViewHistoryMPs.setAdapter(historyAdapterMPs);
 
-        // get history from local Prefs
+        // get MP history from local Prefs
         ArrayList<MP> MPsFromStorage = PrefConfig.readListFromPref(getApplicationContext());
         if (MPsFromStorage != null) {
             RecentSearchTitle.setVisibility(View.VISIBLE);
             for (int i = 0; i < MPsFromStorage.size(); i++) {
                 searchHistoryMPs.add(MPsFromStorage.get(i));
                 Log.d(searchHistoryMPs.get(i).getName(), "onCreate: ");
+            }
+            historyAdapterMPs.update();
+        }
+
+        // get Bills history from local Prefs
+        ArrayList<Activity> BillsFromStorage = PrefConfig.readListFromPrefBills(getApplicationContext());
+        if (BillsFromStorage != null) {
+            RecentSearchTitle.setVisibility(View.VISIBLE);
+            for (int i = 0; i < BillsFromStorage.size(); i++) {
+                searchHistoryBills.add(BillsFromStorage.get(i));
+                Log.d(searchHistoryBills.get(i).activityTitle, "onCreate: ");
             }
             historyAdapterMPs.update();
         }
@@ -124,9 +149,12 @@ public class Search extends BaseActivity implements NetworkingService.Networking
             public void onClick(View v) {
                 RecentSearchTitle.setVisibility(View.GONE);
                 recyclerViewHistoryMPs.setVisibility(View.GONE);
+                recyclerViewHistoryBills.setVisibility(View.GONE);
                 PrefConfig.deleteListInPref(getApplicationContext());
                 searchHistoryMPs.clear();
+                searchHistoryBills.clear();
                 historyAdapterMPs.update();
+                historyAdapterBills.update();
             }
         });
     }
@@ -147,8 +175,6 @@ public class Search extends BaseActivity implements NetworkingService.Networking
                         member.setParty(jsonObject1.getString("party_name"));
                         member.setPhotoURL(jsonObject1.getString("photo_url"));
                         member.setRiding(jsonObject1.getString("district_name"));
-//                        new DownloadImage(member).execute(member.getPhotoURL());
-
                         MPArrayList.add(member);
                     }
 
@@ -176,6 +202,7 @@ public class Search extends BaseActivity implements NetworkingService.Networking
         if (!text.isEmpty()) {
             RecentSearchTitle.setVisibility(View.GONE);
             recyclerViewHistoryMPs.setVisibility(View.GONE);
+            recyclerViewHistoryBills.setVisibility(View.GONE);
             recyclerViewMPs.setVisibility(View.VISIBLE);
             recyclerViewBills.setVisibility(View.VISIBLE);
             ArrayList<MP> filteredNames = new ArrayList<>();
@@ -196,9 +223,10 @@ public class Search extends BaseActivity implements NetworkingService.Networking
             }
             this.recyclerAdapterBills.setFilter(filteredBills);
         } else {
-            if (searchHistoryMPs.size() > 0) {
+            if (searchHistoryMPs.size() > 0 || searchHistoryBills.size() > 0) {
                 RecentSearchTitle.setVisibility(View.VISIBLE);
                 recyclerViewHistoryMPs.setVisibility(View.VISIBLE);
+                recyclerViewHistoryBills.setVisibility((View.VISIBLE));
             }
             recyclerViewMPs.setVisibility(View.GONE);
             recyclerViewBills.setVisibility(View.GONE);
@@ -271,30 +299,21 @@ public class Search extends BaseActivity implements NetworkingService.Networking
         this.SearchText.setText("");
         historyAdapterMPs.update();
     }
-//
-//    public static class DownloadImage extends AsyncTask<String, Void, Bitmap> {
-//        MP member;
-//
-//        public DownloadImage(MP member) {
-//            this.member = member;
-//        }
-//
-//        protected Bitmap doInBackground(String... urls) {
-//            String imageURL = urls[0];
-//            Bitmap bimage = null;
-//            try {
-//                InputStream in = new java.net.URL(imageURL).openStream();
-//                bimage = BitmapFactory.decodeStream(in);
-//            } catch (Exception e) {
-//                Log.e("Error Message", e.getMessage());
-//                e.printStackTrace();
-//            }
-//            return bimage;
-//        }
-//
-//        protected void onPostExecute(Bitmap result) {
-//            member.setPhoto(result);
-//        }
-//    }
 
+    @Override
+    public void onMethodCallback(Activity selectedBill) {
+        for (int i = 0; i < searchHistoryBills.size(); i++) {
+            if(searchHistoryBills.get(i).activityTitle.equals(selectedBill.activityTitle)) {
+                searchHistoryBills.remove(i);
+            }
+        }
+        searchHistoryBills.add(selectedBill);
+
+        // add history to local Prefs
+        PrefConfig.writeListInPrefBills(getApplicationContext(), searchHistoryBills);
+
+        // Set search bar to empty and update history adapter
+        this.SearchText.setText("");
+        historyAdapterBills.update();
+    }
 }

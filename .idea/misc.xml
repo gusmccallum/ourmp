@@ -29,6 +29,7 @@
         <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/drawable/btn_bg.xml" value="0.5911458333333334" />
         <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/drawable/btn_bg_sso.xml" value="0.5911458333333334" />
         <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/drawable/btn_ourmp.xml" value="0.5911458333333334" />
+        <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/drawable/custom_progressbar.xml" value="0.5057291666666667" />
         <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/drawable/ic_baseline_calendar_month_24.xml" value="0.4869791666666667" />
         <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/drawable/ic_baseline_event_repeat_24.xml" value="0.4869791666666667" />
         <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/drawable/ic_baseline_home_24.xml" value="0.4869791666666667" />
@@ -44,15 +45,21 @@
         <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/drawable/ic_google.xml" value="0.5911458333333334" />
         <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/drawable/ic_launcher_background.xml" value="0.38385416666666666" />
         <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/layout/activity_base.xml" value="0.575" />
+        <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/layout/activity_billcard.xml" value="0.4895833333333333" />
         <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/layout/activity_events.xml" value="0.41302083333333334" />
         <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/layout/activity_feed.xml" value="0.26570415400202635" />
         <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/layout/activity_location.xml" value="0.2796352583586626" />
         <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/layout/activity_login.xml" value="0.5" />
         <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/layout/activity_main.xml" value="0.5" />
         <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/layout/activity_mpcard.xml" value="0.3984375" />
+        <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/layout/activity_search.xml" value="0.5416666666666666" />
         <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/layout/activity_settings.xml" value="0.33" />
+        <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/layout/activity_settings_bill.xml" value="0.25" />
+        <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/layout/activity_settings_mp.xml" value="0.25" />
         <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/layout/activity_signup.xml" value="0.29483695652173914" />
         <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/layout/row_layout.xml" value="0.575" />
+        <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/layout/settings_bill_rowitem.xml" value="0.5" />
+        <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/layout/settings_mp_rowitem.xml" value="0.5" />
         <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/menu/bot_nav_menu.xml" value="0.575" />
         <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/menu/nav_drawer_menu.xml" value="0.575" />
         <entry key="..\:/dev/PRJ666/ourmp/app/src/main/res/menu/settings_menu.xml" value="0.4708333333333333" />

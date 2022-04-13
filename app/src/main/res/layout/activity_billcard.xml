@@ -69,6 +69,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
                 android:text="Description"/>
+
             <Button
                 android:id="@+id/billpage_subscribe_btn"
                 android:layout_width="wrap_content"
@@ -77,10 +78,10 @@
                 android:layout_toStartOf="@+id/billpage_view"
                 android:background="@drawable/mpcard_button"
                 android:gravity="center"
+                android:onClick="clickSubscribeButton"
                 android:text="@string/subscribe"
                 android:textColor="@color/black"
                 android:textSize="12sp"
-                android:onClick="clickSubscribeButton"
                 app:backgroundTint="@null" />
 
             <View
@@ -200,10 +201,12 @@
         <LinearLayout
             android:layout_below="@id/voteYesorNo"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
             <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_marginTop="20dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:src="@drawable/yes_icon"/>
             <ProgressBar
                 android:layout_centerInParent="true"
@@ -215,8 +218,9 @@
                 android:id="@+id/progressBar"
                 android:indeterminate="false"/>
             <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_marginTop="20dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:src="@drawable/no_icon"/>
         </LinearLayout>
 
