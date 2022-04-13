@@ -10,6 +10,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amplifyframework.datastore.generated.model.Subscribed2;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +47,7 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
     TextView greenVote;
 
     ProgressBar progressBar;
+    private RequestQueue mRequestQueue;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +82,7 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
         progressBar = findViewById(R.id.progressBar);
 
         networkingService.fetchMoreBillInfo(activity.url);
+        mRequestQueue = Volley.newRequestQueue(this);
     }
 
     @Override
@@ -116,12 +128,10 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
             bill.setBillResult("unknown");
         }
         billTitle.setText("Bill Number: " + bill.getBillNum());
-        String description = "Session: " + bill.getBillSession() + "\nStatus: " + bill.getBillResult() + "\nDate: " + bill.getBillDate();
-        billDesc.setText(description);
-        billDescription.setText("Description: " + bill.getBillDesc());
         if(bill.getVoteURl() != "") {
             networkingService.fetchBillVotes(bill.getVoteURl());
         }
+        fetchBills(bill.getBillNum());
 
     }
 
@@ -165,7 +175,8 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
         if (((MainApplication)getApplication()).getLogInStatus() == true) {
             DBManager dbManager = ((MainApplication)getApplication()).getDbManager();
             //if the button = subscribe which means user has not followed the MP yet
-            String url = "https://api.openparliament.ca/bills/" + bill.getBillSession() + "/" + bill.getBillNum() + "/?format=json";
+            //String url = "https://api.openparliament.ca/bills/" + bill.getBillSession() + "/" + bill.getBillNum() + "/?format=json";
+            String url = bill.getBillNum();
             if(subscribeBtn.getText().toString().equals("Subscribe")){
                 //follow the MP and change the text to unfollow
                 dbManager.addBillSubscription(url);
@@ -209,4 +220,39 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
             });
         }
     }
+    private void fetchBills(String billNum)
+    {
+            String url = "https://www.parl.ca/legisinfo/en/bill/44-1/" + billNum + "/json";
+
+            JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+                @Override
+                public void onResponse(JSONArray response) {
+                    try {
+                        JSONArray BillsArray = response;
+
+                        for (int i = 0; i < BillsArray.length(); i++) {
+                            JSONObject BillObject = BillsArray.getJSONObject(i);
+                            String billSession = BillObject.getString("ParliamentNumber") + "-" + BillObject.getString("SessionNumber");
+                            String date = BillObject.getString("LatestBillEventDateTime");
+                            String billResult = BillObject.getString("StatusNameEn") + " after " + BillObject.getString("LatestCompletedMajorStageNameWithChamberSuffix");
+                            String billSponsorName = BillObject.getString("SponsorPersonOfficialFirstName") + " " + BillObject.getString("SponsorPersonOfficialLastName");
+                            String description = BillObject.getString("LongTitleEn");
+                            String text = "Session: " + billSession +"\nSponsored by: " + billSponsorName + "\nDate: " + date;
+                            billDesc.setText(text);
+                            billDescription.setText("Description: " + description + "\nStatus: " + billResult );
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                }
+            });
+            mRequestQueue.add(request);
+        }
+
 }
