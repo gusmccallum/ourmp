@@ -7,7 +7,17 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+
 public class SettingsBillRecyclerAdapter extends RecyclerView.Adapter<SettingsBillRecyclerAdapter.ViewHolder> {
+
+    private SettingsBillRecyclerInterface billRecyclerInterface;
+    private ArrayList<Bill> subscribedBills;
+
+    public SettingsBillRecyclerAdapter(ArrayList<Bill> subscribedBills, SettingsBillRecyclerInterface billRecyclerInterface) {
+        this.subscribedBills = subscribedBills;
+        this.billRecyclerInterface = billRecyclerInterface;
+    }
 
     @NonNull
     @Override
@@ -33,6 +43,13 @@ public class SettingsBillRecyclerAdapter extends RecyclerView.Adapter<SettingsBi
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    billRecyclerInterface.onItemClick(getAdapterPosition());
+                }
+            });
         }
     }
 
