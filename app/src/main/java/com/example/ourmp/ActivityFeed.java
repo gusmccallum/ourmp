@@ -47,21 +47,18 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
 
     //Views
     RecyclerView activityList;
-    ActivityFeedBaseAdapter adapter;
     ActivityFeedRecyclerAdapter recyclerAdapter;
 
     //Variables holding data
     ArrayList<Activity> activities = new ArrayList<>();
+    ArrayList<Activity> mpActivities = new ArrayList<>();
+    ArrayList<Activity> billActivities = new ArrayList<>();
     ArrayList<MP> allMPs;
-    ArrayList<String> mpNames;
     List<String> subscribedMPs;
-    MP mpObj;
     int currentMP = 0;
     ArrayList<Ballot> allBallotFromMP = new ArrayList<>(0);
     ArrayList<Ballot> tempbollotArray = new ArrayList<>(0);
-    ArrayList<Ballot> validBollotList = new ArrayList<>(0);
     ProgressDialog progressDialog;
-    TextView emptyMessage;
     private RequestQueue mRequestQueue;
 
 
@@ -71,16 +68,6 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
         replaceContentLayout(R.layout.activity_feed);
         if (((MainApplication)getApplication()).getLogInStatus() == true) {
         //check if user log in or not
-            dbManager = ((MainApplication)getApplication()).getDbManager();
-            dbManager.getSubscriptionObject();
-            dbManager.setSubObjCallbackInstance(this);
-/*
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setCancelable(false);
-            progressDialog.setMessage("Loading...");
-            progressDialog.show();
-*/
-
             //initialize views
             activityList = findViewById(R.id.recyclerView_Bills);
             recyclerAdapter = new ActivityFeedRecyclerAdapter(activities, this);
@@ -92,9 +79,16 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
             jsonService = ( (MainApplication)getApplication()).getJsonService();
             networkingService.listener = this;
 
+            dbManager = ((MainApplication)getApplication()).getDbManager();
+            dbManager.getSubscriptionObject();
+            dbManager.setSubObjCallbackInstance(this);
+
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage("Loading...");
+            progressDialog.show();
+
             mRequestQueue = Volley.newRequestQueue(this);
-
-
         }else{
             Toast.makeText(this, "Sign in to view Activity Feed", Toast.LENGTH_SHORT).show();
         }
@@ -157,7 +151,6 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
         Bill temp = jsonService.parseMoreBillInfo(jsonString);
         activities.add(new Activity(null, "Bill " + temp.getBillNum() + " is " + temp.getBillResult(), temp.getBillDesc(), temp.getBillDate(), ""));
         recyclerAdapter.notifyDataSetChanged();
-        //progressDialog.dismiss();
     }
 
     @Override
@@ -190,7 +183,6 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
         allMPs.get(currentMP).setBallotURL(tempMp.getBallotURL());
         new DownloadImage(allMPs.get(currentMP)).execute(allMPs.get(currentMP).getPhotoURL());
         networkingService.fetchBallot(allMPs.get(currentMP).getBallotURL());
-        //VolleyFetchBallotAPI();
     }
 
     @Override
@@ -213,13 +205,17 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
 
             for(int i=0; i<allBallotFromMP.size(); i++) {
                 if (!allBallotFromMP.get(i).getBillNum().equals("null")) {
-                    activities.add(new Activity(allMPs.get(currentMP).getPhoto(), "MP " + allMPs.get(currentMP).getName(), "Voted " + allBallotFromMP.get(i).getBallot() + " on " + allBallotFromMP.get(i).getBillNum(), allBallotFromMP.get(i).getDate(), ""));
+                    mpActivities.add(new Activity(allMPs.get(currentMP).getPhoto(), "MP " + allMPs.get(currentMP).getName(), "Voted " + allBallotFromMP.get(i).getBallot() + " on " + allBallotFromMP.get(i).getBillNum(), allBallotFromMP.get(i).getDate(), ""));
                 }
             }
             tempbollotArray.clear();
             allBallotFromMP.clear();
+            for(int i=0; i<mpActivities.size();i++){
+                activities.add(mpActivities.get(i));
+            }
             activities.sort(Comparator.comparing(obj -> obj.activityDate));
             Collections.reverse(activities);
+            progressDialog.dismiss();
             recyclerAdapter.notifyDataSetChanged();
         }
     }
@@ -230,16 +226,12 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
 
     @Override
     public void getSub(Subscribed2 cbReturnSub) {
-
         List<String> subscribedBills = cbReturnSub.getSubscribedBills();
         if (subscribedBills != null){
             fetchBills(subscribedBills);
         }
 
-
-
-//progressDialog.dismiss();
-        List<String> subscribedMPs = cbReturnSub.getSubscribedMPs();
+        subscribedMPs = cbReturnSub.getSubscribedMPs();
         if (subscribedMPs != null) {
             for (int i = 0; i < subscribedMPs.size(); i++) {
                 currentMP = i;
@@ -292,8 +284,11 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
                             String billResult = BillObject.getString("StatusNameEn") + " after " + BillObject.getString("LatestCompletedMajorStageNameWithChamberSuffix");
                             String billSponsorName = BillObject.getString("SponsorPersonOfficialFirstName") + " " + BillObject.getString("SponsorPersonOfficialLastName");
                             String description = BillObject.getString("LongTitleEn");
-                            activities.add(new Activity(null, "Bill " + billNum + " in session " + billSession, "Bill is " + billResult + "." + description + ". Sponsored by " + billSponsorName + ".", "Updated: " + date, ""));
+                            billActivities.add(new Activity(null, "Bill " + billNum + " in session " + billSession, "Bill is " + billResult + "." + description + ". Sponsored by " + billSponsorName + ".", "Updated: " + date, ""));
 
+                        }
+                        for(int i=0; i<billActivities.size();i++){
+                            activities.add(billActivities.get(i));
                         }
                         recyclerAdapter.notifyDataSetChanged();
                     } catch (JSONException e) {
@@ -306,7 +301,6 @@ public class ActivityFeed extends BaseActivity implements NetworkingService.Netw
                     error.printStackTrace();
                 }
             });
-
             mRequestQueue.add(request);
         }
     }
