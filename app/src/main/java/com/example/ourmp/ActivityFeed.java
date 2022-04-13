@@ -45,7 +45,9 @@ public class ActivityFeed extends BaseActivity implements DBManager.subObjCallba
     ActivityFeedRecyclerAdapter recyclerAdapter;
 
     //Variables holding data
-    ArrayList<Activity> activities = new ArrayList<>();
+    ArrayList<Activity> activities = new ArrayList<Activity>();
+    ArrayList<Activity> billActivities = new ArrayList<Activity>();
+    ArrayList<Activity> voteActivities = new ArrayList<Activity>();
     ArrayList<MP> allMPs;
     ArrayList<String> mpNames;
     List<String> subscribedMPs;
@@ -55,9 +57,8 @@ public class ActivityFeed extends BaseActivity implements DBManager.subObjCallba
     ArrayList<Ballot> tempbollotArray = new ArrayList<>(0);
     ArrayList<Ballot> validBollotList = new ArrayList<>(0);
     ProgressDialog progressDialog;
-<<<<<<< Updated upstream
-    TextView emptyMessage;
-=======
+
+
     private RequestQueue mpRequestQueue;
     private RequestQueue billRequestQueue;
 
@@ -65,28 +66,14 @@ public class ActivityFeed extends BaseActivity implements DBManager.subObjCallba
     TextView emptyStatus_txt;
 
 
->>>>>>> Stashed changes
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         replaceContentLayout(R.layout.activity_feed);
-<<<<<<< Updated upstream
 
         //check if user log in or not
-        if (((MainApplication)getApplication()).getLogInStatus() == true) {
-            dbManager = ((MainApplication)getApplication()).getDbManager();
-            dbManager.getSubscriptionObject();
-            dbManager.setSubObjCallbackInstance(this);
-            /*
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setCancelable(false);
-            progressDialog.setMessage("Loading...");
-            progressDialog.show();
 
-             */
-=======
         if (((MainApplication)getApplication()).getLogInStatus() == true) {
 
             emptyStatus_txt = (TextView) findViewById(R.id.ActivityFeedEmpty_txt);
@@ -96,8 +83,6 @@ public class ActivityFeed extends BaseActivity implements DBManager.subObjCallba
             dbManager.getSubscriptionObject();
             dbManager.setSubObjCallbackInstance(this);
 
->>>>>>> Stashed changes
-
 
             //initialize views
             activityList = findViewById(R.id.recyclerView_Bills);
@@ -106,9 +91,6 @@ public class ActivityFeed extends BaseActivity implements DBManager.subObjCallba
             activityList.setLayoutManager(new LinearLayoutManager(this));
 
 
-<<<<<<< Updated upstream
-=======
-
             progressDialog = new ProgressDialog(this);
             progressDialog.setCancelable(false);
             progressDialog.setMessage("Loading...");
@@ -116,7 +98,6 @@ public class ActivityFeed extends BaseActivity implements DBManager.subObjCallba
 
             mpRequestQueue = Volley.newRequestQueue(this);
             billRequestQueue = Volley.newRequestQueue(this);
->>>>>>> Stashed changes
         }else{
             Toast.makeText(this, "Sign in to view Activity Feed", Toast.LENGTH_SHORT).show();
         }
@@ -160,9 +141,7 @@ public class ActivityFeed extends BaseActivity implements DBManager.subObjCallba
         allMPs = ((MainApplication) getApplication()).allMPs;
     }
 
-    @Override
-    public void APINetworkListener(String jsonString) {
-    }
+
 
     @Override
     public void APIBillsListener(String jsonString){
@@ -235,10 +214,6 @@ public class ActivityFeed extends BaseActivity implements DBManager.subObjCallba
             allBallotFromMP.clear();
             activities.sort(Comparator.comparing(obj -> obj.activityDate));
             Collections.reverse(activities);
-<<<<<<< Updated upstream
-=======
-            //progressDialog.dismiss();
->>>>>>> Stashed changes
             recyclerAdapter.notifyDataSetChanged();
             //progressDialog.dismiss();
         }
@@ -252,11 +227,6 @@ public class ActivityFeed extends BaseActivity implements DBManager.subObjCallba
     public void getSub(Subscribed2 cbReturnSub) {
         subscribedMPs = cbReturnSub.getSubscribedMPs();
         List<String> subscribedBills = cbReturnSub.getSubscribedBills();
-<<<<<<< Updated upstream
-        if (subscribedBills != null){
-            for(int i = 0; i < subscribedBills.size(); i++){
-                networkingService.fetchMoreBillInfo(subscribedBills.get(i));
-=======
         List<String> subscribedMPs = cbReturnSub.getSubscribedMPs();
 
         if (subscribedBills.size() == 0 && subscribedMPs.size() == 0) {
@@ -271,7 +241,6 @@ public class ActivityFeed extends BaseActivity implements DBManager.subObjCallba
             }
             if (subscribedMPs != null) {
                 fetchMPVotes(subscribedMPs);
->>>>>>> Stashed changes
             }
         }
     }
@@ -301,8 +270,6 @@ public class ActivityFeed extends BaseActivity implements DBManager.subObjCallba
         }
     }
 
-<<<<<<< Updated upstream
-=======
     private void fetchBills(List<String> billNums)
     {
         for(int i=0; i<billNums.size();i++) {
@@ -421,5 +388,5 @@ public class ActivityFeed extends BaseActivity implements DBManager.subObjCallba
 
         return formattedStr;
     }
->>>>>>> Stashed changes
+
 }
