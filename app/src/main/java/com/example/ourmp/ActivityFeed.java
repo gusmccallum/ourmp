@@ -230,7 +230,11 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
             }
             tempbollotArray.clear();
             allBallotFromMP.clear();
-            recyclerAdapter2.notifyDataSetChanged();
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    recyclerAdapter2.notifyDataSetChanged();
+                }
+            });
             progressDialog.dismiss();
         }
     }
@@ -253,23 +257,12 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
             progressDialog.setCancelable(false);
             progressDialog.setMessage("Loading...");
             progressDialog.show();
-            for (int j = 0; j < subscribedBills.size(); j++) {
+            for (int j = 0; j < subscribedMPs.size(); j++) {
                 currentMP=j;
                 networkingService.fetchMoreMPInfo(subscribedMPs.get(j));
             }
         }
-//progressDialog.dismiss();
-        /*List<String> subscribedMPs = cbReturnSub.getSubscribedMPs();
-        if (subscribedMPs != null) {
-            for (int i = 0; i < subscribedMPs.size(); i++) {
-                currentMP = i;
-                networkingService.fetchMoreMPInfo(subscribedMPs.get(i));
-            }
 
-                    fetchBills("C-5");
-        currentMP = 0;
-        networkingService.fetchMoreMPInfo("Han Dong");
-        }*/
     }
 
     public static class DownloadImage extends AsyncTask<String, Void, Bitmap> {
@@ -304,10 +297,7 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
             @Override
             public void onResponse(JSONArray response) {
                 try {
-                    JSONArray BillsArray = response;
-
-                    for (int i = 0; i < BillsArray.length(); i++) {
-                        JSONObject BillObject = BillsArray.getJSONObject(i);
+                        JSONObject BillObject = response.getJSONObject(0);
                         String billNum = BillObject.getString("NumberCode");
                         String billSession = BillObject.getString("ParliamentNumber") + "-" + BillObject.getString("SessionNumber");
                         String date = BillObject.getString("LatestBillEventDateTime");
@@ -315,9 +305,13 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
                         String billSponsorName = BillObject.getString("SponsorPersonOfficialFirstName") + " " + BillObject.getString("SponsorPersonOfficialLastName");
                         String description = BillObject.getString("LongTitleEn");
                         activities.add(new Activity(null, "Bill " + billNum + " in session " + billSession, "Bill is " + billResult + "." + description + ". Sponsored by " + billSponsorName + ".", "Updated: " + date, ""));
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                recyclerAdapter.notifyDataSetChanged();
+                            }
+                        });
 
-                    }
-                    recyclerAdapter.notifyDataSetChanged();
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
