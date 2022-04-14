@@ -97,7 +97,7 @@ public class MainApplication extends Application {
         Amplify.DataStore.clear(
                 () -> Log.i("OurMP", "DataStore is cleared."),
                 failure -> Log.e("OurMP", "Failed to clear DataStore.")); */
-
+//
 
 
     }
