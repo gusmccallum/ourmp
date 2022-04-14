@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="View Bills"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerView_Bills"
 
         />
     <androidx.recyclerview.widget.RecyclerView
@@ -21,11 +20,10 @@
         android:visibility="invisible"
 
         app:layout_constraintBottom_toTopOf="@id/botNav"
-        app:layout_constraintBottom_toBottomOf="@+id/changeBtn"
+        app:layout_constraintTop_toBottomOf="@+id/changeBtn"
         app:layout_constraintEnd_toEndOf="@+id/changeBtn"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/changeBtn"
-        app:layout_constraintTop_toTopOf="@+id/changeBtn" />
+        app:layout_constraintStart_toStartOf="@+id/changeBtn" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_MPs"
@@ -34,11 +32,10 @@
         android:visibility="visible"
 
         app:layout_constraintBottom_toTopOf="@id/botNav"
-        app:layout_constraintBottom_toBottomOf="@+id/changeBtn"
+        app:layout_constraintTop_toBottomOf="@+id/changeBtn"
         app:layout_constraintEnd_toEndOf="@+id/changeBtn"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/changeBtn"
-        app:layout_constraintTop_toTopOf="@+id/changeBtn" />
+        app:layout_constraintStart_toStartOf="@+id/changeBtn" />
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

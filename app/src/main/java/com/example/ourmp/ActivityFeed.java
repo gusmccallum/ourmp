@@ -22,6 +22,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -50,6 +51,7 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
     ArrayList<Activity> activities = new ArrayList<>();
     ArrayList<Activity> MpActivities = new ArrayList<>();
     ArrayList<MP> allMPs;
+    int currentMP;
 
     ProgressDialog progressDialog;
     TextView emptyMessage;
@@ -82,7 +84,10 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
 
             changeStateBtn = findViewById(R.id.changeBtn);
             changeStateBtn.setOnClickListener(this);
-
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage("Loading...");
+            progressDialog.show();
 
             billRequestQueue = Volley.newRequestQueue(this);
             voteRequestQueue = Volley.newRequestQueue(this);
@@ -155,6 +160,14 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
         }
         if (subscribedMPs != null) {
             for (int j = 0; j < subscribedMPs.size(); j++) {
+                currentMP=j;
+                String formattedName = formatName(subscribedMPs.get(j), "-");
+                String imageURL = "https://api.openparliament.ca/media/polpics/" + formattedName.toLowerCase() +".jpg";
+                MP newMp = new MP();
+                newMp.setName(subscribedMPs.get(j));
+                newMp.setPhotoURL(imageURL);
+                allMPs.add(newMp);
+                new DownloadImage(allMPs.get(currentMP)).execute(allMPs.get(currentMP).getPhotoURL());
                 fetchVotes(subscribedMPs.get(j));
             }
         }
@@ -253,8 +266,9 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
                                             String billDesc2[] = temp[11].split("\"");
                                             String description = "Voted " + result + " on the " + billDesc1[1] + "," + billDesc2[0];
                                             String date = temp[8];
-                                            MpActivities.add(new Activity(null, name, description, date, ""));
+                                            MpActivities.add(new Activity(allMPs.get(currentMP).getPhoto(), name, description, date, ""));
                                             runOnUiThread(() -> recyclerAdapter2.notifyDataSetChanged());
+                                            progressDialog.dismiss();
                                         }
                                         if (loopCount == 5) {
                                             break;
@@ -279,7 +293,6 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
         }
 
     }
-
 
     public String formatName(String fullName, String replacement){
 
