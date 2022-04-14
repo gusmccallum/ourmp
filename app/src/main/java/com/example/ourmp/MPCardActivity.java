@@ -52,6 +52,7 @@ public class MPCardActivity extends BaseActivity
     DBManager dbManager;
     int size;
     boolean activity;
+    RequestQueue requestQueue;
 
 
     @Override
@@ -72,7 +73,6 @@ public class MPCardActivity extends BaseActivity
             DBManager dbManager = ((MainApplication)getApplication()).getDbManager();
             dbManager.getSubscriptionObject();
             dbManager.setSubObjCallbackInstance(this);
-
         }
 
 
@@ -154,6 +154,8 @@ public class MPCardActivity extends BaseActivity
         //there might not be twitter info, in case it's empty string
 
         networkingService.fetchMPDesc(mpObj.getName());
+        //networkingService.fetchBallot(mpObj.getBallotURL());
+        VolleyFetchBallotAPI();
     }
 
     @Override
@@ -186,7 +188,7 @@ public class MPCardActivity extends BaseActivity
 
                 ArrayList<Ballot> shortBallotList = new ArrayList<>(0);
                 if(validBollotList.size() > 3){
-                    for(int j=0; j<5; j++){
+                    for(int j=0; j<3; j++){
                         shortBallotList.add(validBollotList.get(j));
                     }
                     adapter = new BallotsAdapter(this, shortBallotList);
@@ -205,8 +207,7 @@ public class MPCardActivity extends BaseActivity
     public void APIMPDescListener(String jsonString) {
         String desc = jsonService.parseMPDesc(jsonString, mpObj.getName());
         mpInfo.setText(desc);
-        //networkingService.fetchBallot(mpObj.getBallotURL());
-        VolleyFetchBallotAPI();
+        progressDialog.dismiss();
     }
 
     @Override
@@ -337,7 +338,6 @@ public class MPCardActivity extends BaseActivity
                             }
 
                             allBallotFromMP.add(newBallot);
-                            progressDialog.dismiss();
                             networkingService.fetchVote(newBallot.getVoteURL());
                         }
                     }
@@ -347,7 +347,7 @@ public class MPCardActivity extends BaseActivity
                 }
             }, Throwable::printStackTrace);
 
-            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            requestQueue= Volley.newRequestQueue(this);
             RetryPolicy retryPolicy = new DefaultRetryPolicy(
                     0,
                     DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
@@ -369,7 +369,14 @@ public class MPCardActivity extends BaseActivity
         activity = false;
     }
 
-/*    @Override
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(requestQueue != null)
+            requestQueue.cancelAll(this);
+    }
+
+    /*    @Override
     public void getDBCallback(Subscribed2 cbReturnSub) {
         String MPName = mpName.getText().toString();
         List<String> subscribedMPs = cbReturnSub.getSubscribedMPs();
