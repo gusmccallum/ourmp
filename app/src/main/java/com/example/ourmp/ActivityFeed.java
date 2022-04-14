@@ -33,7 +33,10 @@ import com.google.android.material.navigation.NavigationBarView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -325,6 +328,114 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
 
         mRequestQueue.add(request);
 
+    }
+
+    private void fetchVotes(String mpName) {
+        if (subscribedMPs != null) {
+            for(int i = 0; i < subscribedMPs.size(); i++) {
+
+                String formattedName = formatName(subscribedMPs.get(i), "-");
+
+                String url = "https://www.ourcommons.ca/Members/en/" + formattedName + "(" + ((MainApplication)getApplication()).getMPId(subscribedMPs.get(i)) + ")/votes/xml";
+
+                StringRequest request = new StringRequest(Request.Method.GET, url,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                try {
+                                    InputStream is = new ByteArrayInputStream(response.getBytes("UTF-8"));
+                                    XmlPullParserFactory xmlFactoryObject = XmlPullParserFactory.newInstance();
+                                    XmlPullParser myParser = xmlFactoryObject.newPullParser();
+                                    myParser.setInput(is, null);
+
+                                    int event = myParser.getEventType();
+                                    while (event != XmlPullParser.END_DOCUMENT)  {
+                                        String name=myParser.getName();
+                                        switch (event){
+                                            case XmlPullParser.START_TAG:
+                                                break;
+
+                                            case XmlPullParser.END_TAG:
+                                                if(name.equals("temperature")){
+                                                }
+                                                break;
+                                        }
+                                        event = myParser.next();
+                                    }
+
+                                    recyclerAdapter.notifyDataSetChanged();
+                                } catch(Exception e) {
+                                    Log.e("XML Stream", e.getMessage());
+                                }
+
+
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+
+                            }
+
+                        });
+            }
+        }
+
+    }
+
+
+    public String formatName(String fullName, String replacement){
+
+        String formattedStr;
+
+        if(fullName.equals("Robert J. Morrissey")){
+            formattedStr = "Bobby Morrissey";
+        }
+        else if(fullName.equals("Candice Bergen")){
+            formattedStr = "Candice Hoeppner";
+        }
+        else{
+
+            formattedStr = fullName;
+            if(fullName.equals("Harjit S. Sajjan")){
+                formattedStr = "Harjit S Sajjan";
+            }
+            //change all non-enlgish letter to english
+            formattedStr = formattedStr.replace("\u00e9", "e")
+                    .replace("\u00e8", "e")
+                    .replace("\u00e7", "c")
+                    .replace("\u00c9", "e")
+                    .replace("\u00eb", "e");
+            //remove all '
+            formattedStr = formattedStr.replace("'", "");
+            //remove middle name with dot(.)
+            int dot = formattedStr.indexOf(".");
+            if(dot > -1){
+                //ex - Michael V. McLeod, dot=9
+                String s2 = formattedStr.substring(dot+1); //" McLeod"
+                String s1 = formattedStr.substring(0, dot-2); // "Michael"
+                formattedStr = s1+s2; //"Michael McLeod"
+            }
+        }
+
+        //replace white space with replacement - or %20
+        if(formattedStr.contains(" ")) {
+            String[] splitStr = formattedStr.trim().split("\\s+");
+            //ex) Adam, van, Koeverden
+            String str="";
+            for(int i=0; i<splitStr.length; i++){ //3
+                if(i == splitStr.length-1){
+                    str += splitStr[i]; //str = Adam-van-Koeverdeny
+                }
+                else{
+                    str += splitStr[i]+replacement; //str = Adam-van-
+                }
+            }
+            formattedStr = str;
+        }
+
+        return formattedStr;
+    }
     }
 /*
     private void fetchMps(String mpName) {
