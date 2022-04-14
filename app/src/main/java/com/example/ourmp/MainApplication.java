@@ -19,11 +19,26 @@ import io.realm.mongodb.AppConfiguration;
 
 public class MainApplication extends Application {
 
+
+
     private String appID = "ourmp-ksaww";
     private App app;
     private boolean isLoggedIn = false;
     public App getRealmApp() {
         return app;
+    }
+
+    public ArrayList<MPID> allMPIds = new ArrayList<MPID>();
+
+
+
+    public String getMPId(String mpName) {
+        for (int i = 0; i < allMPIds.size(); i++) {
+            if (allMPIds.get(i).getMPName().equals(mpName)) {
+                return allMPIds.get(i).getMPID();
+            }
+        }
+        return "";
     }
 
     public ArrayList<MP> allMPs = new ArrayList<>();
@@ -78,9 +93,11 @@ public class MainApplication extends Application {
         }
         app = new App(new AppConfiguration.Builder(appID).build());
 
+        /*
         Amplify.DataStore.clear(
                 () -> Log.i("OurMP", "DataStore is cleared."),
-                failure -> Log.e("OurMP", "Failed to clear DataStore."));
+                failure -> Log.e("OurMP", "Failed to clear DataStore.")); */
+
 
 
     }

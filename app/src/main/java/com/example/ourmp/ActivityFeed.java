@@ -40,12 +40,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class ActivityFeed extends BaseActivity implements View.OnClickListener, NetworkingService.NetworkingListener, DBManager.subObjCallback {
-
-    //Services
-    NetworkingService networkingService;
-    JsonService jsonService;
-    DBManager dbManager;
+public class ActivityFeed extends BaseActivity implements View.OnClickListener, DBManager.subObjCallback {
 
     List<String> subscribedMPs;
     List<String> subscribedBills;
@@ -61,15 +56,11 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
     ArrayList<Activity> activities = new ArrayList<>();
     ArrayList<Activity> MpActivities = new ArrayList<>();
     ArrayList<MP> allMPs;
-    ArrayList<String> mpNames;
-    MP mpObj;
-    int currentMP = 0;
-    ArrayList<Ballot> allBallotFromMP = new ArrayList<>(0);
-    ArrayList<Ballot> tempbollotArray = new ArrayList<>(0);
-    ArrayList<Ballot> validBollotList = new ArrayList<>(0);
+
     ProgressDialog progressDialog;
     TextView emptyMessage;
-    private RequestQueue mRequestQueue;
+    private RequestQueue billRequestQueue;
+    private RequestQueue voteRequestQueue;
     Button changeStateBtn;
 
 
@@ -79,7 +70,7 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
         replaceContentLayout(R.layout.activity_feed);
         if (((MainApplication) getApplication()).getLogInStatus() == true) {
             //check if user log in or not
-            dbManager = ((MainApplication) getApplication()).getDbManager();
+            DBManager dbManager = ((MainApplication) getApplication()).getDbManager();
             dbManager.getSubscriptionObject();
             dbManager.setSubObjCallbackInstance(this);
 
@@ -98,12 +89,9 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
             changeStateBtn = findViewById(R.id.changeBtn);
             changeStateBtn.setOnClickListener(this);
 
-            //initialize networking service and json service
-            networkingService = ((MainApplication) getApplication()).getNetworkingService();
-            jsonService = ((MainApplication) getApplication()).getJsonService();
-            networkingService.listener = this;
 
-            mRequestQueue = Volley.newRequestQueue(this);
+            billRequestQueue = Volley.newRequestQueue(this);
+            voteRequestQueue = Volley.newRequestQueue(this);
         } else {
             Toast.makeText(this, "Sign in to view Activity Feed", Toast.LENGTH_SHORT).show();
         }
@@ -160,88 +148,7 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
         allMPs = ((MainApplication) getApplication()).allMPs;
     }
 
-    @Override
-    public void APINetworkListener(String jsonString) {
-    }
 
-    @Override
-    public void APIBillsListener(String jsonString) {
-    }
-
-    @Override
-    public void APIMoreBillInfoListener(String jsonString) {
-    }
-
-    @Override
-    public void APIParseBillVote(String jsonString) {
-
-    }
-
-    @Override
-    public void APINetworkingListerForImage2(Bitmap image) {
-
-    }
-
-
-    @Override
-    public void APINetworkingListerForImage(Bitmap image) {
-    }
-
-    @Override
-    public void APIMPMoreInfoListener(String jsonString) {
-        MP tempMp = jsonService.parseMoreInfoAPI(jsonString);
-        try {
-            JSONObject jsonObject = new JSONObject(jsonString);
-            tempMp.setName(jsonObject.getString("name"));
-            tempMp.setPhotoURL("https://api.openparliament.ca" + jsonObject.getString("image"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        allMPs.add(tempMp);
-        allMPs.get(currentMP).setBallotURL(tempMp.getBallotURL());
-        new DownloadImage(allMPs.get(currentMP)).execute(allMPs.get(currentMP).getPhotoURL());
-        networkingService.fetchBallot(allMPs.get(currentMP).getBallotURL());
-        //VolleyFetchBallotAPI();
-    }
-
-    @Override
-    public void APIBallotListener(String jsonString) {
-        allBallotFromMP = jsonService.parseBallots(jsonString);
-        for (int i = 0; i < allBallotFromMP.size(); i++) {
-            networkingService.fetchVote(allBallotFromMP.get(i).getVoteURL());
-        }
-    }
-
-    @Override
-    public void APIVoteListener(String jsonString) {
-        tempbollotArray.add(jsonService.parseVote(jsonString));
-        //list date and bill desc, same size with allBollotFromMP
-        if (tempbollotArray.size() == allBallotFromMP.size()) {
-            for (int i = 0; i < allBallotFromMP.size(); i++) {
-                allBallotFromMP.get(i).setBillNum(tempbollotArray.get(i).getBillNum());
-                allBallotFromMP.get(i).setDate(tempbollotArray.get(i).getDate());
-            }
-
-            for (int i = 0; i < allBallotFromMP.size(); i++) {
-                if (!allBallotFromMP.get(i).getBillNum().equals("null")) {
-                    MpActivities.add(new Activity(allMPs.get(currentMP).getPhoto(), "MP " + allMPs.get(currentMP).getName(), "Voted " + allBallotFromMP.get(i).getBallot() + " on " + allBallotFromMP.get(i).getBillNum(), allBallotFromMP.get(i).getDate(), ""));
-                }
-            }
-            tempbollotArray.clear();
-            allBallotFromMP.clear();
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    recyclerAdapter2.notifyDataSetChanged();
-                }
-            });
-            progressDialog.dismiss();
-        }
-    }
-
-    @Override
-    public void APIMPDescListener(String jsonString) {
-    }
 
     @Override
     public void getSub(Subscribed2 cbReturnSub) {
@@ -253,13 +160,8 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
             }
         }
         if (subscribedMPs != null) {
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setCancelable(false);
-            progressDialog.setMessage("Loading...");
-            progressDialog.show();
             for (int j = 0; j < subscribedMPs.size(); j++) {
-                currentMP=j;
-                networkingService.fetchMoreMPInfo(subscribedMPs.get(j));
+                fetchVotes(subscribedMPs.get(j));
             }
         }
 
@@ -323,61 +225,86 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
             }
         });
 
-        mRequestQueue.add(request);
+        billRequestQueue.add(request);
 
     }
-/*
-    private void fetchMps(String mpName) {
-        String url;
-        String formattedName = formatName(mpName, "-");
-        url = "https://api.openparliament.ca/politicians/" + formattedName.toLowerCase() + "/?format=json";
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONObject jsonObject = response;
-                    MP tempMp = new MP();
-                    String name = jsonObject.getString("name");
-                    String photoURL = jsonObject.getString("image");
-                    JSONObject relatedObject = jsonObject.getJSONObject("related");
-                    String ballotURL = relatedObject.getString("ballots_url");
+    private void fetchVotes(String mpName) {
+        if (subscribedMPs != null) {
 
-                    //tempMp.setName(name);
-                    //tempMp.setPhotoURL("https://api.openparliament.ca" + response.getString("image"));
-                    //tempMp.setBallotURL(ballotURL);
-                    //allMPs.add(tempMp);
-                    //new DownloadImage(allMPs.get(currentMP)).execute(allMPs.get(currentMP).getPhotoURL());
-                    //networkingService.fetchBallot(allMPs.get(currentMP).getBallotURL());
-                    MpActivities.add(new Activity(null, name, photoURL, ballotURL, ""));
+                String formattedName = formatName(mpName, "-");
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                progressDialog.dismiss();
-                recyclerAdapter2.notifyDataSetChanged();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
-        mRequestQueue.add(request);
+                String url = "https://www.ourcommons.ca/Members/en/" + formattedName + "(" + ((MainApplication)getApplication()).getMPId(mpName) + ")/votes/csv";
+
+                StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                try {
+                                    String lines[] = response.split("\\r?\\n");
+
+                                    int loopCount = 0;
+                                    for (int i = 1; i < lines.length-1; i++) {
+                                        String[] temp = lines[i].split(",");
+                                        if (!temp[temp.length-1].equals("0")) {
+                                            loopCount++;
+                                            String name = temp[0] + " " + temp[1];
+                                            String result;
+                                            if (temp[5].equals("Yea")) {
+                                                result = "yes";
+                                            }
+                                            else {
+                                                result = "no";
+                                            }
+                                            String billDesc1[] = temp[10].split("\"");
+                                            String billDesc2[] = temp[11].split("\"");
+                                            String description = "Voted " + result + " on the " + billDesc1[1] + "," + billDesc2[0];
+                                            String date = temp[8];
+                                            MpActivities.add(new Activity(null, name, description, date, ""));
+                                            runOnUiThread(new Runnable() {
+                                                public void run() {
+                                                    recyclerAdapter.notifyDataSetChanged();
+                                                }
+                                            });
+                                        }
+                                        if (loopCount == 5) {
+                                            break;
+                                        }
+                                    }
+                                } catch(Exception e) {
+                                    Log.e("XML Stream", e.getMessage());
+                                }
+
+
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+
+                            }
+
+                        });
+                voteRequestQueue.add(request);
+
+        }
+
     }
 
-    public String formatName(String fullName, String replacement) {
+
+    public String formatName(String fullName, String replacement){
 
         String formattedStr;
 
-        if (fullName.equals("Robert J. Morrissey")) {
+        if(fullName.equals("Robert J. Morrissey")){
             formattedStr = "Bobby Morrissey";
-        } else if (fullName.equals("Candice Bergen")) {
+        }
+        else if(fullName.equals("Candice Bergen")){
             formattedStr = "Candice Hoeppner";
-        } else {
+        }
+        else{
 
             formattedStr = fullName;
-            if (fullName.equals("Harjit S. Sajjan")) {
+            if(fullName.equals("Harjit S. Sajjan")){
                 formattedStr = "Harjit S Sajjan";
             }
             //change all non-enlgish letter to english
@@ -390,29 +317,32 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
             formattedStr = formattedStr.replace("'", "");
             //remove middle name with dot(.)
             int dot = formattedStr.indexOf(".");
-            if (dot > -1) {
+            if(dot > -1){
                 //ex - Michael V. McLeod, dot=9
-                String s2 = formattedStr.substring(dot + 1); //" McLeod"
-                String s1 = formattedStr.substring(0, dot - 2); // "Michael"
-                formattedStr = s1 + s2; //"Michael McLeod"
+                String s2 = formattedStr.substring(dot+1); //" McLeod"
+                String s1 = formattedStr.substring(0, dot-2); // "Michael"
+                formattedStr = s1+s2; //"Michael McLeod"
             }
         }
 
         //replace white space with replacement - or %20
-        if (formattedStr.contains(" ")) {
+        if(formattedStr.contains(" ")) {
             String[] splitStr = formattedStr.trim().split("\\s+");
             //ex) Adam, van, Koeverden
-            String str = "";
-            for (int i = 0; i < splitStr.length; i++) { //3
-                if (i == splitStr.length - 1) {
+            String str="";
+            for(int i=0; i<splitStr.length; i++){ //3
+                if(i == splitStr.length-1){
                     str += splitStr[i]; //str = Adam-van-Koeverdeny
-                } else {
-                    str += splitStr[i] + replacement; //str = Adam-van-
+                }
+                else{
+                    str += splitStr[i]+replacement; //str = Adam-van-
                 }
             }
             formattedStr = str;
         }
 
         return formattedStr;
-    }*/
+    }
+
+
 }
