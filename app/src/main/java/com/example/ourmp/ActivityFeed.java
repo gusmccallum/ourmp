@@ -38,8 +38,7 @@ import java.util.List;
 
 public class ActivityFeed extends BaseActivity implements View.OnClickListener, DBManager.subObjCallback {
 
-    List<String> subscribedMPs;
-    List<String> subscribedBills;
+
 
     //Views
     RecyclerView activityList;
@@ -50,7 +49,7 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
     //Variables holding data
     ArrayList<Activity> activities = new ArrayList<>();
     ArrayList<Activity> MpActivities = new ArrayList<>();
-    ArrayList<MP> allMPs;
+    ArrayList<MP> allMPs = new ArrayList<>();
     int currentMP;
 
     ProgressDialog progressDialog;
@@ -84,10 +83,6 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
 
             changeStateBtn = findViewById(R.id.changeBtn);
             changeStateBtn.setOnClickListener(this);
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setCancelable(false);
-            progressDialog.setMessage("Loading...");
-            progressDialog.show();
 
             billRequestQueue = Volley.newRequestQueue(this);
             voteRequestQueue = Volley.newRequestQueue(this);
@@ -151,17 +146,14 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void getSub(Subscribed2 cbReturnSub) {
-        subscribedMPs= cbReturnSub.getSubscribedMPs();
-        subscribedBills = cbReturnSub.getSubscribedBills();
-        if (subscribedBills != null) {
-            for (int i = 0; i < subscribedBills.size(); i++) {
-                fetchBills(subscribedBills.get(i));
-            }
-        }
+        List<String> subscribedMPs= cbReturnSub.getSubscribedMPs();
+        List<String> subscribedBills = cbReturnSub.getSubscribedBills();
+
         if (subscribedMPs != null) {
+
             for (int j = 0; j < subscribedMPs.size(); j++) {
                 currentMP=j;
-                String formattedName = formatName(subscribedMPs.get(j), "-");
+                String formattedName = (((MainApplication) getApplication()).formatName(subscribedMPs.get(j), "-"));
                 String imageURL = "https://api.openparliament.ca/media/polpics/" + formattedName.toLowerCase() +".jpg";
                 MP newMp = new MP();
                 newMp.setName(subscribedMPs.get(j));
@@ -171,6 +163,13 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
                 fetchVotes(subscribedMPs.get(j));
             }
         }
+
+        if (subscribedBills != null) {
+            for (int i = 0; i < subscribedBills.size(); i++) {
+                fetchBills(subscribedBills.get(i));
+            }
+        }
+
 
     }
 
@@ -216,6 +215,7 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
                         activities.add(new Activity(null, "Bill " + billNum + " in session " + billSession, "Bill is " + billResult + "." + description + ". Sponsored by " + billSponsorName + ".", "Updated: " + date, ""));
                         runOnUiThread(new Runnable() {
                             public void run() {
+                                Log.i("Fetchbills Dataset changed", billNum + " " + billSession + " " + date + " " + billResult + " " + description);
                                 recyclerAdapter.notifyDataSetChanged();
                             }
                         });
@@ -237,18 +237,13 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
     }
 
     private void fetchVotes(String mpName) {
-        if (subscribedMPs != null) {
-
-                String formattedName = formatName(mpName, "-");
-
+                String formattedName = (((MainApplication) getApplication()).formatName(mpName, "-"));
                 String url = "https://www.ourcommons.ca/Members/en/" + formattedName + "(" + ((MainApplication)getApplication()).getMPId(mpName) + ")/votes/csv";
-
                 StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
                                 try {
                                     String lines[] = response.split("\\r?\\n");
-
                                     int loopCount = 0;
                                     for (int i = 1; i < lines.length-1; i++) {
                                         String[] temp = lines[i].split(",");
@@ -267,8 +262,11 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
                                             String description = "Voted " + result + " on the " + billDesc1[1] + "," + billDesc2[0];
                                             String date = temp[8];
                                             MpActivities.add(new Activity(allMPs.get(currentMP).getPhoto(), name, description, date, ""));
-                                            runOnUiThread(() -> recyclerAdapter2.notifyDataSetChanged());
-                                            progressDialog.dismiss();
+                                            runOnUiThread(new Runnable() {
+                                                public void run() {
+                                                    recyclerAdapter2.notifyDataSetChanged();
+                                                }
+                                            });
                                         }
                                         if (loopCount == 5) {
                                             break;
@@ -284,68 +282,17 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-
+                            Log.e("VolleyError", error.getMessage());
                             }
 
                         });
                 voteRequestQueue.add(request);
 
-        }
+
 
     }
 
-    public String formatName(String fullName, String replacement){
 
-        String formattedStr;
-
-        if(fullName.equals("Robert J. Morrissey")){
-            formattedStr = "Bobby Morrissey";
-        }
-        else if(fullName.equals("Candice Bergen")){
-            formattedStr = "Candice Hoeppner";
-        }
-        else{
-
-            formattedStr = fullName;
-            if(fullName.equals("Harjit S. Sajjan")){
-                formattedStr = "Harjit S Sajjan";
-            }
-            //change all non-enlgish letter to english
-            formattedStr = formattedStr.replace("\u00e9", "e")
-                    .replace("\u00e8", "e")
-                    .replace("\u00e7", "c")
-                    .replace("\u00c9", "e")
-                    .replace("\u00eb", "e");
-            //remove all '
-            formattedStr = formattedStr.replace("'", "");
-            //remove middle name with dot(.)
-            int dot = formattedStr.indexOf(".");
-            if(dot > -1){
-                //ex - Michael V. McLeod, dot=9
-                String s2 = formattedStr.substring(dot+1); //" McLeod"
-                String s1 = formattedStr.substring(0, dot-2); // "Michael"
-                formattedStr = s1+s2; //"Michael McLeod"
-            }
-        }
-
-        //replace white space with replacement - or %20
-        if(formattedStr.contains(" ")) {
-            String[] splitStr = formattedStr.trim().split("\\s+");
-            //ex) Adam, van, Koeverden
-            String str="";
-            for(int i=0; i<splitStr.length; i++){ //3
-                if(i == splitStr.length-1){
-                    str += splitStr[i]; //str = Adam-van-Koeverdeny
-                }
-                else{
-                    str += splitStr[i]+replacement; //str = Adam-van-
-                }
-            }
-            formattedStr = str;
-        }
-
-        return formattedStr;
-    }
 
 
 }
