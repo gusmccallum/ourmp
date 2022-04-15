@@ -77,6 +77,59 @@ public class MainApplication extends Application {
         isLoggedIn = false;
     }
 
+    public String formatName(String fullName, String replacement){
+
+        String formattedStr;
+
+        if(fullName.equals("Robert J. Morrissey")){
+            formattedStr = "Bobby Morrissey";
+        }
+        else if(fullName.equals("Candice Bergen")){
+            formattedStr = "Candice Hoeppner";
+        }
+        else{
+
+            formattedStr = fullName;
+            if(fullName.equals("Harjit S. Sajjan")){
+                formattedStr = "Harjit S Sajjan";
+            }
+            //change all non-enlgish letter to english
+            formattedStr = formattedStr.replace("\u00e9", "e")
+                    .replace("\u00e8", "e")
+                    .replace("\u00e7", "c")
+                    .replace("\u00c9", "e")
+                    .replace("\u00eb", "e");
+            //remove all '
+            formattedStr = formattedStr.replace("'", "");
+            //remove middle name with dot(.)
+            int dot = formattedStr.indexOf(".");
+            if(dot > -1){
+                //ex - Michael V. McLeod, dot=9
+                String s2 = formattedStr.substring(dot+1); //" McLeod"
+                String s1 = formattedStr.substring(0, dot-2); // "Michael"
+                formattedStr = s1+s2; //"Michael McLeod"
+            }
+        }
+
+        //replace white space with replacement - or %20
+        if(formattedStr.contains(" ")) {
+            String[] splitStr = formattedStr.trim().split("\\s+");
+            //ex) Adam, van, Koeverden
+            String str="";
+            for(int i=0; i<splitStr.length; i++){ //3
+                if(i == splitStr.length-1){
+                    str += splitStr[i]; //str = Adam-van-Koeverdeny
+                }
+                else{
+                    str += splitStr[i]+replacement; //str = Adam-van-
+                }
+            }
+            formattedStr = str;
+        }
+
+        return formattedStr;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
