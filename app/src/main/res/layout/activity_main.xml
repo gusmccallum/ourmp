@@ -10,6 +10,7 @@
         android:id="@+id/MainLogo_img"
         android:layout_width="72dp"
         android:layout_height="244dp"
+        android:layout_marginBottom="30dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline8"
         app:layout_constraintEnd_toStartOf="@+id/guideline6"
         app:srcCompat="@drawable/ic_ourmp_logo_transparent" />
@@ -47,11 +48,12 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/MainActivityFeed_btn"
-        android:layout_width="wrap_content"
+        android:id="@+id/MainEvents_btn"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:background="@drawable/btn_bg"
-        android:text="Activity Feed"
+        android:layout_marginBottom="100dp"
+        android:text="Events"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,9 +66,9 @@
         android:layout_marginTop="15dp"
         android:background="@drawable/btn_bg"
         android:text="Find MP"
-        app:layout_constraintEnd_toEndOf="@+id/MainActivityFeed_btn"
-        app:layout_constraintStart_toStartOf="@+id/MainActivityFeed_btn"
-        app:layout_constraintTop_toBottomOf="@+id/MainActivityFeed_btn" />
+        app:layout_constraintEnd_toEndOf="@+id/MainEvents_btn"
+        app:layout_constraintStart_toStartOf="@+id/MainEvents_btn"
+        app:layout_constraintTop_toBottomOf="@+id/MainEvents_btn" />
 
     <Button
         android:id="@+id/MainSearch_btn"
@@ -75,31 +77,30 @@
         android:layout_marginTop="15dp"
         android:background="@drawable/btn_bg"
         android:text="Search"
-        app:layout_constraintEnd_toEndOf="@+id/MainActivityFeed_btn"
-        app:layout_constraintStart_toStartOf="@+id/MainActivityFeed_btn"
+        app:layout_constraintEnd_toEndOf="@+id/MainEvents_btn"
+        app:layout_constraintStart_toStartOf="@+id/MainEvents_btn"
         app:layout_constraintTop_toBottomOf="@+id/MainFindMP_btn" />
-
-    <Button
-        android:id="@+id/MainSignUp_btn"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/btn_bg"
-        android:text="Sign Up"
-        app:layout_constraintEnd_toEndOf="@+id/MainActivityFeed_btn"
-        app:layout_constraintStart_toStartOf="@+id/MainActivityFeed_btn"
-        app:layout_constraintTop_toBottomOf="@+id/MainSearch_btn" />
 
     <Button
         android:id="@+id/MainLogIn_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
         android:background="@drawable/btn_bg"
+        android:layout_marginTop="15dp"
         android:text="Log In"
-        app:layout_constraintEnd_toEndOf="@+id/MainActivityFeed_btn"
-        app:layout_constraintStart_toStartOf="@+id/MainActivityFeed_btn"
-        app:layout_constraintTop_toBottomOf="@+id/MainSignUp_btn" />
+        app:layout_constraintEnd_toEndOf="@+id/MainEvents_btn"
+        app:layout_constraintStart_toStartOf="@+id/MainEvents_btn"
+        app:layout_constraintTop_toBottomOf="@+id/MainSearch_btn" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/botNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bot_nav_menu" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

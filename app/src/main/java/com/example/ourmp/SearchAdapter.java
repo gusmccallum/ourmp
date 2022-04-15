@@ -21,7 +21,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHold
     ArrayList<MP> MPsArrayList;
     Context context;
 
-    public static interface AdapterCallback {
+    public interface AdapterCallback {
         void onMethodCallback(MP yourValue);
     }
 
@@ -68,7 +68,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHold
                 holder.party.setTextColor(ContextCompat.getColor(context, R.color.BlocQuebequois));
                 break;
         }
-//        holder.image_app.setImageBitmap(member.getPhoto());
 
         holder.ll_.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,7 +87,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHold
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView name, party;
-//        ImageView image_app;
         LinearLayout ll_;
 
         public MyViewHolder(@NonNull View itemView) {
@@ -96,7 +94,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHold
 
             name = itemView.findViewById(R.id.name);
             party = itemView.findViewById(R.id.party);
-//            image_app = itemView.findViewById(R.id.image);
             ll_ = itemView.findViewById(R.id.lyt_parent);
         }
     }

@@ -69,6 +69,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
                 android:text="Description"/>
+
             <Button
                 android:id="@+id/billpage_subscribe_btn"
                 android:layout_width="wrap_content"
@@ -77,10 +78,10 @@
                 android:layout_toStartOf="@+id/billpage_view"
                 android:background="@drawable/mpcard_button"
                 android:gravity="center"
+                android:onClick="clickSubscribeButton"
                 android:text="@string/subscribe"
                 android:textColor="@color/black"
                 android:textSize="12sp"
-                android:onClick="clickSubscribeButton"
                 app:backgroundTint="@null" />
 
             <View
@@ -143,25 +144,25 @@
                 android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:text="Liberal"
-                android:textColor="@color/red"
+                android:textColor="@color/Liberal"
                 android:gravity="center"></TextView>
             <TextView
                 android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:text="Conservative"
-                android:textColor="@color/blue"
+                android:textColor="@color/Conservative"
                 android:gravity="center"></TextView>
             <TextView
                 android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:text="NDP"
-                android:textColor="@color/green"
+                android:textColor="@color/NDP"
                 android:gravity="center"></TextView>
             <TextView
                 android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:text="Green"
-                android:textColor="@color/maroon"
+                android:textColor="@color/green"
                 android:gravity="center"></TextView>
         </LinearLayout>
         <LinearLayout
@@ -175,35 +176,37 @@
                 android:id="@+id/liberal"
                 android:layout_width="90dp"
                 android:layout_height="90dp"
-                android:textColor="@color/red"
+                android:textColor="@color/Liberal"
                 android:gravity="center"></TextView>
             <TextView
                 android:id="@+id/conservative"
                 android:layout_width="90dp"
                 android:layout_height="90dp"
-                android:textColor="@color/blue"
+                android:textColor="@color/Conservative"
                 android:gravity="center"></TextView>
             <TextView
                 android:id="@+id/ndp"
                 android:layout_width="90dp"
                 android:layout_height="90dp"
-                android:textColor="@color/green"
+                android:textColor="@color/NDP"
                 android:gravity="center"></TextView>
             <TextView
                 android:id="@+id/green"
                 android:layout_width="90dp"
                 android:layout_height="90dp"
-                android:textColor="@color/maroon"
+                android:textColor="@color/green"
                 android:gravity="center"></TextView>
         </LinearLayout>
 
         <LinearLayout
             android:layout_below="@id/voteYesorNo"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
             <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_marginTop="20dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:src="@drawable/yes_icon"/>
             <ProgressBar
                 android:layout_centerInParent="true"
@@ -215,8 +218,9 @@
                 android:id="@+id/progressBar"
                 android:indeterminate="false"/>
             <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_marginTop="20dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:src="@drawable/no_icon"/>
         </LinearLayout>
 

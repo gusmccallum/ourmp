@@ -55,9 +55,6 @@ realm{
 dependencies {
 
 
-// Google SSO
-    implementation 'com.google.android.gms:play-services-auth:19.2.0'
-
     // Google REST API Dependencies
     implementation 'com.google.api-client:google-api-client:1.30.5'
     implementation 'com.google.api-client:google-api-client-android:1.30.5'

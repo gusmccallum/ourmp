@@ -14,7 +14,11 @@ public class Bill
 
     public Bill(String billNum, String billSession, String billDate, String billResult, String billDesc, String yesVotes, String noVotes, String voteURL)
     {
-        this.billNum = billNum;
+        if(billNum == null){
+            this.billNum="";
+        }else {
+            this.billNum = billNum;
+        }
         this.billSession = billSession;
         this.billDate = billDate;
         this.billResult = billResult;

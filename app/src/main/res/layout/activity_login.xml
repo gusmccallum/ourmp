@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -72,18 +73,6 @@
         app:layout_constraintTop_toBottomOf="@+id/LoginPassword_edit" />
 
     <TextView
-        android:id="@+id/LoginTitle2_txt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="Forgot your password? Reset it here."
-        android:textColor="@color/OurMPGrey"
-        android:textSize="10dp"
-        app:layout_constraintEnd_toEndOf="@+id/LoginEmailLogin_btn"
-        app:layout_constraintStart_toStartOf="@+id/LoginEmailLogin_btn"
-        app:layout_constraintTop_toBottomOf="@+id/LoginEmailLogin_btn" />
-
-    <TextView
         android:id="@+id/LoginTitle3_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -96,30 +85,47 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/LoginEmailLogin_btn" />
 
-    <Button
-        android:id="@+id/LoginGoogle_btn"
+
+
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/botNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bot_nav_menu" />
+
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:background="@drawable/btn_bg_sso"
-        android:drawableStart="@drawable/ic_google"
-        android:text="Log In with Google"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="@+id/LoginEmailLogin_btn"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/LoginEmailLogin_btn"
-        app:layout_constraintTop_toBottomOf="@+id/LoginTitle3_txt" />
+        app:layout_constraintTop_toBottomOf="@+id/LoginEmailLogin_btn">
 
-    <Button
-        android:id="@+id/LoginFacebook_btn"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:visibility="gone"
-        android:background="@drawable/btn_bg_sso"
-        android:text="Log In with Facebook"
-        app:layout_constraintEnd_toEndOf="@+id/LoginEmailLogin_btn"
-        app:layout_constraintStart_toStartOf="@+id/LoginEmailLogin_btn"
-        app:layout_constraintTop_toBottomOf="@+id/LoginGoogle_btn" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Don't have an account yet?"
+            android:textSize="11sp" />
 
+        <TextView
+            android:id="@+id/LogInSignUp_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign up here."
+            android:textSize="11sp"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/blue"
+            android:onClick="signUp"/>
 
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
