@@ -51,7 +51,6 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
     ArrayList<Activity> activities = new ArrayList<>();
     ArrayList<Activity> MpActivities = new ArrayList<>();
     ArrayList<MP> allMPs;
-    int currentMP;
 
     ProgressDialog progressDialog;
     TextView emptyMessage;
@@ -160,15 +159,14 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
         }
         if (subscribedMPs != null) {
             for (int j = 0; j < subscribedMPs.size(); j++) {
-                currentMP=j;
                 String formattedName = formatName(subscribedMPs.get(j), "-");
                 String imageURL = "https://api.openparliament.ca/media/polpics/" + formattedName.toLowerCase() +".jpg";
                 MP newMp = new MP();
                 newMp.setName(subscribedMPs.get(j));
                 newMp.setPhotoURL(imageURL);
                 allMPs.add(newMp);
-                new DownloadImage(allMPs.get(currentMP)).execute(allMPs.get(currentMP).getPhotoURL());
-                fetchVotes(subscribedMPs.get(j));
+                new DownloadImage(allMPs.get(j)).execute(allMPs.get(j).getPhotoURL());
+                fetchVotes(subscribedMPs.get(j), j);
             }
         }
 
@@ -236,7 +234,7 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
 
     }
 
-    private void fetchVotes(String mpName) {
+    private void fetchVotes(String mpName, int currentMP) {
         if (subscribedMPs != null) {
 
                 String formattedName = formatName(mpName, "-");
