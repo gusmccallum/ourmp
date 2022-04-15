@@ -34,6 +34,8 @@ import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ActivityFeed extends BaseActivity implements View.OnClickListener, DBManager.subObjCallback {
@@ -214,6 +216,8 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
                         activities.add(new Activity(null, "Bill " + billNum + " in session " + billSession, "Bill is " + billResult + "." + description + ". Sponsored by " + billSponsorName + ".", "Updated: " + date, ""));
                         runOnUiThread(new Runnable() {
                             public void run() {
+                                activities.sort(Comparator.comparing(obj -> obj.activityDate));
+                                Collections.reverse(activities);
                                 recyclerAdapter.notifyDataSetChanged();
                             }
                         });
@@ -265,7 +269,13 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
                                             String description = "Voted " + result + " on the " + billDesc1[1] + "," + billDesc2[0];
                                             String date = temp[8];
                                             MpActivities.add(new Activity(allMPs.get(currentMP).getPhoto(), name, description, date, ""));
-                                            runOnUiThread(() -> recyclerAdapter2.notifyDataSetChanged());
+                                            runOnUiThread(new Runnable() {
+                                                public void run() {
+                                                    MpActivities.sort(Comparator.comparing(obj -> obj.activityDate));
+                                                    Collections.reverse(MpActivities);
+                                                    recyclerAdapter2.notifyDataSetChanged();
+                                                }
+                                            });
                                             progressDialog.dismiss();
                                         }
                                         if (loopCount == 5) {
