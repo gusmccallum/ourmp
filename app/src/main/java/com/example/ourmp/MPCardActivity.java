@@ -232,7 +232,7 @@ public class MPCardActivity extends BaseActivity
     public void APIMPDescListener(String jsonString) {
         String desc = jsonService.parseMPDesc(jsonString, mpObj.getName());
         mpInfo.setText(desc);
-        progressDialog.dismiss();
+        //progressDialog.dismiss();
     }
 
     @Override

@@ -85,10 +85,10 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
 
             changeStateBtn = findViewById(R.id.changeBtn);
             changeStateBtn.setOnClickListener(this);
-            progressDialog = new ProgressDialog(this);
+            /*progressDialog = new ProgressDialog(this);
             progressDialog.setCancelable(false);
             progressDialog.setMessage("Loading...");
-            progressDialog.show();
+            progressDialog.show();*/
 
             billRequestQueue = Volley.newRequestQueue(this);
             voteRequestQueue = Volley.newRequestQueue(this);
@@ -276,7 +276,7 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
                                                     recyclerAdapter2.notifyDataSetChanged();
                                                 }
                                             });
-                                            progressDialog.dismiss();
+                                            //progressDialog.dismiss();
                                         }
                                         if (loopCount == 5) {
                                             break;
