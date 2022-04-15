@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,11 +14,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class NetworkingService {
     String findMPURL = "https://represent.opennorth.ca/representatives/house-of-commons/?point=";
 
-    String listOfBills = "https://api.openparliament.ca/bills/?session=44-1&format=json&limit=100";
+    String listOfBills = "https://api.openparliament.ca/bills/?session=44-1&format=json&limit=323";
     //String listOfBills = "https://api.openparliament.ca/bills/?introduced__gt=2021-01-01&format=json";
     String listOfMPs = "https://represent.opennorth.ca/representatives/house-of-commons/?limit=50";
 
@@ -65,14 +67,7 @@ public class NetworkingService {
         status = 4;
         String completeURL;
         String formattedName = formatName(fullName, "-");
-/*        if(fullName.contains(" ")) {
-            String[] splitStr = fullName.toLowerCase()
-                    .trim().split("\\s+");
-            completeURL = MpPageURL1 + splitStr[0] + "-" + splitStr[1] + formatJson;
 
-        }else{
-            completeURL = MpPageURL1 + fullName + formatJson;
-        }*/
         completeURL = MpPageURL1 + formattedName.toLowerCase() + formatJson;
         connect(completeURL);
     }
@@ -92,16 +87,9 @@ public class NetworkingService {
         status = 3;
         String completeURL;
         String formattedName = formatName(fullName, "%20");
-        /*if(fullName.contains(" ")) {
-            String[] splitStr = fullName.trim().split("\\s+");
-            completeURL = MPdescURL + splitStr[0] + "%20" + splitStr[1] + formatJson2;
-
-        }else{
-            completeURL = MPdescURL + fullName + formatJson2;
-        }*/
         completeURL = MPdescURL + formattedName + formatJson2;
-        connect(completeURL);
-
+        //connect(completeURL);
+        connect2(completeURL);
     }
     public void fetchMoreBillInfo(String url){
         status = 6;
@@ -152,9 +140,9 @@ public class NetworkingService {
                                 else if(status == 2){
                                     listener.APIVoteListener(finalJson);
                                 }
-                                else if(status == 3){
+                                /*else if(status == 3){
                                     listener.APIMPDescListener(finalJson);
-                                }
+                                }*/
                                 else if(status == 4){
                                     listener.APIMPMoreInfoListener(finalJson);
                                 }else if(status == 5){
@@ -178,6 +166,51 @@ public class NetworkingService {
             }
         });
     }
+
+    private void connect2(String completeURL) {
+        networkingExecutor.execute(new Runnable() {
+            String jsonString = "";
+            @Override
+            public void run() {
+
+                HttpURLConnection httpURLConnection = null;
+                try {
+                    URL urlObject = new URL(completeURL);
+                    httpURLConnection = (HttpURLConnection) urlObject.openConnection();
+                    httpURLConnection.setRequestMethod("GET");
+                    httpURLConnection.setRequestProperty("Content-Type","application/json");
+                    int statues = httpURLConnection.getResponseCode();
+
+                    if ((statues >= 200) && (statues <= 299)) {
+                        InputStream in = httpURLConnection.getInputStream();
+                        InputStreamReader inputStreamReader = new InputStreamReader(in);
+                        int read = 0;
+                        while ((read = inputStreamReader.read()) != -1) {// json integers ASCII
+                            char c = (char) read;
+                            jsonString += c;
+                        }
+                        // dataTask in ios
+                        final String finalJson = jsonString;
+                        networkHander.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                //send data to main thread
+                               listener.APIMPDescListener(finalJson);
+                            }
+                        });
+                    }
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                finally {
+                    httpURLConnection.disconnect();
+                }
+            }
+        });
+    }
+
     public void getImageData(String imgURL){
         String completeURL = imgURL;
         networkingExecutor.execute(new Runnable() {

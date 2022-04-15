@@ -98,6 +98,7 @@ public class LocationActivity extends BaseActivity
         });
     }
 
+
     //implement interface to get postal from fragment
     @Override
     public void MPCardLocation(Double lat, Double lng) {
@@ -109,6 +110,11 @@ public class LocationActivity extends BaseActivity
     public void APINetworkListener(String jsonString) {
         //after fetching api, create MP object based on the retrieved info
         mpObj = jsonService.parseFindMPAPI(jsonString);
+
+        //set MP info card visible
+        mpCard.setVisibility(View.VISIBLE);
+        //bring the card in front of everything
+        mpCard.bringToFront();
 
         //set text view
         mpName.setText(mpObj.getName());
@@ -123,12 +129,12 @@ public class LocationActivity extends BaseActivity
             dbManager.setSubObjCallbackInstance(new DBManager.subObjCallback() {
                 @Override
                 public void getSub(Subscribed2 cbReturnSub) {
-                    String MPName = mpName.getText().toString();
                     List<String> subscribedMPs = cbReturnSub.getSubscribedMPs();
                     if (subscribedMPs != null) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                String MPName = mpName.getText().toString();
                                 if (!subscribedMPs.contains(MPName)) {
                                     subscribe_btn.setText(R.string.subscribe);
                                 } else {
@@ -140,12 +146,6 @@ public class LocationActivity extends BaseActivity
                 }
             });
         }
-
-        //set MP info card visible
-        mpCard.setVisibility(View.VISIBLE);
-        //bring the card in front of everything
-        mpCard.bringToFront();
-
 
         //get the image from the image url from the api
         networkingService.getImageData(mpObj.getPhotoURL());
