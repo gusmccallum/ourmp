@@ -108,6 +108,21 @@ public class MPCardActivity extends BaseActivity
 
         networkingService.getImageData(mpObj.getPhotoURL());
         networkingService.fetchMoreMPInfo(mpObj.getName());
+        fetchVotes(mpObj.getName());
+        ArrayList<Ballot> shortBallotList = new ArrayList<>(0);
+        if(validBollotList.size() > 3){
+            for(int j=0; j<3; j++){
+                shortBallotList.add(validBollotList.get(j));
+            }
+            adapter = new BallotsAdapter(this, shortBallotList);
+        }else{
+            adapter = new BallotsAdapter(this, validBollotList);
+        }
+
+        recent_ballot_txt.setText(R.string.recent_ballot_txt);
+        moreBallot_btn.setVisibility(View.VISIBLE);
+        compareBtn.setVisibility(View.VISIBLE);
+        recyclerView.setAdapter(adapter);
 
         /*if (mpParty.getText().toString() == "Conservative")
         {
@@ -207,7 +222,7 @@ public class MPCardActivity extends BaseActivity
     public void APIMPDescListener(String jsonString) {
         String desc = jsonService.parseMPDesc(jsonString, mpObj.getName());
         mpInfo.setText(desc);
-        progressDialog.dismiss();
+        //progressDialog.dismiss();
     }
 
     @Override
