@@ -188,8 +188,11 @@ public class MPCardActivity extends BaseActivity
                             if (temp[5].equals("Yea")) {
                                 result = "yes";
                             }
-                            else {
+                            else if(temp[5].equals("Nay")) {
                                 result = "no";
+                            }
+                            else{
+                                result = "";
                             }
                             String billDesc1[] = temp[10].split("\"");
                             String billDesc2[] = temp[11].split("\"");

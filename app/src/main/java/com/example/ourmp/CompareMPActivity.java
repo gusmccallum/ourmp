@@ -62,6 +62,7 @@ public class CompareMPActivity extends BaseActivity
     ArrayList<Ballot> tempbollotArray = new ArrayList<>(0);
     ProgressDialog progressDialog;
     RelativeLayout mp2_relative;
+    RequestQueue requestQueueCompare;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,7 +171,7 @@ public class CompareMPActivity extends BaseActivity
         MP tempMp = jsonService.parseMoreInfoAPI(jsonString);
         mpObj2.setBallotURL(tempMp.getBallotURL());
         networkingService.getImageData2(mpObj2.getPhotoURL());
-        //networkingService.fetchBallot(mpObj2.getBallotURL());
+
         VolleyFetchBallotAPI();
     }
 
@@ -251,7 +252,12 @@ public class CompareMPActivity extends BaseActivity
         progressDialog.setMessage("Loading vote list...");
         progressDialog.show();
 
-        networkingService.fetchMoreMPInfo(mpObj2.getName());
+        fetchVotes(mpObj2.getName());
+
+        if(allBallotFromMP.size() > 0 )
+            adapter2 = new MP1CompareAdapter(this, allBallotFromMP, 2);
+        recyclerView2.setAdapter(adapter2);
+        //networkingService.fetchMoreMPInfo(mpObj2.getName());
     }
 
     private void getMPsList() {
@@ -314,7 +320,84 @@ public class CompareMPActivity extends BaseActivity
         }
 
     }
+    public void fetchVotes(String mpName) {
+        Log.i("Fetchvotes", "1");
+        String formattedName = (((MainApplication) getApplication()).formatName(mpName, "-"));
+        Log.i("Fetchvotes", "2");
+        String url = "https://www.ourcommons.ca/Members/en/" + formattedName + "(" + ((MainApplication)getApplication()).getMPId(mpName) + ")/votes/csv";
+        Log.i("Fetchvotes", "3");
+        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.i("Fetchvotes", "4");
+                try {
+                    Log.i("Fetchvotes", "5");
+                    String lines[] = response.split("\\r?\\n");
+                    int loopCount = 0;
+                    for (int i = 1; i < lines.length-1; i++) {
+                        String[] temp = lines[i].split(",");
+                        if (!temp[temp.length-1].equals("0")) {
+                            loopCount++;
+                            String name = temp[0] + " " + temp[1];
+                            String result;
+                            if (temp[5].equals("Yea")) {
+                                result = "yes";
+                            }
+                            else if(temp[5].equals("Nay")) {
+                                result = "no";
+                            }
+                            else{
+                                result = "";
+                            }
+                            String billDesc1[] = temp[10].split("\"");
+                            String billDesc2[] = temp[11].split("\"");
+                            String ballot = result;
+                            String description =  result + " on the " + billDesc1[1] + "," + billDesc2[0];
+                            String date = temp[8];
+                            String billNum = "";
+                            String session = temp[6]+"-"+temp[7];
+                            if(temp[temp.length-1] == null){
+                                billNum = "empty";
+                            }else{
+                                billNum  = temp[temp.length-1];
+                            }
 
+                            Log.i("Fetchvotes", "6");
+                            if(!billNum.equals("empty"))
+                                allBallotFromMP.add(new Ballot(ballot, "", "", billNum, date, session, description));
+                            Log.i("Fetchvotes", "7");
+
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Log.i("Fetchvotes", "8");
+                                    adapter2.notifyDataSetChanged();
+                                }
+                            });
+                        }
+                        if (loopCount == 20) {
+                            Log.i("Fetchvotes", "9");
+                            break;
+                        }
+                    }
+                } catch(Exception e) {
+                    Log.i("Fetchvotes exception", "10" + e.getMessage());
+                    Log.i("XML Stream", e.getMessage());
+                }
+
+
+            }
+        },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("Fetchvotes volley error", "11" + error.getMessage());
+                        Log.e("VolleyError", error.getMessage());
+                    }
+
+                });
+        Log.i("Fetchvotes", "12");
+        requestQueueCompare.add(request);
+    }
 
     public void VolleyFetchBallotAPI(){
 
