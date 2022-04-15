@@ -21,8 +21,8 @@
 
             <ImageView
                 android:id="@+id/mp2_icon"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:src="@drawable/no_icon" />
         </RelativeLayout>
         <TextView
@@ -72,8 +72,8 @@
 
             <ImageView
                 android:id="@+id/mp1_icon"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 android:src="@drawable/no_icon" />
         </RelativeLayout>
 

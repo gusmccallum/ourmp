@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -26,6 +27,8 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -127,86 +130,40 @@ public class MPCardActivity extends BaseActivity
         compareBtn.setVisibility(View.VISIBLE);
         recyclerView.setAdapter(adapter);
 
-    }
+        BottomNavigationView botNav = findViewById(R.id.botNav);
 
-    public void fetchVotes(String mpName) {
-        Log.i("Fetchvotes", "1");
-        String formattedName = (((MainApplication) getApplication()).formatName(mpName, "-"));
-        Log.i("Fetchvotes", "2");
-        String url = "https://www.ourcommons.ca/Members/en/" + formattedName + "(" + ((MainApplication)getApplication()).getMPId(mpName) + ")/votes/csv";
-        Log.i("Fetchvotes", "3");
-        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+        botNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener()
+        {
             @Override
-            public void onResponse(String response) {
-                Log.i("Fetchvotes", "4");
-                try {
-                    Log.i("Fetchvotes", "5");
-                    String lines[] = response.split("\\r?\\n");
-                    int loopCount = 0;
-                    for (int i = 1; i < lines.length-1; i++) {
-                        String[] temp = lines[i].split(",");
-                        if (!temp[temp.length-1].equals("0")) {
-                            loopCount++;
-                            String name = temp[0] + " " + temp[1];
-                            String result;
-                            if (temp[5].equals("Yea")) {
-                                result = "yes";
-                            }
-                            else if(temp[5].equals("Nay")) {
-                                result = "no";
-                            }
-                            else{
-                                result = "didn't vote";
-                            }
-                            String billDesc1[] = temp[10].split("\"");
-                            String billDesc2[] = temp[11].split("\"");
-                            String ballot = result;
-                            String description =  result + " on the " + billDesc1[1] + "," + billDesc2[0];
-                            String date = temp[8];
-                            String billNum = "";
-                            String session = temp[6]+"-"+temp[7];
-                            if(temp[temp.length-1] == null){
-                                billNum = "empty";
-                            }else{
-                               billNum  = temp[temp.length-1];
-                            }
+            public boolean onNavigationItemSelected(@NonNull MenuItem item)
+            {
+                Intent intent = getIntent();
 
-                            Log.i("Fetchvotes", "6");
-                            if(!billNum.equals("empty"))
-                                validBollotList.add(new Ballot(ballot, "", "", billNum, date, session, description));
-                            Log.i("Fetchvotes", "7");
-
-                            runOnUiThread(new Runnable() {
-                                public void run() {
-                                    Log.i("Fetchvotes", "8");
-                                    adapter.notifyDataSetChanged();
-                                }
-                            });
-                        }
-                        if (loopCount == 20) {
-                            Log.i("Fetchvotes", "9");
-                            break;
-                        }
-                    }
-                } catch(Exception e) {
-                    Log.i("Fetchvotes exception", "10" + e.getMessage());
-                    Log.i("XML Stream", e.getMessage());
+                if (item.getItemId() == R.id.home)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked recent events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(MPCardActivity.this, MainActivity.class);
                 }
 
+                if (item.getItemId() == R.id.search)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked live events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(MPCardActivity.this, Search.class);
+                }
 
+                if (item.getItemId() == R.id.events)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked upcoming events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(MPCardActivity.this, Events.class);
+                }
+
+                startActivity(intent);
+                return true;
             }
-        },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.i("Fetchvotes volley error", "11" + error.getMessage());
-                        Log.e("VolleyError", error.getMessage());
-                    }
-
-                });
-        Log.i("Fetchvotes", "12");
-        requestQueue.add(request);
+        });
     }
+
+
 
     public void fetchVotes(String mpName) {
         Log.i("Fetchvotes", "1");

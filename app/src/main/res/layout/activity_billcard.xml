@@ -24,6 +24,7 @@
             >
             <ImageView
                 android:id="@+id/bill_image"
+                android:layout_marginStart="10dp"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/law"
@@ -43,7 +44,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="Tittle"
+                android:layout_marginStart="10dp"
+                android:text="Title"
                 android:textSize="20sp" />
 
 
@@ -51,6 +53,7 @@
                 android:id="@+id/bill_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
                 android:layout_below="@+id/bill_number"
                 android:textSize="15sp"
                 android:text="Description"/>
@@ -67,14 +70,17 @@
                 android:id="@+id/bill_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:text="Description"/>
+                android:layout_marginStart="10dp"
+                android:text="Description"
+                android:textSize="15sp" />
 
             <Button
                 android:id="@+id/billpage_subscribe_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/bill_description"
                 android:layout_centerVertical="true"
+                android:layout_marginTop="15dp"
                 android:layout_toStartOf="@+id/billpage_view"
                 android:background="@drawable/mpcard_button"
                 android:gravity="center"
@@ -94,8 +100,10 @@
                 android:id="@+id/bill_compare_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/bill_description"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center"
+                android:layout_marginTop="15dp"
                 android:layout_toEndOf="@+id/billpage_view"
                 android:background="@drawable/mpcard_button"
                 android:gravity="center"
@@ -225,6 +233,16 @@
         </LinearLayout>
 
     </RelativeLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/botNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bot_nav_menu" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/billguideline4"
