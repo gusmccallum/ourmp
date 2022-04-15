@@ -203,8 +203,7 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
         if (subscribedBills != null) {
             runOnUiThread(() -> {
                 for (int i = 0; i < subscribedBills.size(); i++) {
-                    String[] temp = subscribedBills.get(i).split("/");
-                    String billNum = temp[5];
+                    String billNum = subscribedBills.get(i);
                     String[] temp2 = activity.activityTitle.split(" ");
                     String currentBillNum = temp2[0];
                     if (currentBillNum.equals(billNum)) {

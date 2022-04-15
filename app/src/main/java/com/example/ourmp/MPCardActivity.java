@@ -63,11 +63,6 @@ public class MPCardActivity extends BaseActivity
         activity = true;
 
         mpObj = getIntent().getParcelableExtra("selectedMP");
-        /*
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Loading...");
-        progressDialog.show();*/
 
         //Perform initial query to see if user is subscribed to MP
         if (((MainApplication)getApplication()).getLogInStatus()) {
