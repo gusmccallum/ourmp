@@ -1,17 +1,20 @@
 package com.example.ourmp;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +25,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.RetryPolicy;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -112,6 +117,37 @@ public class CompareMPActivity extends BaseActivity
             }
         });
 
+        BottomNavigationView botNav = findViewById(R.id.botNav);
+
+        botNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener()
+        {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item)
+            {
+                Intent intent = getIntent();
+
+                if (item.getItemId() == R.id.home)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked recent events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(CompareMPActivity.this, MainActivity.class);
+                }
+
+                if (item.getItemId() == R.id.search)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked live events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(CompareMPActivity.this, Search.class);
+                }
+
+                if (item.getItemId() == R.id.events)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked upcoming events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(CompareMPActivity.this, Events.class);
+                }
+
+                startActivity(intent);
+                return true;
+            }
+        });
     }
 
     @Override

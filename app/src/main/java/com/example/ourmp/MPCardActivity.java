@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -20,6 +21,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,10 +115,43 @@ public class MPCardActivity extends BaseActivity
         compareBtn.setVisibility(View.VISIBLE);
         recyclerView.setAdapter(adapter);
 
+        BottomNavigationView botNav = findViewById(R.id.botNav);
+
+        botNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener()
+        {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item)
+            {
+                Intent intent = getIntent();
+
+                if (item.getItemId() == R.id.home)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked recent events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(MPCardActivity.this, MainActivity.class);
+                }
+
+                if (item.getItemId() == R.id.search)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked live events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(MPCardActivity.this, Search.class);
+                }
+
+                if (item.getItemId() == R.id.events)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked upcoming events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(MPCardActivity.this, Events.class);
+                }
+
+                startActivity(intent);
+                return true;
+            }
+        });
     }
 
+
+
     public void fetchVotes(String mpName) {
-        String formattedName = (((MainApplication) getApplication()).formatName(mpName, "-"));
+       String formattedName = (((MainApplication) getApplication()).formatName(mpName, "-"));
         String url = "https://www.ourcommons.ca/Members/en/" + formattedName + "(" + ((MainApplication)getApplication()).getMPId(mpName) + ")/votes/csv";
         StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
             try {
