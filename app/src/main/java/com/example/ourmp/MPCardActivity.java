@@ -156,7 +156,7 @@ public class MPCardActivity extends BaseActivity
                                 result = "no";
                             }
                             else{
-                                result = "didn't vote";
+                                result = "";
                             }
                             String billDesc1[] = temp[10].split("\"");
                             String billDesc2[] = temp[11].split("\"");
