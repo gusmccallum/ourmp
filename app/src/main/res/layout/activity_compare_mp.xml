@@ -23,7 +23,8 @@
         android:layout_height="0dp"
         android:layout_margin="10dp"
         android:background="@drawable/mpcard_background"
-       app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/botNav"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/compare_txt"
         android:orientation="horizontal">
@@ -185,6 +186,14 @@
 
     </LinearLayout>
 
-
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/botNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bot_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

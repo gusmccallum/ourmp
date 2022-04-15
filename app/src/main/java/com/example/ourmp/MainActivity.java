@@ -13,13 +13,8 @@ public class MainActivity extends BaseActivity {
     Button btn_findMP;
     Button btn_search;
     Button btn_activityFeed;
-    Button btn_signup;
     Button btn_login;
     Button btn_event;
-    Button btn_create;
-    Button btn_read;
-    Button btn_update;
-    Button btn_delete;
 
 
     @Override
@@ -28,9 +23,27 @@ public class MainActivity extends BaseActivity {
         //setContentView(R.layout.activity_main);
         replaceContentLayout(R.layout.activity_main);
 
-
-
         // Main Activity Buttons
+
+        btn_activityFeed = (Button) findViewById(R.id.MainActivityFeed_btn);
+        btn_activityFeed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent activityFeedIntent = new Intent();
+                activityFeedIntent.setClass(getApplicationContext(), ActivityFeed.class);
+                startActivity(activityFeedIntent);
+            }
+        });
+
+        btn_event = (Button) findViewById(R.id.MainEvents_btn);
+        btn_event.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent eventIntent = new Intent();
+                eventIntent.setClass(getApplicationContext(), Events.class);
+                startActivity(eventIntent);
+            }
+        });
 
         btn_findMP = (Button) findViewById(R.id.MainFindMP_btn);
         btn_findMP.setOnClickListener(new View.OnClickListener() {

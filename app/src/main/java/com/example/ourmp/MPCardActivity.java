@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -26,6 +27,8 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -127,7 +130,40 @@ public class MPCardActivity extends BaseActivity
         compareBtn.setVisibility(View.VISIBLE);
         recyclerView.setAdapter(adapter);
 
+        BottomNavigationView botNav = findViewById(R.id.botNav);
+
+        botNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener()
+        {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item)
+            {
+                Intent intent = getIntent();
+
+                if (item.getItemId() == R.id.home)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked recent events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(MPCardActivity.this, MainActivity.class);
+                }
+
+                if (item.getItemId() == R.id.search)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked live events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(MPCardActivity.this, Search.class);
+                }
+
+                if (item.getItemId() == R.id.events)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked upcoming events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(MPCardActivity.this, Events.class);
+                }
+
+                startActivity(intent);
+                return true;
+            }
+        });
     }
+
+
 
     public void fetchVotes(String mpName) {
         Log.i("Fetchvotes", "1");
@@ -160,20 +196,11 @@ public class MPCardActivity extends BaseActivity
                             }
                             String billDesc1[] = temp[10].split("\"");
                             String billDesc2[] = temp[11].split("\"");
-                            String ballot = result;
-                            String description =  result + " on the " + billDesc1[1] + "," + billDesc2[0];
+                            String description = "Voted " + result + " on the " + billDesc1[1] + "," + billDesc2[0];
                             String date = temp[8];
-                            String billNum = "";
-                            String session = temp[6]+"-"+temp[7];
-                            if(temp[temp.length-1] == null){
-                                billNum = "empty";
-                            }else{
-                               billNum  = temp[temp.length-1];
-                            }
-
+                            String billNum = temp[temp.length-1];
                             Log.i("Fetchvotes", "6");
-                            if(!billNum.equals("empty"))
-                                validBollotList.add(new Ballot(ballot, "", "", billNum, date, session, description));
+                            validBollotList.add(new Ballot(description, "", "", billNum, date, "44-1", description));
                             Log.i("Fetchvotes", "7");
 
                             runOnUiThread(new Runnable() {
