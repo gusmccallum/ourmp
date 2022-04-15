@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -62,11 +63,11 @@ public class MPCardActivity extends BaseActivity
         activity = true;
 
         mpObj = getIntent().getParcelableExtra("selectedMP");
-
+        /*
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading...");
-        progressDialog.show();
+        progressDialog.show();*/
 
         //Perform initial query to see if user is subscribed to MP
         if (((MainApplication)getApplication()).getLogInStatus()) {
@@ -100,6 +101,8 @@ public class MPCardActivity extends BaseActivity
         moreBallot_btn.setVisibility(View.GONE);
         compareBtn.setVisibility(View.GONE);
 
+        requestQueue = Volley.newRequestQueue(this);
+
         networkingService = ( (MainApplication)getApplication()).getNetworkingService();
         jsonService = ( (MainApplication)getApplication()).getJsonService();
         //dbManager = ((MainApplication) getApplication()).getDbManager();
@@ -108,7 +111,101 @@ public class MPCardActivity extends BaseActivity
 
         networkingService.getImageData(mpObj.getPhotoURL());
         networkingService.fetchMoreMPInfo(mpObj.getName());
+        fetchVotes(mpObj.getName());
+        ArrayList<Ballot> shortBallotList = new ArrayList<>(0);
+        if(validBollotList.size() > 3){
+            for(int j=0; j<3; j++){
+                shortBallotList.add(validBollotList.get(j));
+            }
+            adapter = new BallotsAdapter(this, shortBallotList);
+        }else{
+            adapter = new BallotsAdapter(this, validBollotList);
+        }
 
+        recent_ballot_txt.setText(R.string.recent_ballot_txt);
+        moreBallot_btn.setVisibility(View.VISIBLE);
+        compareBtn.setVisibility(View.VISIBLE);
+        recyclerView.setAdapter(adapter);
+
+    }
+
+    public void fetchVotes(String mpName) {
+        Log.i("Fetchvotes", "1");
+        String formattedName = (((MainApplication) getApplication()).formatName(mpName, "-"));
+        Log.i("Fetchvotes", "2");
+        String url = "https://www.ourcommons.ca/Members/en/" + formattedName + "(" + ((MainApplication)getApplication()).getMPId(mpName) + ")/votes/csv";
+        Log.i("Fetchvotes", "3");
+        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.i("Fetchvotes", "4");
+                try {
+                    Log.i("Fetchvotes", "5");
+                    String lines[] = response.split("\\r?\\n");
+                    int loopCount = 0;
+                    for (int i = 1; i < lines.length-1; i++) {
+                        String[] temp = lines[i].split(",");
+                        if (!temp[temp.length-1].equals("0")) {
+                            loopCount++;
+                            String name = temp[0] + " " + temp[1];
+                            String result;
+                            if (temp[5].equals("Yea")) {
+                                result = "yes";
+                            }
+                            else if(temp[5].equals("Nay")) {
+                                result = "no";
+                            }
+                            else{
+                                result = "didn't vote";
+                            }
+                            String billDesc1[] = temp[10].split("\"");
+                            String billDesc2[] = temp[11].split("\"");
+                            String ballot = result;
+                            String description =  result + " on the " + billDesc1[1] + "," + billDesc2[0];
+                            String date = temp[8];
+                            String billNum = "";
+                            String session = temp[6]+"-"+temp[7];
+                            if(temp[temp.length-1] == null){
+                                billNum = "empty";
+                            }else{
+                               billNum  = temp[temp.length-1];
+                            }
+
+                            Log.i("Fetchvotes", "6");
+                            if(!billNum.equals("empty"))
+                                validBollotList.add(new Ballot(ballot, "", "", billNum, date, session, description));
+                            Log.i("Fetchvotes", "7");
+
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Log.i("Fetchvotes", "8");
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
+                        }
+                        if (loopCount == 20) {
+                            Log.i("Fetchvotes", "9");
+                            break;
+                        }
+                    }
+                } catch(Exception e) {
+                    Log.i("Fetchvotes exception", "10" + e.getMessage());
+                    Log.i("XML Stream", e.getMessage());
+                }
+
+
+            }
+        },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.i("Fetchvotes volley error", "11" + error.getMessage());
+                        Log.e("VolleyError", error.getMessage());
+                    }
+
+                });
+        Log.i("Fetchvotes", "12");
+        requestQueue.add(request);
     }
 
     @Override
@@ -140,50 +237,14 @@ public class MPCardActivity extends BaseActivity
     }
     @Override
     public void APIVoteListener(String jsonString) {
-        if(activity){
-            tempbollotArray.add(jsonService.parseVote(jsonString));
-            //list date and bill desc, same size with allBollotFromMP
-            if(tempbollotArray.size() == size){
-                //copy all date and bill number
-                for(int i=0; i<allBallotFromMP.size(); i++){
 
-                    if(!tempbollotArray.get(i).getBillNum().equals("empty")){
-                        allBallotFromMP.get(i).setBillNum(tempbollotArray.get(i).getBillNum());
-                        allBallotFromMP.get(i).setDate(tempbollotArray.get(i).getDate());
-                        allBallotFromMP.get(i).setSession(tempbollotArray.get(i).getSession());
-                        allBallotFromMP.get(i).setDesc(tempbollotArray.get(i).getDesc());
-                    }
-
-                }
-                //choose ballots only that has valid bill number
-                for(int j=0; j<allBallotFromMP.size(); j++){
-                    if(allBallotFromMP.get(j).getBillNum() != null){
-                        validBollotList.add(allBallotFromMP.get(j));
-                    }
-                }
-
-                ArrayList<Ballot> shortBallotList = new ArrayList<>(0);
-                if(validBollotList.size() > 3){
-                    for(int j=0; j<3; j++){
-                        shortBallotList.add(validBollotList.get(j));
-                    }
-                    adapter = new BallotsAdapter(this, shortBallotList);
-                }else{
-                    adapter = new BallotsAdapter(this, validBollotList);
-                }
-                recent_ballot_txt.setText(R.string.recent_ballot_txt);
-                moreBallot_btn.setVisibility(View.VISIBLE);
-                compareBtn.setVisibility(View.VISIBLE);
-                recyclerView.setAdapter(adapter);
-            }
-        }
     }
 
     @Override
     public void APIMPDescListener(String jsonString) {
         String desc = jsonService.parseMPDesc(jsonString, mpObj.getName());
         mpInfo.setText(desc);
-        progressDialog.dismiss();
+        //progressDialog.dismiss();
     }
 
     @Override
@@ -291,46 +352,7 @@ public class MPCardActivity extends BaseActivity
         }
     }
     public void VolleyFetchBallotAPI(){
-        if(activity){
-            final String url = "https://api.openparliament.ca/" + mpObj.getBallotURL() + "&limit=40";
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, response -> {
-                try{
-                    allBallotFromMP = new ArrayList<>();
 
-                    JSONObject jsonObject = new JSONObject(response);// root
-                    JSONArray BallotArray = jsonObject.getJSONArray("objects");
-                    size = BallotArray.length();
-                    for (int i = 0 ; i< size; i++){
-                        if(activity){
-                            Ballot newBallot = new Ballot();
-                            JSONObject BallotObject = BallotArray.getJSONObject(i);
-
-                            newBallot.setBallot(BallotObject.getString("ballot"));
-                            newBallot.setPoliticianURL(BallotObject.getString("politician_url"));
-                            newBallot.setVoteURL(BallotObject.getString("vote_url"));
-
-                            if(!newBallot.getBallot().equals("Yes") && !newBallot.getBallot().equals("No")){
-                                newBallot.setBallot("");
-                            }
-
-                            allBallotFromMP.add(newBallot);
-                            networkingService.fetchVote(newBallot.getVoteURL());
-                        }
-                    }
-
-                }catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }, Throwable::printStackTrace);
-
-            requestQueue= Volley.newRequestQueue(this);
-            RetryPolicy retryPolicy = new DefaultRetryPolicy(
-                    0,
-                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-            stringRequest.setRetryPolicy(retryPolicy);
-            requestQueue.add(stringRequest);
-        }
     }
 
     public void WikiBtnClicked(View view) {
