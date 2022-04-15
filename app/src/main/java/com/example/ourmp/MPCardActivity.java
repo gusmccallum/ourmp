@@ -10,8 +10,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -130,77 +130,6 @@ public class MPCardActivity extends BaseActivity
         compareBtn.setVisibility(View.VISIBLE);
         recyclerView.setAdapter(adapter);
 
-    }
-
-    public void fetchVotes(String mpName) {
-        Log.i("Fetchvotes", "1");
-        String formattedName = (((MainApplication) getApplication()).formatName(mpName, "-"));
-        Log.i("Fetchvotes", "2");
-        String url = "https://www.ourcommons.ca/Members/en/" + formattedName + "(" + ((MainApplication)getApplication()).getMPId(mpName) + ")/votes/csv";
-        Log.i("Fetchvotes", "3");
-        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.i("Fetchvotes", "4");
-                try {
-                    Log.i("Fetchvotes", "5");
-                    String lines[] = response.split("\\r?\\n");
-                    int loopCount = 0;
-                    for (int i = 1; i < lines.length-1; i++) {
-                        String[] temp = lines[i].split(",");
-                        if (!temp[temp.length-1].equals("0")) {
-                            loopCount++;
-                            String name = temp[0] + " " + temp[1];
-                            String result;
-                            if (temp[5].equals("Yea")) {
-                                result = "yes";
-                            }
-                            else if(temp[5].equals("Nay")) {
-                                result = "no";
-                            }
-                            else{
-                                result = "didn't vote";
-                            }
-                            String billDesc1[] = temp[10].split("\"");
-                            String billDesc2[] = temp[11].split("\"");
-                            String ballot = result;
-                            String description =  result + " on the " + billDesc1[1] + "," + billDesc2[0];
-                            String date = temp[8];
-                            String billNum = "";
-                            String session = temp[6]+"-"+temp[7];
-                            if(temp[temp.length-1] == null){
-                                billNum = "empty";
-                            }else{
-                               billNum  = temp[temp.length-1];
-                            }
-
-                            Log.i("Fetchvotes", "6");
-                            if(!billNum.equals("empty"))
-                                validBollotList.add(new Ballot(ballot, "", "", billNum, date, session, description));
-                            Log.i("Fetchvotes", "7");
-
-                            runOnUiThread(new Runnable() {
-                                public void run() {
-                                    Log.i("Fetchvotes", "8");
-                                    adapter.notifyDataSetChanged();
-                                }
-                            });
-                        }
-                        if (loopCount == 20) {
-                            Log.i("Fetchvotes", "9");
-                            break;
-                        }
-                    }
-                } catch(Exception e) {
-                    Log.i("Fetchvotes exception", "10" + e.getMessage());
-                    Log.i("XML Stream", e.getMessage());
-                }
-
-        if (mpParty.getText().toString() == "Green")
-        {
-            mpName.setTextColor(getResources().getColor(R.color.green, null));
-        }*/
-
         BottomNavigationView botNav = findViewById(R.id.botNav);
 
         botNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener()
@@ -232,6 +161,62 @@ public class MPCardActivity extends BaseActivity
                 return true;
             }
         });
+    }
+
+
+
+    public void fetchVotes(String mpName) {
+        Log.i("Fetchvotes", "1");
+        String formattedName = (((MainApplication) getApplication()).formatName(mpName, "-"));
+        Log.i("Fetchvotes", "2");
+        String url = "https://www.ourcommons.ca/Members/en/" + formattedName + "(" + ((MainApplication)getApplication()).getMPId(mpName) + ")/votes/csv";
+        Log.i("Fetchvotes", "3");
+        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.i("Fetchvotes", "4");
+                try {
+                    Log.i("Fetchvotes", "5");
+                    String lines[] = response.split("\\r?\\n");
+                    int loopCount = 0;
+                    for (int i = 1; i < lines.length-1; i++) {
+                        String[] temp = lines[i].split(",");
+                        if (!temp[temp.length-1].equals("0")) {
+                            loopCount++;
+                            String name = temp[0] + " " + temp[1];
+                            String result;
+                            if (temp[5].equals("Yea")) {
+                                result = "yes";
+                            }
+                            else {
+                                result = "no";
+                            }
+                            String billDesc1[] = temp[10].split("\"");
+                            String billDesc2[] = temp[11].split("\"");
+                            String description = "Voted " + result + " on the " + billDesc1[1] + "," + billDesc2[0];
+                            String date = temp[8];
+                            String billNum = temp[temp.length-1];
+                            Log.i("Fetchvotes", "6");
+                            validBollotList.add(new Ballot(description, "", "", billNum, date, "44-1", description));
+                            Log.i("Fetchvotes", "7");
+
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Log.i("Fetchvotes", "8");
+                                    adapter.notifyDataSetChanged();
+                                }
+                            });
+                        }
+                        if (loopCount == 20) {
+                            Log.i("Fetchvotes", "9");
+                            break;
+                        }
+                    }
+                } catch(Exception e) {
+                    Log.i("Fetchvotes exception", "10" + e.getMessage());
+                    Log.i("XML Stream", e.getMessage());
+                }
+
 
             }
         },
@@ -277,19 +262,6 @@ public class MPCardActivity extends BaseActivity
     @Override
     public void APIVoteListener(String jsonString) {
 
-            ArrayList<Ballot> shortBallotList = new ArrayList<>(0);
-            if(validBollotList.size() > 3){
-                for(int j=0; j<3; j++){
-                    shortBallotList.add(validBollotList.get(j));
-                }
-                adapter = new BallotsAdapter(this, shortBallotList);
-            }else{
-                adapter = new BallotsAdapter(this, validBollotList);
-            }
-            recent_ballot_txt.setText(R.string.recent_ballot_txt);
-            moreBallot_btn.setVisibility(View.VISIBLE);
-            recyclerView.setAdapter(adapter);
-        }
     }
 
     @Override
