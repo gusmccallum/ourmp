@@ -60,8 +60,6 @@ public class ActivityFeedRecyclerAdapter  extends
             holder.activityPicture.setImageResource(R.drawable.law);
         }
         holder.activityTitle.setText(String.valueOf(activities.get(i).activityTitle));
-        holder.activityDescription.setText(String.valueOf(activities.get(i).activityDescription));
-        holder.activityDate.setText(String.valueOf(activities.get(i).activityDate));
         final Activity temp = activities.get(i);
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
