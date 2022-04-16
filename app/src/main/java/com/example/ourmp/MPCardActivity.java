@@ -164,10 +164,10 @@ public class MPCardActivity extends BaseActivity
                         loopCount++;
                         String result;
                         if (temp[5].equals("Yea")) {
-                            result = "yes";
+                            result = "Yes";
                         }
                         else if(temp[5].equals("Nay")) {
-                            result = "no";
+                            result = "No";
                         }
                         else{
                             result = "";
@@ -231,8 +231,6 @@ public class MPCardActivity extends BaseActivity
         //there might not be twitter info, in case it's empty string
 
         networkingService.fetchMPDesc(mpObj.getName());
-        //networkingService.fetchBallot(mpObj.getBallotURL());
-        VolleyFetchBallotAPI();
     }
 
     @Override
