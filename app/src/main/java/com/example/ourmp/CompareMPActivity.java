@@ -1,21 +1,20 @@
 package com.example.ourmp;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
+import androidx.annotation.NonNull;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,20 +22,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.InputStream;
 import java.util.ArrayList;
 
-public class CompareMPActivity extends AppCompatActivity
+public class CompareMPActivity extends BaseActivity
         implements NetworkingService.NetworkingListener, CompareSearchAdapter.OnItemClickListener{
 
     NetworkingService networkingService;
@@ -56,14 +53,14 @@ public class CompareMPActivity extends AppCompatActivity
     EditText SearchText;
     NestedScrollView nestedView;
     ArrayList<Ballot> allBallotFromMP = new ArrayList<>(0);
-    ArrayList<Ballot> tempbollotArray;
     ProgressDialog progressDialog;
     RelativeLayout mp2_relative;
+    RequestQueue requestQueueCompare;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_compare_mp);
+        replaceContentLayout(R.layout.activity_compare_mp);
 
         Bundle bundleFromMainActivity = getIntent().getBundleExtra("bundle");
         allBallotFromMP1 = bundleFromMainActivity.getParcelableArrayList("ballotList");
@@ -93,13 +90,14 @@ public class CompareMPActivity extends AppCompatActivity
         recyclerView1.setAdapter(adapter1);
 
 
-        recyclerView_event = findViewById(R.id.recyclerView_data);
+        recyclerView_event = findViewById(R.id.recyclerView_MPs);
         recyclerView_event.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
 
+        requestQueueCompare = Volley.newRequestQueue(this);
         getMPsList();
 
 
-        this.SearchText = (EditText) findViewById(R.id.search_input);
+        this.SearchText = findViewById(R.id.search_input);
         this.SearchText.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -119,69 +117,64 @@ public class CompareMPActivity extends AppCompatActivity
             }
         });
 
+        BottomNavigationView botNav = findViewById(R.id.botNav);
+
+        botNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener()
+        {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item)
+            {
+                Intent intent = getIntent();
+
+                if (item.getItemId() == R.id.home)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked recent events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(CompareMPActivity.this, MainActivity.class);
+                }
+
+                if (item.getItemId() == R.id.search)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked live events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(CompareMPActivity.this, Search.class);
+                }
+
+                if (item.getItemId() == R.id.events)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked upcoming events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(CompareMPActivity.this, Events.class);
+                }
+
+                startActivity(intent);
+                return true;
+            }
+        });
     }
 
     @Override
-    public void APINetworkListner(String jsonString) {
+    public void APINetworkListener(String jsonString) {
 
     }
 
     @Override
     public void APINetworkingListerForImage(Bitmap image) {
-        mp1_img.setImageBitmap(image);
+       mp1_img.setImageBitmap(image);
     }
 
     @Override
     public void APIMPMoreInfoListener(String jsonString) {
         MP tempMp = jsonService.parseMoreInfoAPI(jsonString);
         mpObj2.setBallotURL(tempMp.getBallotURL());
-        networkingService.fetchBallot(mpObj2.getBallotURL());
+        networkingService.getImageData2(mpObj2.getPhotoURL());
+
     }
 
     @Override
     public void APIBallotListener(String jsonString) {
-        tempbollotArray = new ArrayList<>(0);
 
-        allBallotFromMP = jsonService.parseBallots(jsonString);
-        for(int i=0; i<allBallotFromMP.size(); i++){
-            networkingService.fetchVote(allBallotFromMP.get(i).getVoteURL());
-        }
     }
 
     @Override
     public void APIVoteListener(String jsonString) {
-
-
-        tempbollotArray.add(jsonService.parseVote(jsonString));
-        //list date and bill desc, same size with allBollotFromMP
-        if(tempbollotArray.size() == allBallotFromMP.size()){
-            //copy all date and bill number
-            for(int i=0; i<allBallotFromMP.size(); i++){
-
-                if(!tempbollotArray.get(i).getBillNum().equals("null")){
-                    allBallotFromMP.get(i).setBillNum(tempbollotArray.get(i).getBillNum());
-                    allBallotFromMP.get(i).setDate(tempbollotArray.get(i).getDate());
-
-                }
-
-            }
-
-            ArrayList<Ballot> allBallotFromMP2 = new ArrayList<>(0);
-            //choose ballots only that has valid bill number
-            for(int j=0; j<allBallotFromMP.size(); j++){
-                if(allBallotFromMP.get(j).getBillNum() != null){
-                    allBallotFromMP2.add(allBallotFromMP.get(j));
-                }
-            }
-
-            adapter2 = new MP1CompareAdapter(this, allBallotFromMP2, 2);//enter 1 for MP1
-            recyclerView2.setAdapter(adapter2);
-            mp2_relative.setVisibility(View.VISIBLE);
-
-
-            progressDialog.dismiss();
-        }
-
     }
 
     @Override
@@ -195,55 +188,62 @@ public class CompareMPActivity extends AppCompatActivity
     }
 
     @Override
+    public void APIMoreBillInfoListener(String jsonString) {
+
+    }
+
+    @Override
+    public void APIParseBillVote(String jsonString) {
+
+    }
+
+    @Override
+    public void APINetworkingListerForImage2(Bitmap image) {
+        mp2_img.setImageBitmap(image);
+    }
+
+    @Override
     public void onItemClick(MP mpObj) {
         mpObj2 = mpObj;
         nestedView.setVisibility(View.GONE);
-        mp2_img.setImageBitmap(mpObj2.getPhoto());
         mp2_name.setText(mpObj2.getName());
         mpObj2.setParty(mpObj.getParty());
-
-        progressDialog = new ProgressDialog(CompareMPActivity.this);
+       /* progressDialog = new ProgressDialog(CompareMPActivity.this);
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading vote list...");
-        progressDialog.show();
+        progressDialog.show();*/
 
+        fetchVotes(mpObj2.getName());
         networkingService.fetchMoreMPInfo(mpObj2.getName());
     }
 
     private void getMPsList() {
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, str_url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    MPArrayList = new ArrayList<>();
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, str_url, response -> {
+            try {
+                MPArrayList = new ArrayList<>();
 
-                    JSONObject jsonObject = new JSONObject(response);
-                    JSONArray jsonArrayMps = jsonObject.getJSONArray("objects");
+                JSONObject jsonObject = new JSONObject(response);
+                JSONArray jsonArrayMps = jsonObject.getJSONArray("objects");
 
-                    for (int i = 0; i < jsonArrayMps.length(); i++) {
-                        MP member = new MP();
-                        JSONObject jsonObject1 = jsonArrayMps.getJSONObject(i);
-                        member.setName(jsonObject1.getString("name"));
-                        member.setParty(jsonObject1.getString("party_name"));
-                        member.setPhotoURL(jsonObject1.getString("photo_url"));
-                        new Search.DownloadImage(member).execute(member.getPhotoURL());
+                for (int i = 0; i < jsonArrayMps.length(); i++) {
+                    MP member = new MP();
+                    JSONObject jsonObject1 = jsonArrayMps.getJSONObject(i);
+                    member.setName(jsonObject1.getString("name"));
+                    member.setParty(jsonObject1.getString("party_name"));
+                    member.setPhotoURL(jsonObject1.getString("photo_url"));
+                    member.setRiding(jsonObject1.getString("district_name"));
 
-                         MPArrayList.add(member);
-                    }
-
-                    searchAdapter = (new CompareSearchAdapter(MPArrayList, CompareMPActivity.this));
-                    recyclerView_event.setAdapter(searchAdapter);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    MPArrayList.add(member);
                 }
+
+
+                searchAdapter = (new CompareSearchAdapter(MPArrayList, CompareMPActivity.this));
+                recyclerView_event.setAdapter(searchAdapter);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
+        }, Throwable::printStackTrace);
 
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         RetryPolicy retryPolicy = new DefaultRetryPolicy(3000,
@@ -269,30 +269,66 @@ public class CompareMPActivity extends AppCompatActivity
         }
 
     }
-
-
-    public static class DownloadImage extends AsyncTask<String, Void, Bitmap> {
-        MP member;
-
-        public DownloadImage(MP member) {
-            this.member = member;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String imageURL = urls[0];
-            Bitmap bimage = null;
+    public void fetchVotes(String mpName) {
+        String formattedName = (((MainApplication) getApplication()).formatName(mpName, "-"));
+        String url = "https://www.ourcommons.ca/Members/en/" + formattedName + "(" + ((MainApplication)getApplication()).getMPId(mpName) + ")/votes/csv";
+        StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
             try {
-                InputStream in = new java.net.URL(imageURL).openStream();
-                bimage = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error Message", e.getMessage());
-                e.printStackTrace();
-            }
-            return bimage;
-        }
+                String[] lines = response.split("\\r?\\n");
+                int loopCount = 0;
+                for (int i = 1; i < lines.length-1; i++) {
+                    String[] temp = lines[i].split(",");
+                    if (!temp[temp.length-1].equals("0")) {
+                        loopCount++;
+                        String result;
+                        if (temp[5].equals("Yea")) {
+                            result = "Yes";
+                        }
+                        else if(temp[5].equals("Nay")) {
+                            result = "No";
+                        }
+                        else{
+                            result = "";
+                        }
+                        String[] billDesc1 = temp[10].split("\"");
+                        String[] billDesc2 = temp[11].split("\"");
+                        String ballot = result;
+                        String description =  result + " on the " + billDesc1[1] + "," + billDesc2[0];
+                        String date = temp[8];
+                        String billNum;
+                        String session = temp[6]+"-"+temp[7];
+                        if(temp[temp.length-1] == null){
+                            billNum = "empty";
+                        }else{
+                            billNum  = temp[temp.length-1];
+                        }
 
-        protected void onPostExecute(Bitmap result) {
-            member.setPhoto(result);
-        }
+                        if(!billNum.equals("empty"))
+                            allBallotFromMP.add(new Ballot(ballot, "", "", billNum, date, session, description));
+
+
+                    }
+                    if (loopCount == 20) {
+                        break;
+                    }
+                }
+                runOnUiThread(() -> {
+                    adapter2 = new MP1CompareAdapter(CompareMPActivity.this, allBallotFromMP, 2);
+                    recyclerView2.setAdapter(adapter2);
+                    mp2_relative.setVisibility(View.VISIBLE);
+                });
+            } catch(Exception e) {
+                Log.i("Fetchvotes exception", "10" + e.getMessage());
+                Log.i("XML Stream", e.getMessage());
+            }
+
+
+        },
+                error -> {
+                    Log.i("Fetchvotes volley error", "11" + error.getMessage());
+                    Log.e("VolleyError", error.getMessage());
+                });
+        requestQueueCompare.add(request);
     }
+
 }
