@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -14,9 +15,8 @@
 
         <ImageView
             android:id="@+id/activityPicture"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:padding="5dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_marginEnd="10dp"/>
 
         <LinearLayout
@@ -28,10 +28,30 @@
                 android:id="@+id/activityTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_toRightOf="@+id/activityPicture"
                 android:text="Activity Description"
-                android:layout_marginTop="10dp"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/activityDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_toRightOf="@+id/activityPicture"
+                android:text="Activity Description"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/activityDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/activityDescription"
+                android:layout_gravity="left"
+                android:layout_toRightOf="@+id/activityPicture"
+                android:text="Activity Date Description"
+                android:textSize="10sp"
+                android:textStyle="italic"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
