@@ -84,6 +84,8 @@ public class MainActivity extends BaseActivity {
 
         BottomNavigationView botNav = findViewById(R.id.botNav);
 
+        botNav.setSelectedItemId(R.id.home);
+
         botNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -91,20 +93,21 @@ public class MainActivity extends BaseActivity {
 
                 if (item.getItemId() == R.id.home) {
                     //Toast.makeText(getApplicationContext(), "Clicked recent events", Toast.LENGTH_SHORT).show();
-                    intent = new Intent(MainActivity.this, MainActivity.class);
+                    //intent = new Intent(MainActivity.this, MainActivity.class);
                 }
 
                 if (item.getItemId() == R.id.search) {
                     //Toast.makeText(getApplicationContext(), "Clicked live events", Toast.LENGTH_SHORT).show();
                     intent = new Intent(MainActivity.this, Search.class);
+                    startActivity(intent);
                 }
 
                 if (item.getItemId() == R.id.events) {
                     //Toast.makeText(getApplicationContext(), "Clicked upcoming events", Toast.LENGTH_SHORT).show();
                     intent = new Intent(MainActivity.this, Events.class);
+                    startActivity(intent);
                 }
 
-                startActivity(intent);
                 return true;
             }
         });
