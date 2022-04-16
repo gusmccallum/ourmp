@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -19,20 +18,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amplifyframework.datastore.generated.model.Subscribed2;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,15 +38,11 @@ public class MPCardActivity extends BaseActivity
     ImageView img;
     Button snsBtn, emailBtn, phoneBtn, subscribeBtn, compareBtn, moreBallot_btn;
     MP mpObj;
-    ArrayList<Ballot> allBallotFromMP;
-    ArrayList<Ballot> tempbollotArray = new ArrayList<>(0);
     ArrayList<Ballot> validBollotList = new ArrayList<>(0);
     BallotsAdapter adapter;
     RecyclerView recyclerView;
     ProgressDialog progressDialog;
     DBManager dbManager;
-    int size;
-    boolean activity;
     RequestQueue requestQueue;
 
 
@@ -63,7 +50,6 @@ public class MPCardActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         replaceContentLayout(R.layout.activity_mpcard);
-        activity = true;
 
         BottomNavigationView botNav = findViewById(R.id.botNav);
 
@@ -166,67 +152,61 @@ public class MPCardActivity extends BaseActivity
 
 
     public void fetchVotes(String mpName) {
-        Log.i("Fetchvotes", "1");
-        String formattedName = (((MainApplication) getApplication()).formatName(mpName, "-"));
-        Log.i("Fetchvotes", "2");
+       String formattedName = (((MainApplication) getApplication()).formatName(mpName, "-"));
         String url = "https://www.ourcommons.ca/Members/en/" + formattedName + "(" + ((MainApplication)getApplication()).getMPId(mpName) + ")/votes/csv";
-        Log.i("Fetchvotes", "3");
-        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.i("Fetchvotes", "4");
-                try {
-                    Log.i("Fetchvotes", "5");
-                    String lines[] = response.split("\\r?\\n");
-                    int loopCount = 0;
-                    for (int i = 1; i < lines.length-1; i++) {
-                        String[] temp = lines[i].split(",");
-                        if (!temp[temp.length-1].equals("0")) {
-                            loopCount++;
-                            String name = temp[0] + " " + temp[1];
-                            String result;
-                            if (temp[5].equals("Yea")) {
-                                result = "yes";
-                            }
-                            else {
-                                result = "no";
-                            }
-                            String billDesc1[] = temp[10].split("\"");
-                            String billDesc2[] = temp[11].split("\"");
-                            String description = "Voted " + result + " on the " + billDesc1[1] + "," + billDesc2[0];
-                            String date = temp[8];
-                            String billNum = temp[temp.length-1];
-                            Log.i("Fetchvotes", "6");
-                            validBollotList.add(new Ballot(description, "", "", billNum, date, "44-1", description));
-                            Log.i("Fetchvotes", "7");
+        StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
+            try {
+                String[] lines = response.split("\\r?\\n");
+                int loopCount = 0;
+                for (int i = 1; i < lines.length-1; i++) {
+                    String[] temp = lines[i].split(",");
+                    if (!temp[temp.length-1].equals("0")) {
+                        loopCount++;
+                        String result;
+                        if (temp[5].equals("Yea")) {
+                            result = "yes";
+                        }
+                        else if(temp[5].equals("Nay")) {
+                            result = "no";
+                        }
+                        else{
+                            result = "";
+                        }
+                        String[] billDesc1 = temp[10].split("\"");
+                        String[] billDesc2 = temp[11].split("\"");
+                        String ballot = result;
+                        String description =  result + " on the " + billDesc1[1] + "," + billDesc2[0];
+                        String date = temp[8];
+                        String billNum;
+                        String session = temp[6]+"-"+temp[7];
+                        if(temp[temp.length-1] == null){
+                            billNum = "empty";
+                        }else{
+                           billNum  = temp[temp.length-1];
+                        }
 
-                            runOnUiThread(new Runnable() {
-                                public void run() {
-                                    Log.i("Fetchvotes", "8");
-                                    adapter.notifyDataSetChanged();
-                                }
-                            });
-                        }
-                        if (loopCount == 20) {
-                            Log.i("Fetchvotes", "9");
-                            break;
-                        }
+                        if(!billNum.equals("empty"))
+                            validBollotList.add(new Ballot(ballot, "", "", billNum, date, session, description));
+
+                        runOnUiThread(() -> {
+                            Log.i("Fetchvotes", "8");
+                            adapter.notifyDataSetChanged();
+                        });
                     }
-                } catch(Exception e) {
-                    Log.i("Fetchvotes exception", "10" + e.getMessage());
-                    Log.i("XML Stream", e.getMessage());
+                    if (loopCount == 20) {
+                        break;
+                    }
                 }
-
-
+            } catch(Exception e) {
+                Log.i("Fetchvotes exception", "10" + e.getMessage());
+                Log.i("XML Stream", e.getMessage());
             }
-        },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.i("Fetchvotes volley error", "11" + error.getMessage());
-                        Log.e("VolleyError", error.getMessage());
-                    }
 
+
+        },
+                error -> {
+                    Log.i("Fetchvotes volley error", "11" + error.getMessage());
+                    Log.e("VolleyError", error.getMessage());
                 });
         Log.i("Fetchvotes", "12");
         requestQueue.add(request);
@@ -386,34 +366,10 @@ public class MPCardActivity extends BaseActivity
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        activity = false;
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
         if(requestQueue != null)
             requestQueue.cancelAll(this);
     }
-
-    /*    @Override
-    public void getDBCallback(Subscribed2 cbReturnSub) {
-        String MPName = mpName.getText().toString();
-        List<String> subscribedMPs = cbReturnSub.getSubscribedMPs();
-        if (subscribedMPs != null) {
-            runOnUiThread(() -> {
-                if (!subscribedMPs.contains(MPName)) {
-                    subscribeBtn.setText(R.string.subscribe);
-                }
-                else {
-                    subscribeBtn.setText(R.string.unfollow);
-                }
-            });
-        }
-    }*/
-
-
 }
 

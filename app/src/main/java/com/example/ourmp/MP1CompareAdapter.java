@@ -48,7 +48,7 @@ public class MP1CompareAdapter extends RecyclerView.Adapter<MP1CompareAdapter.Ta
                 holder.relativeLayoutFront.setVisibility(View.GONE);
                 holder.relativeLayoutBack.setVisibility(View.VISIBLE);
 
-                if(ballot.getBallot().equals("Yes")){
+                if(ballot.getBallot().equals("yes")){
                     holder.yesOrNo1.setImageResource(R.drawable.yes_icon);
                 }
                 else{
@@ -59,7 +59,7 @@ public class MP1CompareAdapter extends RecyclerView.Adapter<MP1CompareAdapter.Ta
                 holder.relativeLayoutFront.setVisibility(View.VISIBLE);
                 holder.relativeLayoutBack.setVisibility(View.GONE);
 
-                if(ballot.getBallot().equals("Yes")){
+                if(ballot.getBallot().equals("yes")){
                     holder.yesOrNo2.setImageResource(R.drawable.yes_icon);
                 }
                 else{

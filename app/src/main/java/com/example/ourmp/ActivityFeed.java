@@ -67,9 +67,9 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
         replaceContentLayout(R.layout.activity_feed);
         if (((MainApplication) getApplication()).getLogInStatus()) {
             //check if user log in or not
-            DBManager dbManager = ((MainApplication) getApplication()).getDbManager();
+          /*  DBManager dbManager = ((MainApplication) getApplication()).getDbManager();
             dbManager.getSubscriptionObject();
-            dbManager.setSubObjCallbackInstance(this);
+            dbManager.setSubObjCallbackInstance(this);*/
 
 
             //initialize views
@@ -146,6 +146,11 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
     protected void onResume() {
         super.onResume();
         allMPs = ((MainApplication) getApplication()).allMPs;
+        if (((MainApplication) getApplication()).getLogInStatus()) {
+            DBManager dbManager = ((MainApplication) getApplication()).getDbManager();
+            dbManager.getSubscriptionObject();
+            dbManager.setSubObjCallbackInstance(this);
+        }
     }
 
 

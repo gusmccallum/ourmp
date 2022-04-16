@@ -3,8 +3,6 @@ package com.example.ourmp;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,9 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -35,8 +31,6 @@ import com.google.android.material.navigation.NavigationBarView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.InputStream;
 import java.util.ArrayList;
 
 public class CompareMPActivity extends BaseActivity
@@ -59,9 +53,9 @@ public class CompareMPActivity extends BaseActivity
     EditText SearchText;
     NestedScrollView nestedView;
     ArrayList<Ballot> allBallotFromMP = new ArrayList<>(0);
-    ArrayList<Ballot> tempbollotArray = new ArrayList<>(0);
     ProgressDialog progressDialog;
     RelativeLayout mp2_relative;
+    RequestQueue requestQueueCompare;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +93,7 @@ public class CompareMPActivity extends BaseActivity
         recyclerView_event = findViewById(R.id.recyclerView_MPs);
         recyclerView_event.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
 
+        requestQueueCompare = Volley.newRequestQueue(this);
         getMPsList();
 
 
@@ -170,8 +165,7 @@ public class CompareMPActivity extends BaseActivity
         MP tempMp = jsonService.parseMoreInfoAPI(jsonString);
         mpObj2.setBallotURL(tempMp.getBallotURL());
         networkingService.getImageData2(mpObj2.getPhotoURL());
-        //networkingService.fetchBallot(mpObj2.getBallotURL());
-        VolleyFetchBallotAPI();
+
     }
 
     @Override
@@ -181,38 +175,6 @@ public class CompareMPActivity extends BaseActivity
 
     @Override
     public void APIVoteListener(String jsonString) {
-
-
-        tempbollotArray.add(jsonService.parseVote(jsonString));
-        //list date and bill desc, same size with allBollotFromMP
-        if(tempbollotArray.size() == 40){
-            //copy all date and bill number
-            for(int i=0; i<allBallotFromMP.size(); i++){
-
-                if(!tempbollotArray.get(i).getBillNum().equals("empty")){
-                    allBallotFromMP.get(i).setBillNum(tempbollotArray.get(i).getBillNum());
-                    allBallotFromMP.get(i).setDate(tempbollotArray.get(i).getDate());
-
-                }
-
-            }
-
-            ArrayList<Ballot> allBallotFromMP2 = new ArrayList<>(0);
-            //choose ballots only that has valid bill number
-            for(int j=0; j<allBallotFromMP.size(); j++){
-                if(allBallotFromMP.get(j).getBillNum() != null){
-                    allBallotFromMP2.add(allBallotFromMP.get(j));
-                }
-            }
-
-            adapter2 = new MP1CompareAdapter(this, allBallotFromMP2, 2);//enter 1 for MP1
-            recyclerView2.setAdapter(adapter2);
-            mp2_relative.setVisibility(View.VISIBLE);
-
-
-            progressDialog.dismiss();
-        }
-
     }
 
     @Override
@@ -246,49 +208,42 @@ public class CompareMPActivity extends BaseActivity
         nestedView.setVisibility(View.GONE);
         mp2_name.setText(mpObj2.getName());
         mpObj2.setParty(mpObj.getParty());
-        progressDialog = new ProgressDialog(CompareMPActivity.this);
+       /* progressDialog = new ProgressDialog(CompareMPActivity.this);
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading vote list...");
-        progressDialog.show();
+        progressDialog.show();*/
 
+        fetchVotes(mpObj2.getName());
         networkingService.fetchMoreMPInfo(mpObj2.getName());
     }
 
     private void getMPsList() {
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, str_url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    MPArrayList = new ArrayList<>();
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, str_url, response -> {
+            try {
+                MPArrayList = new ArrayList<>();
 
-                    JSONObject jsonObject = new JSONObject(response);
-                    JSONArray jsonArrayMps = jsonObject.getJSONArray("objects");
+                JSONObject jsonObject = new JSONObject(response);
+                JSONArray jsonArrayMps = jsonObject.getJSONArray("objects");
 
-                    for (int i = 0; i < jsonArrayMps.length(); i++) {
-                        MP member = new MP();
-                        JSONObject jsonObject1 = jsonArrayMps.getJSONObject(i);
-                        member.setName(jsonObject1.getString("name"));
-                        member.setParty(jsonObject1.getString("party_name"));
-                        member.setPhotoURL(jsonObject1.getString("photo_url"));
-                        member.setRiding(jsonObject1.getString("district_name"));
+                for (int i = 0; i < jsonArrayMps.length(); i++) {
+                    MP member = new MP();
+                    JSONObject jsonObject1 = jsonArrayMps.getJSONObject(i);
+                    member.setName(jsonObject1.getString("name"));
+                    member.setParty(jsonObject1.getString("party_name"));
+                    member.setPhotoURL(jsonObject1.getString("photo_url"));
+                    member.setRiding(jsonObject1.getString("district_name"));
 
-                        MPArrayList.add(member);
-                    }
-
-
-                    searchAdapter = (new CompareSearchAdapter(MPArrayList, CompareMPActivity.this));
-                    recyclerView_event.setAdapter(searchAdapter);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    MPArrayList.add(member);
                 }
+
+
+                searchAdapter = (new CompareSearchAdapter(MPArrayList, CompareMPActivity.this));
+                recyclerView_event.setAdapter(searchAdapter);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
+        }, Throwable::printStackTrace);
 
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         RetryPolicy retryPolicy = new DefaultRetryPolicy(3000,
@@ -314,56 +269,67 @@ public class CompareMPActivity extends BaseActivity
         }
 
     }
-
-
-    public void VolleyFetchBallotAPI(){
-
-        final String url = "https://api.openparliament.ca/" + mpObj2.getBallotURL() + "&limit=40";
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try{
-                    allBallotFromMP = new ArrayList<>();
-
-                    JSONObject jsonObject = new JSONObject(response);// root
-                    JSONArray BallotArray = jsonObject.getJSONArray("objects");
-
-                    for (int i = 0 ; i< BallotArray.length(); i++){
-                        Ballot newBallot = new Ballot();
-                        JSONObject BallotObject = BallotArray.getJSONObject(i);
-
-                        newBallot.setBallot(BallotObject.getString("ballot"));
-                        newBallot.setPoliticianURL(BallotObject.getString("politician_url"));
-                        newBallot.setVoteURL(BallotObject.getString("vote_url"));
-
-                        if(!newBallot.getBallot().equals("Yes") && !newBallot.getBallot().equals("No")){
-                            newBallot.setBallot("");
+    public void fetchVotes(String mpName) {
+        String formattedName = (((MainApplication) getApplication()).formatName(mpName, "-"));
+        String url = "https://www.ourcommons.ca/Members/en/" + formattedName + "(" + ((MainApplication)getApplication()).getMPId(mpName) + ")/votes/csv";
+        StringRequest request = new StringRequest(Request.Method.GET, url, response -> {
+            try {
+                String[] lines = response.split("\\r?\\n");
+                int loopCount = 0;
+                for (int i = 1; i < lines.length-1; i++) {
+                    String[] temp = lines[i].split(",");
+                    if (!temp[temp.length-1].equals("0")) {
+                        loopCount++;
+                        String result;
+                        if (temp[5].equals("Yea")) {
+                            result = "yes";
+                        }
+                        else if(temp[5].equals("Nay")) {
+                            result = "no";
+                        }
+                        else{
+                            result = "";
+                        }
+                        String[] billDesc1 = temp[10].split("\"");
+                        String[] billDesc2 = temp[11].split("\"");
+                        String ballot = result;
+                        String description =  result + " on the " + billDesc1[1] + "," + billDesc2[0];
+                        String date = temp[8];
+                        String billNum;
+                        String session = temp[6]+"-"+temp[7];
+                        if(temp[temp.length-1] == null){
+                            billNum = "empty";
+                        }else{
+                            billNum  = temp[temp.length-1];
                         }
 
-                        allBallotFromMP.add(newBallot);
-                        //VolleyFetchVoteAPI(i, "https://api.openparliament.ca"+newBallot.getVoteURL());
-                        networkingService.fetchVote(newBallot.getVoteURL());
+                        if(!billNum.equals("empty"))
+                            allBallotFromMP.add(new Ballot(ballot, "", "", billNum, date, session, description));
+
 
                     }
+                    if (loopCount == 20) {
+                        break;
+                    }
+                    runOnUiThread(() -> {
+                        adapter2 = new MP1CompareAdapter(CompareMPActivity.this, allBallotFromMP, 2);
+                        recyclerView2.setAdapter(adapter2);
+                        mp2_relative.setVisibility(View.VISIBLE);
+                    });
 
-                }catch (JSONException e) {
-                    e.printStackTrace();
                 }
+            } catch(Exception e) {
+                Log.i("Fetchvotes exception", "10" + e.getMessage());
+                Log.i("XML Stream", e.getMessage());
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
 
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        RetryPolicy retryPolicy = new DefaultRetryPolicy(
-                0,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-        stringRequest.setRetryPolicy(retryPolicy);
-        requestQueue.add(stringRequest);
 
+        },
+                error -> {
+                    Log.i("Fetchvotes volley error", "11" + error.getMessage());
+                    Log.e("VolleyError", error.getMessage());
+                });
+        requestQueueCompare.add(request);
     }
+
 }
