@@ -51,6 +51,38 @@ public class MPCardActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         replaceContentLayout(R.layout.activity_mpcard);
 
+        BottomNavigationView botNav = findViewById(R.id.botNav);
+
+        botNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener()
+        {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item)
+            {
+                Intent intent = getIntent();
+
+                if (item.getItemId() == R.id.home)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked recent events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(MPCardActivity.this, MainActivity.class);
+                }
+
+                if (item.getItemId() == R.id.search)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked live events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(MPCardActivity.this, Search.class);
+                }
+
+                if (item.getItemId() == R.id.events)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked upcoming events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(MPCardActivity.this, Events.class);
+                }
+
+                startActivity(intent);
+                return true;
+            }
+        });
+
         mpObj = getIntent().getParcelableExtra("selectedMP");
         /*
         progressDialog = new ProgressDialog(this);
@@ -115,38 +147,6 @@ public class MPCardActivity extends BaseActivity
         moreBallot_btn.setVisibility(View.VISIBLE);
         compareBtn.setVisibility(View.VISIBLE);
         recyclerView.setAdapter(adapter);
-
-        BottomNavigationView botNav = findViewById(R.id.botNav);
-
-        botNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener()
-        {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item)
-            {
-                Intent intent = getIntent();
-
-                if (item.getItemId() == R.id.home)
-                {
-                    //Toast.makeText(getApplicationContext(), "Clicked recent events", Toast.LENGTH_SHORT).show();
-                    intent = new Intent(MPCardActivity.this, MainActivity.class);
-                }
-
-                if (item.getItemId() == R.id.search)
-                {
-                    //Toast.makeText(getApplicationContext(), "Clicked live events", Toast.LENGTH_SHORT).show();
-                    intent = new Intent(MPCardActivity.this, Search.class);
-                }
-
-                if (item.getItemId() == R.id.events)
-                {
-                    //Toast.makeText(getApplicationContext(), "Clicked upcoming events", Toast.LENGTH_SHORT).show();
-                    intent = new Intent(MPCardActivity.this, Events.class);
-                }
-
-                startActivity(intent);
-                return true;
-            }
-        });
     }
 
 
@@ -164,10 +164,10 @@ public class MPCardActivity extends BaseActivity
                         loopCount++;
                         String result;
                         if (temp[5].equals("Yea")) {
-                            result = "yes";
+                            result = "Yes";
                         }
                         else if(temp[5].equals("Nay")) {
-                            result = "no";
+                            result = "No";
                         }
                         else{
                             result = "";
@@ -231,8 +231,6 @@ public class MPCardActivity extends BaseActivity
         //there might not be twitter info, in case it's empty string
 
         networkingService.fetchMPDesc(mpObj.getName());
-        //networkingService.fetchBallot(mpObj.getBallotURL());
-        VolleyFetchBallotAPI();
     }
 
     @Override

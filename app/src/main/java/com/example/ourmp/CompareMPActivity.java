@@ -282,10 +282,10 @@ public class CompareMPActivity extends BaseActivity
                         loopCount++;
                         String result;
                         if (temp[5].equals("Yea")) {
-                            result = "yes";
+                            result = "Yes";
                         }
                         else if(temp[5].equals("Nay")) {
-                            result = "no";
+                            result = "No";
                         }
                         else{
                             result = "";
@@ -311,13 +311,12 @@ public class CompareMPActivity extends BaseActivity
                     if (loopCount == 20) {
                         break;
                     }
-                    runOnUiThread(() -> {
-                        adapter2 = new MP1CompareAdapter(CompareMPActivity.this, allBallotFromMP, 2);
-                        recyclerView2.setAdapter(adapter2);
-                        mp2_relative.setVisibility(View.VISIBLE);
-                    });
-
                 }
+                runOnUiThread(() -> {
+                    adapter2 = new MP1CompareAdapter(CompareMPActivity.this, allBallotFromMP, 2);
+                    recyclerView2.setAdapter(adapter2);
+                    mp2_relative.setVisibility(View.VISIBLE);
+                });
             } catch(Exception e) {
                 Log.i("Fetchvotes exception", "10" + e.getMessage());
                 Log.i("XML Stream", e.getMessage());
