@@ -65,6 +65,38 @@ public class MPCardActivity extends BaseActivity
         replaceContentLayout(R.layout.activity_mpcard);
         activity = true;
 
+        BottomNavigationView botNav = findViewById(R.id.botNav);
+
+        botNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener()
+        {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item)
+            {
+                Intent intent = getIntent();
+
+                if (item.getItemId() == R.id.home)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked recent events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(MPCardActivity.this, MainActivity.class);
+                }
+
+                if (item.getItemId() == R.id.search)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked live events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(MPCardActivity.this, Search.class);
+                }
+
+                if (item.getItemId() == R.id.events)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked upcoming events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(MPCardActivity.this, Events.class);
+                }
+
+                startActivity(intent);
+                return true;
+            }
+        });
+
         mpObj = getIntent().getParcelableExtra("selectedMP");
         /*
         progressDialog = new ProgressDialog(this);
@@ -129,38 +161,6 @@ public class MPCardActivity extends BaseActivity
         moreBallot_btn.setVisibility(View.VISIBLE);
         compareBtn.setVisibility(View.VISIBLE);
         recyclerView.setAdapter(adapter);
-
-        BottomNavigationView botNav = findViewById(R.id.botNav);
-
-        botNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener()
-        {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item)
-            {
-                Intent intent = getIntent();
-
-                if (item.getItemId() == R.id.home)
-                {
-                    //Toast.makeText(getApplicationContext(), "Clicked recent events", Toast.LENGTH_SHORT).show();
-                    intent = new Intent(MPCardActivity.this, MainActivity.class);
-                }
-
-                if (item.getItemId() == R.id.search)
-                {
-                    //Toast.makeText(getApplicationContext(), "Clicked live events", Toast.LENGTH_SHORT).show();
-                    intent = new Intent(MPCardActivity.this, Search.class);
-                }
-
-                if (item.getItemId() == R.id.events)
-                {
-                    //Toast.makeText(getApplicationContext(), "Clicked upcoming events", Toast.LENGTH_SHORT).show();
-                    intent = new Intent(MPCardActivity.this, Events.class);
-                }
-
-                startActivity(intent);
-                return true;
-            }
-        });
     }
 
 
