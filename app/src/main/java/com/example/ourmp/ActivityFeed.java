@@ -145,7 +145,7 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
     @Override
     protected void onResume() {
         super.onResume();
-        allMPs = ((MainApplication) getApplication()).allMPs;
+        allMPs = new ArrayList<>();
         if (((MainApplication) getApplication()).getLogInStatus()) {
             DBManager dbManager = ((MainApplication) getApplication()).getDbManager();
             dbManager.getSubscriptionObject();
