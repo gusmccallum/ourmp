@@ -29,7 +29,7 @@
             android:id="@+id/voted_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/voted_txt"
+            android:text=""
             android:textSize="15sp"
             android:layout_marginLeft="5dp"
             android:layout_marginBottom="5dp"
