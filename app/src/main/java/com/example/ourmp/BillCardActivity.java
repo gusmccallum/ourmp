@@ -142,16 +142,6 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
     }
 
     @Override
-    public void APIBallotListener(String jsonString) {
-
-    }
-
-    @Override
-    public void APIVoteListener(String jsonString) {
-
-    }
-
-    @Override
     public void APIMPDescListener(String jsonString) {
 
     }

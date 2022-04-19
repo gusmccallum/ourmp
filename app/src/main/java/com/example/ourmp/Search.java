@@ -163,7 +163,7 @@ public class Search extends BaseActivity implements NetworkingService.Networking
             }
         });
 
-        BottomNavigationView botNav = findViewById(R.id.botNav);
+       BottomNavigationView botNav = findViewById(R.id.botNav);
 
         botNav.setSelectedItemId(R.id.search);
 
@@ -280,14 +280,6 @@ public class Search extends BaseActivity implements NetworkingService.Networking
 
     @Override
     public void APIMPMoreInfoListener(String jsonString) {
-    }
-
-    @Override
-    public void APIBallotListener(String jsonString) {
-    }
-
-    @Override
-    public void APIVoteListener(String jsonString) {
     }
 
     @Override
