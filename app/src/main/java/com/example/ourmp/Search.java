@@ -163,7 +163,9 @@ public class Search extends BaseActivity implements NetworkingService.Networking
             }
         });
 
-        BottomNavigationView botNav = findViewById(R.id.botNav);
+       BottomNavigationView botNav = findViewById(R.id.botNav);
+
+        botNav.setSelectedItemId(R.id.search);
 
         botNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener()
         {
@@ -175,19 +177,20 @@ public class Search extends BaseActivity implements NetworkingService.Networking
                 if (item.getItemId() == R.id.home) {
                     //Toast.makeText(getApplicationContext(), "Clicked recent events", Toast.LENGTH_SHORT).show();
                     intent = new Intent(Search.this, MainActivity.class);
+                    startActivity(intent);
                 }
 
                 if (item.getItemId() == R.id.search) {
                     //Toast.makeText(getApplicationContext(), "Clicked live events", Toast.LENGTH_SHORT).show();
-                    intent = new Intent(Search.this, Search.class);
+                    //intent = new Intent(Search.this, Search.class);
                 }
 
                 if (item.getItemId() == R.id.events) {
                     //Toast.makeText(getApplicationContext(), "Clicked upcoming events", Toast.LENGTH_SHORT).show();
                     intent = new Intent(Search.this, Events.class);
+                    startActivity(intent);
                 }
 
-                startActivity(intent);
                 return true;
             }
         });

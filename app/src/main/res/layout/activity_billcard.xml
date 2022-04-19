@@ -53,10 +53,10 @@
                 android:id="@+id/bill_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
                 android:layout_below="@+id/bill_number"
-                android:textSize="15sp"
-                android:text="Description"/>
+                android:layout_marginStart="10dp"
+                android:text="Description"
+                android:textSize="15sp" />
 
         </RelativeLayout>
 
@@ -223,8 +223,10 @@
                 android:layout_height="100dp"
                 android:progress="0"
                 android:max="100"
+                android:scaleY="2"
                 android:id="@+id/progressBar"
-                android:indeterminate="false"/>
+                android:indeterminate="false"
+                android:padding="3dp"/>
             <ImageView
                 android:layout_marginTop="20dp"
                 android:layout_width="60dp"

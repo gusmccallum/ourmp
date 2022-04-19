@@ -45,7 +45,7 @@ public class ActivityFeedRecyclerAdapter  extends
     @NonNull
     @Override
     public ActivityFeedViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.activity_feed_row, parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.search_row, parent,false);
         return new ActivityFeedViewHolder(view);
     }
 
@@ -60,8 +60,6 @@ public class ActivityFeedRecyclerAdapter  extends
             holder.activityPicture.setImageResource(R.drawable.law);
         }
         holder.activityTitle.setText(String.valueOf(activities.get(i).activityTitle));
-        holder.activityDescription.setText(String.valueOf(activities.get(i).activityDescription));
-        holder.activityDate.setText(String.valueOf(activities.get(i).activityDate));
         final Activity temp = activities.get(i);
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override

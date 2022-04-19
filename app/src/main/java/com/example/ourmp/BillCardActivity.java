@@ -2,6 +2,7 @@ package com.example.ourmp;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -86,6 +87,8 @@ public class BillCardActivity extends BaseActivity implements NetworkingService.
         ndpVote = findViewById(R.id.ndp);
         greenVote = findViewById(R.id.green);
         progressBar = findViewById(R.id.progressBar);
+
+        progressBar.getProgressDrawable().setColorFilter(Color.GREEN, android.graphics.PorterDuff.Mode.SRC_IN);
 
         networkingService.fetchMoreBillInfo(activity.url);
 

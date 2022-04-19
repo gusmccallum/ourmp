@@ -2,8 +2,14 @@ package com.example.ourmp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,6 +82,34 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+        BottomNavigationView botNav = findViewById(R.id.botNav);
 
+        botNav.setSelectedItemId(R.id.home);
+
+        botNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Intent intent = getIntent();
+
+                if (item.getItemId() == R.id.home) {
+                    //Toast.makeText(getApplicationContext(), "Clicked recent events", Toast.LENGTH_SHORT).show();
+                    //intent = new Intent(MainActivity.this, MainActivity.class);
+                }
+
+                if (item.getItemId() == R.id.search) {
+                    //Toast.makeText(getApplicationContext(), "Clicked live events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(MainActivity.this, Search.class);
+                    startActivity(intent);
+                }
+
+                if (item.getItemId() == R.id.events) {
+                    //Toast.makeText(getApplicationContext(), "Clicked upcoming events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(MainActivity.this, Events.class);
+                    startActivity(intent);
+                }
+
+                return true;
+            }
+        });
     }
 }

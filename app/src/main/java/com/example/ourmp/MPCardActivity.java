@@ -48,29 +48,34 @@ public class MPCardActivity extends BaseActivity
 
         BottomNavigationView botNav = findViewById(R.id.botNav);
 
-        botNav.setOnItemSelectedListener(item -> {
-            Intent intent = getIntent();
-
-            if (item.getItemId() == R.id.home)
+        botNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener()
+        {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item)
             {
-                //Toast.makeText(getApplicationContext(), "Clicked recent events", Toast.LENGTH_SHORT).show();
-                intent = new Intent(MPCardActivity.this, MainActivity.class);
-            }
+                Intent intent = getIntent();
 
-            if (item.getItemId() == R.id.search)
-            {
-                //Toast.makeText(getApplicationContext(), "Clicked live events", Toast.LENGTH_SHORT).show();
-                intent = new Intent(MPCardActivity.this, Search.class);
-            }
+                if (item.getItemId() == R.id.home)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked recent events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(MPCardActivity.this, MainActivity.class);
+                }
 
-            if (item.getItemId() == R.id.events)
-            {
-                //Toast.makeText(getApplicationContext(), "Clicked upcoming events", Toast.LENGTH_SHORT).show();
-                intent = new Intent(MPCardActivity.this, Events.class);
-            }
+                if (item.getItemId() == R.id.search)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked live events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(MPCardActivity.this, Search.class);
+                }
 
-            startActivity(intent);
-            return true;
+                if (item.getItemId() == R.id.events)
+                {
+                    //Toast.makeText(getApplicationContext(), "Clicked upcoming events", Toast.LENGTH_SHORT).show();
+                    intent = new Intent(MPCardActivity.this, Events.class);
+                }
+
+                startActivity(intent);
+                return true;
+            }
         });
 
         mpObj = getIntent().getParcelableExtra("selectedMP");
