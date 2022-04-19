@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    >
 
     <LinearLayout
         android:id="@+id/ballot_row"
@@ -9,6 +10,7 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:background="@color/gray"
+        android:paddingBottom="15dp"
       >
         <TextView
             android:id="@+id/voted_txt"
@@ -16,7 +18,7 @@
             android:layout_height="wrap_content"
             android:text="@string/voted_txt"
             android:textSize="18sp"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:layout_marginBottom="5dp">
 
         </TextView>

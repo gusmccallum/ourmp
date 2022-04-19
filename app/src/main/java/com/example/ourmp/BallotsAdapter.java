@@ -40,7 +40,12 @@ public class BallotsAdapter extends RecyclerView.Adapter<BallotsAdapter.TasksVie
             holder.ballot_txt.setText(ballot.getBallot());
         }
 
-        holder.billnum_txt.setText(ballot.getBillNum());
+        if(ballot.getDesc().contains(",")) {
+            String[] splitStr = ballot.getDesc().trim().split(",");
+            holder.billnum_txt.setText(splitStr[0]);
+        }
+        else
+            holder.billnum_txt.setText(ballot.getDesc());
 
         Activity temp = new Activity(null,
                 ballot.getBillNum() + " was introduced in session " + ballot.getSession(),

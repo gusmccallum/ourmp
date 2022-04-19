@@ -1,16 +1,13 @@
 package com.example.ourmp;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,7 +20,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +37,6 @@ public class MPCardActivity extends BaseActivity
     ArrayList<Ballot> validBollotList = new ArrayList<>(0);
     BallotsAdapter adapter;
     RecyclerView recyclerView;
-    ProgressDialog progressDialog;
     DBManager dbManager;
     RequestQueue requestQueue;
 
@@ -51,12 +46,34 @@ public class MPCardActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         replaceContentLayout(R.layout.activity_mpcard);
 
+        BottomNavigationView botNav = findViewById(R.id.botNav);
+
+        botNav.setOnItemSelectedListener(item -> {
+            Intent intent = getIntent();
+
+            if (item.getItemId() == R.id.home)
+            {
+                //Toast.makeText(getApplicationContext(), "Clicked recent events", Toast.LENGTH_SHORT).show();
+                intent = new Intent(MPCardActivity.this, MainActivity.class);
+            }
+
+            if (item.getItemId() == R.id.search)
+            {
+                //Toast.makeText(getApplicationContext(), "Clicked live events", Toast.LENGTH_SHORT).show();
+                intent = new Intent(MPCardActivity.this, Search.class);
+            }
+
+            if (item.getItemId() == R.id.events)
+            {
+                //Toast.makeText(getApplicationContext(), "Clicked upcoming events", Toast.LENGTH_SHORT).show();
+                intent = new Intent(MPCardActivity.this, Events.class);
+            }
+
+            startActivity(intent);
+            return true;
+        });
+
         mpObj = getIntent().getParcelableExtra("selectedMP");
-        /*
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Loading...");
-        progressDialog.show();*/
 
         //Perform initial query to see if user is subscribed to MP
         if (((MainApplication)getApplication()).getLogInStatus()) {
@@ -94,8 +111,6 @@ public class MPCardActivity extends BaseActivity
 
         networkingService = ( (MainApplication)getApplication()).getNetworkingService();
         jsonService = ( (MainApplication)getApplication()).getJsonService();
-        //dbManager = ((MainApplication) getApplication()).getDbManager();
-        //dbManager.setSubObjCallbackInstance(MPCardActivity.this);
         networkingService.listener = this;
 
         networkingService.getImageData(mpObj.getPhotoURL());
@@ -115,38 +130,6 @@ public class MPCardActivity extends BaseActivity
         moreBallot_btn.setVisibility(View.VISIBLE);
         compareBtn.setVisibility(View.VISIBLE);
         recyclerView.setAdapter(adapter);
-
-        BottomNavigationView botNav = findViewById(R.id.botNav);
-
-        botNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener()
-        {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item)
-            {
-                Intent intent = getIntent();
-
-                if (item.getItemId() == R.id.home)
-                {
-                    //Toast.makeText(getApplicationContext(), "Clicked recent events", Toast.LENGTH_SHORT).show();
-                    intent = new Intent(MPCardActivity.this, MainActivity.class);
-                }
-
-                if (item.getItemId() == R.id.search)
-                {
-                    //Toast.makeText(getApplicationContext(), "Clicked live events", Toast.LENGTH_SHORT).show();
-                    intent = new Intent(MPCardActivity.this, Search.class);
-                }
-
-                if (item.getItemId() == R.id.events)
-                {
-                    //Toast.makeText(getApplicationContext(), "Clicked upcoming events", Toast.LENGTH_SHORT).show();
-                    intent = new Intent(MPCardActivity.this, Events.class);
-                }
-
-                startActivity(intent);
-                return true;
-            }
-        });
     }
 
 
@@ -175,7 +158,7 @@ public class MPCardActivity extends BaseActivity
                         String[] billDesc1 = temp[10].split("\"");
                         String[] billDesc2 = temp[11].split("\"");
                         String ballot = result;
-                        String description =  result + " on the " + billDesc1[1] + "," + billDesc2[0];
+                        String description = billDesc1[1] + "," + billDesc2[0];
                         String date = temp[8];
                         String billNum;
                         String session = temp[6]+"-"+temp[7];
@@ -188,10 +171,7 @@ public class MPCardActivity extends BaseActivity
                         if(!billNum.equals("empty"))
                             validBollotList.add(new Ballot(ballot, "", "", billNum, date, session, description));
 
-                        runOnUiThread(() -> {
-                            Log.i("Fetchvotes", "8");
-                            adapter.notifyDataSetChanged();
-                        });
+                        runOnUiThread(() -> adapter.notifyDataSetChanged());
                     }
                     if (loopCount == 20) {
                         break;
@@ -231,15 +211,6 @@ public class MPCardActivity extends BaseActivity
         //there might not be twitter info, in case it's empty string
 
         networkingService.fetchMPDesc(mpObj.getName());
-    }
-
-    @Override
-    public void APIBallotListener(String jsonString) {
-
-    }
-    @Override
-    public void APIVoteListener(String jsonString) {
-
     }
 
     @Override
@@ -352,9 +323,6 @@ public class MPCardActivity extends BaseActivity
                 }
             });
         }
-    }
-    public void VolleyFetchBallotAPI(){
-
     }
 
     public void WikiBtnClicked(View view) {
