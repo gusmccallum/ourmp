@@ -45,7 +45,7 @@ public class BallotsAdapter extends RecyclerView.Adapter<BallotsAdapter.TasksVie
         Activity temp = new Activity(null,
                 ballot.getBillNum() + " was introduced in session " + ballot.getSession(),
                 ballot.getDesc(), ballot.getDate(),
-                "/bills/"+ballot.getSession()+"/"+ballot.getBillNum()+"/");
+                "/bills/"+ballot.getSession()+"/"+ballot.getBillNum()+"/", null);
         holder.ballot_row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

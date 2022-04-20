@@ -47,7 +47,35 @@ public class AFRecyclerAdapter  extends
         if(activities.get(i).activityPicture != null){
             holder.activityPicture.setImageBitmap(activities.get(i).activityPicture);
         }else{
-            holder.activityPicture.setImageResource(R.drawable.law);
+            String party = activities.get(i).party;
+
+            if (party == null) {
+                holder.activityPicture.setImageResource(R.drawable.bill_other);
+            }
+            else {
+                switch (party) {
+                    case "Conservative":
+                        holder.activityPicture.setImageResource(R.drawable.bill_con);
+                        break;
+                    case "Liberal":
+                        holder.activityPicture.setImageResource(R.drawable.bill_lib);
+                        break;
+                    case "NDP":
+                        holder.activityPicture.setImageResource(R.drawable.bill_ndp);
+                        break;
+                    case "Bloc Québécois":
+                        holder.activityPicture.setImageResource(R.drawable.bill_bloc);
+                        break;
+                    case "Green Party":
+                        holder.activityPicture.setImageResource(R.drawable.bill_green);
+                        break;
+                    default:
+                        holder.activityPicture.setImageResource(R.drawable.bill_other);
+                }
+            }
+
+
+
         }
         holder.activityTitle.setText(String.valueOf(activities.get(i).activityTitle));
         holder.activityDescription.setText(String.valueOf(activities.get(i).activityDescription));

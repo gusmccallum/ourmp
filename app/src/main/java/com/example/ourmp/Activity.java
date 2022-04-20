@@ -16,14 +16,16 @@ public class Activity  implements Comparable<Activity>, Parcelable {
     String activityDate;
     String activityStatus;
     String url;
+    String party;
 
     public Activity(@Nullable Bitmap pic, @Nullable String title, @Nullable String desc,
-                    String date, @Nullable String url){
+                    String date, @Nullable String url, @Nullable String party){
         this.activityPicture = pic;
         this.activityTitle = title;
         this.activityDescription = desc;
         this.activityDate = date;
         this.url = "https://api.openparliament.ca" + url + "?format=json";
+        this.party = party;
     }
 
     public Activity(){
@@ -52,6 +54,7 @@ public class Activity  implements Comparable<Activity>, Parcelable {
         activityStatus = in.readString();
         activityDate = in.readString();
         url = in.readString();
+        party = in.readString();
     }
 
     public static final Creator<Activity> CREATOR = new Creator<Activity>() {
@@ -79,5 +82,6 @@ public class Activity  implements Comparable<Activity>, Parcelable {
         parcel.writeString(activityStatus);
         parcel.writeString(activityDate);
         parcel.writeString(url);
+        parcel.writeString(party);
     }
 }

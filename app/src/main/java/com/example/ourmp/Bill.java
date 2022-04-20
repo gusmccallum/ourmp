@@ -12,6 +12,7 @@ public class Bill
     private String voteURL;
     private boolean expanded;
 
+
     public Bill(String billNum, String billSession, String billDate, String billResult, String billDesc, String yesVotes, String noVotes, String voteURL)
     {
         if(billNum == null){
@@ -31,6 +32,7 @@ public class Bill
         }else{
             this.voteURL = "";
         }
+
     }
 
     public String getBillNum()

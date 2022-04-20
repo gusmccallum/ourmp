@@ -27,7 +27,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/law"
+                android:src="@drawable/bill_other"
                 />
         </LinearLayout>
 

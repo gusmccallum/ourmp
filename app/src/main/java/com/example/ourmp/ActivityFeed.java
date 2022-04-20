@@ -66,11 +66,6 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
         super.onCreate(savedInstanceState);
         replaceContentLayout(R.layout.activity_feed);
         if (((MainApplication) getApplication()).getLogInStatus()) {
-            //check if user log in or not
-          /*  DBManager dbManager = ((MainApplication) getApplication()).getDbManager();
-            dbManager.getSubscriptionObject();
-            dbManager.setSubObjCallbackInstance(this);*/
-
 
             //initialize views
             activityList = findViewById(R.id.recyclerView_Bills);
@@ -85,13 +80,11 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
 
             changeStateBtn = findViewById(R.id.changeBtn);
             changeStateBtn.setOnClickListener(this);
-            /*progressDialog = new ProgressDialog(this);
-            progressDialog.setCancelable(false);
-            progressDialog.setMessage("Loading...");
-            progressDialog.show();*/
 
             billRequestQueue = Volley.newRequestQueue(this);
             voteRequestQueue = Volley.newRequestQueue(this);
+
+            emptyMessage = (TextView) findViewById(R.id.ActivityFeedEmpty_txt);
         } else {
             Toast.makeText(this, "Sign in to view Activity Feed", Toast.LENGTH_SHORT).show();
         }
@@ -159,6 +152,14 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
     public void getSub(Subscribed2 cbReturnSub) {
         subscribedMPs= cbReturnSub.getSubscribedMPs();
         subscribedBills = cbReturnSub.getSubscribedBills();
+        if (subscribedBills == null && subscribedMPs == null) {
+            emptyMessage.setVisibility(View.VISIBLE);
+            activityList.setVisibility(View.GONE);
+            activityList2.setVisibility(View.GONE);
+            changeStateBtn.setVisibility(View.GONE);
+
+
+        }
         if (subscribedBills != null) {
             for (int i = 0; i < subscribedBills.size(); i++) {
                 fetchBills(subscribedBills.get(i));
@@ -218,7 +219,8 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
                         String billResult = BillObject.getString("StatusNameEn") + " after " + BillObject.getString("LatestCompletedMajorStageNameWithChamberSuffix");
                         String billSponsorName = BillObject.getString("SponsorPersonOfficialFirstName") + " " + BillObject.getString("SponsorPersonOfficialLastName");
                         String description = BillObject.getString("LongTitleEn");
-                        activities.add(new Activity(null, "Bill " + billNum + " in session " + billSession, "Bill is " + billResult + "." + description + ". Sponsored by " + billSponsorName + ".", "Updated: " + date, ""));
+                        String party = ((MainApplication)getApplication()).getMPParty(billSponsorName);
+                        activities.add(new Activity(null, "Bill " + billNum + " in session " + billSession, "Bill is " + billResult + "." + description + ". Sponsored by " + billSponsorName + ".", "Updated: " + date, "", party));
                         runOnUiThread(new Runnable() {
                             public void run() {
                                 activities.sort(Comparator.comparing(obj -> obj.activityDate));
@@ -273,7 +275,7 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
                                             String billDesc2[] = temp[11].split("\"");
                                             String description = "Voted " + result + " on the " + billDesc1[1] + "," + billDesc2[0];
                                             String date = temp[8];
-                                            MpActivities.add(new Activity(allMPs.get(currentMP).getPhoto(), name, description, date, ""));
+                                            MpActivities.add(new Activity(allMPs.get(currentMP).getPhoto(), name, description, date, "", null));
                                             runOnUiThread(new Runnable() {
                                                 public void run() {
                                                     MpActivities.sort(Comparator.comparing(obj -> obj.activityDate));
@@ -288,7 +290,7 @@ public class ActivityFeed extends BaseActivity implements View.OnClickListener, 
                                         }
                                     }
                                 } catch(Exception e) {
-                                    Log.e("XML Stream", e.getMessage());
+                                    Log.e("CSV Stream", e.getMessage());
                                 }
 
 

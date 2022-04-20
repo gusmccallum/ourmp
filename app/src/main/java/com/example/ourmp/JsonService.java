@@ -51,7 +51,7 @@ public class JsonService{
                 String billDate = BillObject.getString("introduced");
                 String billSession = BillObject.getString("session");
                 String billURL = BillObject.getString("url");
-                bills.add(new Activity(null, billNumber + " was introduced in session " + billSession, billDesc, billDate, billURL));
+                bills.add(new Activity(null, billNumber + " was introduced in session " + billSession, billDesc, billDate, billURL, null));
             }
 
         } catch (JSONException e) {

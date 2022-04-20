@@ -57,7 +57,7 @@ public class ActivityFeedRecyclerAdapter  extends
         if(activities.get(i).activityPicture != null){
             holder.activityPicture.setImageBitmap(activities.get(i).activityPicture);
         }else{
-            holder.activityPicture.setImageResource(R.drawable.law);
+            holder.activityPicture.setImageResource(R.drawable.bill_con);
         }
         holder.activityTitle.setText(String.valueOf(activities.get(i).activityTitle));
         final Activity temp = activities.get(i);

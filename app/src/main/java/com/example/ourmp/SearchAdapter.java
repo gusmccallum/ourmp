@@ -67,6 +67,12 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHold
             case ("Bloc Québécois"):
                 holder.party.setTextColor(ContextCompat.getColor(context, R.color.BlocQuebequois));
                 break;
+            case ("Green"):
+                holder.party.setTextColor(ContextCompat.getColor(context, R.color.GreenParty));
+                break;
+            default:
+                holder.party.setTextColor(ContextCompat.getColor(context, R.color.black));
+                break;
         }
 
         holder.ll_.setOnClickListener(new View.OnClickListener() {

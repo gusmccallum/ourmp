@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -16,7 +17,9 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -89,43 +92,47 @@ public class Events extends BaseActivity
 
     private void initData()
     {
-        String url = "https://api.openparliament.ca/votes/?session=44-1&format=json";
+        //String url = "https://api.openparliament.ca/votes/?session=44-1&format=json";
+        String url = "https://www.ourcommons.ca/members/en/votes/csv";
 
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>()
+        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>()
         {
             @Override
-            public void onResponse(JSONObject response)
+            public void onResponse(String response)
             {
-                try
-                {
-                    JSONArray BillsArray = response.getJSONArray("objects");
+                try {
+                    String lines[] = response.split("\\r?\\n");
 
-                    for (int i = 0; i < BillsArray.length(); i++)
-                    {
-                        JSONObject BillObject = BillsArray.getJSONObject(i);
+                    for (int i = 1; i < lines.length - 1; i++) {
+                        String[] temp = lines[i].split(",");
+                        if (!temp[temp.length - 1].equals("0")) {
 
-                        if(BillObject.getString("bill_url") != ("null"))
-                        {
-                            String billNum = BillObject.getString("bill_url");
-                            String[] temp = billNum.split("/");
-                            billNum = temp[3];
-                            String billSession = BillObject.getString("session");
-                            String billDate = BillObject.getString("date");
-                            String billResult = BillObject.getString("result");
-                            String billDesc = BillObject.getJSONObject("description").getString("en");
-                            String yesVotes = BillObject.getString("yea_total");
-                            String noVotes = BillObject.getString("nay_total");
+                            String billNum = temp[temp.length - 1];
+                            String billSession = "44-1";
+                            String billDate = temp[2];
+                            String billResult = temp[temp.length-5];
+                            String billDesc;
+                            if (temp.length == 11) {
+                                billDesc = temp[4] + temp[5];
+                            }
+                            else {
+                                billDesc = temp[4] + temp[5] + temp[6];
+                            }
+                            String yesVotes = temp[temp.length-4];
+                            String noVotes = temp[temp.length-3];
                             billList.add(new Bill(billNum, billSession, billDate, billResult, billDesc, yesVotes, noVotes, ""));
+                            Log.i("thing", "Length of this line: " + temp.length + " " + billNum + " " + billSession + " " + billDate + " " + billResult + " " + billDesc + " " + yesVotes + " " + noVotes);
                         }
                     }
+
 
                     MyAdapter myAdapter = new MyAdapter(billList);
                     recyclerView.setAdapter(myAdapter);
                 }
 
-                catch (JSONException e)
+                catch (Exception e)
                 {
-                    e.printStackTrace();
+                    Log.e("CSV Stream", e.getMessage());
                 }
             }
         }, new Response.ErrorListener()
@@ -133,7 +140,7 @@ public class Events extends BaseActivity
             @Override
             public void onErrorResponse(VolleyError error)
             {
-                error.printStackTrace();
+
             }
         });
 

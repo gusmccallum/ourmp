@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:text="View Bills"
 
-        />
+        app:layout_constraintTop_toTopOf="parent" />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_Bills"
         android:layout_width="match_parent"
@@ -49,9 +49,10 @@
         app:menu="@menu/bot_nav_menu" />
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="190dp"
+        android:id="@+id/ActivityFeedEmpty_txt"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
         android:text="Your feed is empty... for now. Follow some MPs or Bills to start getting updates!"
         app:layout_constraintBottom_toTopOf="@+id/guideline7"
         app:layout_constraintEnd_toEndOf="parent"
@@ -65,5 +66,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent=".1" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

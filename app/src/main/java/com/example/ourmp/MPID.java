@@ -4,9 +4,20 @@ public class MPID {
     private String MPName;
     private String MPID;
 
-    public MPID(String name, String ID) {
+    public String getMPParty() {
+        return MPParty;
+    }
+
+    public void setMPParty(String MPParty) {
+        this.MPParty = MPParty;
+    }
+
+    private String MPParty;
+
+    public MPID(String name, String ID, String party) {
         this.MPName = name;
         this.MPID = ID;
+        this.MPParty = party;
     }
 
     public String getMPName() {
