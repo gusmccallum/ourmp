@@ -113,75 +113,7 @@ public class JsonService{
         return foundedMP;
     }
 
-    public ArrayList<Ballot> parseBallots(String jsonBallot){
-        //return the activities about ballot
-        ArrayList<Ballot> allBallotFromMP = new ArrayList<>(0);
 
-        try{
-            JSONObject jsonObject = new JSONObject(jsonBallot);// root
-            JSONArray BallotArray = jsonObject.getJSONArray("objects");
-
-            for (int i = 0 ; i< BallotArray.length(); i++){
-                JSONObject BallotObject = BallotArray.getJSONObject(i);
-
-                String ballot = BallotObject.getString("ballot");
-                String mpURL = BallotObject.getString("politician_url");
-                String voteUrl = BallotObject.getString("vote_url");
-
-                if(!ballot.equals("Yes") && !ballot.equals("No")){
-                    ballot = "";
-                }
-                Ballot newBallot = new Ballot(ballot, mpURL, voteUrl, null, null, null, null);
-                allBallotFromMP.add(newBallot);
-            }
-        }catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return allBallotFromMP;
-    }
-
-    public Ballot parseVote(String jsonMP){
-        //return bill numbers from url of ballot!!
-        Ballot ballot = new Ballot();
-
-        try{
-            JSONObject jsonObject = new JSONObject(jsonMP);// root
-
-            //save date if there is info
-            if(jsonObject.getString("date").equals("null")){
-                ballot.setDate("");
-            }
-            else{
-                ballot.setDate(jsonObject.getString("date"));
-            }
-
-            //set bill number if there is info
-           if(jsonObject.getString("bill_url").equals("null")){
-               ballot.setBillNum("empty");
-           }
-           else{
-               String str = jsonObject.getString("bill_url");
-               String[] temp = str.split("/");
-               str = temp[3];
-
-               ballot.setBillNum(str);
-           }
-
-           //set bill session
-            if(jsonObject.getString("session").equals("null")){
-                ballot.setSession("null");
-            }
-            else{
-                ballot.setSession(jsonObject.getString("session"));
-            }
-
-            ballot.setDesc(jsonObject.getJSONObject("description").getString("en"));
-
-        }catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return ballot;
-    }
     public String parseMPDesc(String jsonString, String mpName){
         String desc = "" ;
         try{

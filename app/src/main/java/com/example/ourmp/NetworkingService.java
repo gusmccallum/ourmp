@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,20 +13,16 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class NetworkingService {
     String findMPURL = "https://represent.opennorth.ca/representatives/house-of-commons/?point=";
 
     String listOfBills = "https://api.openparliament.ca/bills/?session=44-1&format=json&limit=323";
-    //String listOfBills = "https://api.openparliament.ca/bills/?introduced__gt=2021-01-01&format=json";
-    String listOfMPs = "https://represent.opennorth.ca/representatives/house-of-commons/?limit=50";
-
 
     String MpPageURL1 = "https://api.openparliament.ca/politicians/";
     String formatJson = "/?format=json";
 
-    String openMPURL = "https://api.openparliament.ca/";
+    //String openMPURL = "https://api.openparliament.ca/";
 
     String MPdescURL = "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=";
     String formatJson2 = "&format=json";
@@ -41,8 +36,6 @@ public class NetworkingService {
         void APINetworkListener(String jsonString); //status = 0
         void APINetworkingListerForImage(Bitmap image);//status = 0
         void APIMPMoreInfoListener(String jsonString); // status = 4
-        void APIBallotListener(String jsonString);//status = 1
-        void APIVoteListener(String jsonString); //status = 2
         void APIMPDescListener(String jsonString); // status = 3
         void APIBillsListener(String jsonString); //status = 5
         void APIMoreBillInfoListener(String jsonString); //status = 6
@@ -69,18 +62,6 @@ public class NetworkingService {
         String formattedName = formatName(fullName, "-");
 
         completeURL = MpPageURL1 + formattedName.toLowerCase() + formatJson;
-        connect(completeURL);
-    }
-
-    public void fetchBallot(String ballotUrl){
-        status = 1;
-        String completeURL = openMPURL+ballotUrl+"&limit=40";
-        connect(completeURL);
-    }
-
-    public void fetchVote(String voteURL){
-        status = 2;
-        String completeURL = openMPURL+voteURL;
         connect(completeURL);
     }
     public void fetchMPDesc(String fullName){
@@ -118,40 +99,27 @@ public class NetworkingService {
                     if ((statues >= 200) && (statues <= 299)) {
                         InputStream in = httpURLConnection.getInputStream();
                         InputStreamReader inputStreamReader = new InputStreamReader(in);
-                        int read = 0;
+                        int read;
                         while ((read = inputStreamReader.read()) != -1) {// json integers ASCII
                             char c = (char) read;
                             jsonString += c;
                         }
                         // dataTask in ios
                         final String finalJson = jsonString;
-                        networkHander.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                //send data to main thread
-                                if(status == 0)
-                                {
-                                    listener.APINetworkListener(finalJson);
-                                }
-                                else if(status == 1)
-                                {
-                                    listener.APIBallotListener(finalJson);
-                                }
-                                else if(status == 2){
-                                    listener.APIVoteListener(finalJson);
-                                }
-                                /*else if(status == 3){
-                                    listener.APIMPDescListener(finalJson);
-                                }*/
-                                else if(status == 4){
-                                    listener.APIMPMoreInfoListener(finalJson);
-                                }else if(status == 5){
-                                    listener.APIBillsListener(finalJson);
-                                }else if(status == 6){
-                                    listener.APIMoreBillInfoListener(finalJson);
-                                }else if(status == 7){
-                                    listener.APIParseBillVote(finalJson);
-                                }
+                        networkHander.post(() -> {
+                            //send data to main thread
+                            if(status == 0)
+                            {
+                                listener.APINetworkListener(finalJson);
+                            }
+                            else if(status == 4){
+                                listener.APIMPMoreInfoListener(finalJson);
+                            }else if(status == 5){
+                                listener.APIBillsListener(finalJson);
+                            }else if(status == 6){
+                                listener.APIMoreBillInfoListener(finalJson);
+                            }else if(status == 7){
+                                listener.APIParseBillVote(finalJson);
                             }
                         });
                     }
@@ -184,19 +152,16 @@ public class NetworkingService {
                     if ((statues >= 200) && (statues <= 299)) {
                         InputStream in = httpURLConnection.getInputStream();
                         InputStreamReader inputStreamReader = new InputStreamReader(in);
-                        int read = 0;
+                        int read;
                         while ((read = inputStreamReader.read()) != -1) {// json integers ASCII
                             char c = (char) read;
                             jsonString += c;
                         }
                         // dataTask in ios
                         final String finalJson = jsonString;
-                        networkHander.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                //send data to main thread
-                               listener.APIMPDescListener(finalJson);
-                            }
+                        networkHander.post(() -> {
+                            //send data to main thread
+                           listener.APIMPDescListener(finalJson);
                         });
                     }
                 } catch (MalformedURLException e) {
@@ -235,25 +200,17 @@ public class NetworkingService {
         });
     }
     public void getImageData2(String imgURL){
-        String completeURL = imgURL;
-        networkingExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    URL urlObj = new URL(completeURL);
-                    InputStream in = ((InputStream)urlObj.getContent());
-                    Bitmap imageData = BitmapFactory.decodeStream(in);
-                    networkHander.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            listener.APINetworkingListerForImage2(imageData);
-                        }
-                    });
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        String completeURL2 = imgURL;
+        networkingExecutor.execute(() -> {
+            try {
+                URL urlObj = new URL(completeURL2);
+                InputStream in = ((InputStream)urlObj.getContent());
+                Bitmap imageData = BitmapFactory.decodeStream(in);
+                networkHander.post(() -> listener.APINetworkingListerForImage2(imageData));
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
     }
