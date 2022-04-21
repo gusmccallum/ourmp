@@ -39,17 +39,26 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>
         holder.billSession.setText("Session: " + bill.getBillSession());
         holder.billDate.setText(bill.getBillDate());
         holder.billResult.setAllCaps(true);
-        holder.billResult.setText(bill.getBillResult());
+        if (billList.get(position).getBillResult().equals("Agreed To"))
+        {
+            holder.billResult.setText("Passed");
+        }
+
+        if (billList.get(position).getBillResult().equals("Negatived"))
+        {
+            holder.billResult.setText("Failed");
+        }
+
         holder.yesVote.setText(bill.getYesVotes());
         holder.noVote.setText(bill.getNoVotes());
         holder.billDesc.setText(bill.getBillDesc());
 
-        if (billList.get(position).getBillResult().equals("Passed"))
+        if (billList.get(position).getBillResult().equals("Agreed To"))
         {
             holder.billResult.setTextColor(Color.GREEN);
         }
 
-        if (billList.get(position).getBillResult().equals("Failed"))
+        if (billList.get(position).getBillResult().equals("Negatived"))
         {
             holder.billResult.setTextColor(Color.RED);
         }
