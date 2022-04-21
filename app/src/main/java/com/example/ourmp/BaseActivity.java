@@ -99,12 +99,6 @@ public class BaseActivity extends AppCompatActivity
                     intent = new Intent(BaseActivity.this, Events.class);
                 }
 
-                if (item.getItemId() == R.id.settings)
-                {
-
-                    intent = new Intent(BaseActivity.this, Settings.class);
-                }
-
                 startActivity(intent);
                 drawerLayout.closeDrawers();
                 return true;

@@ -31,12 +31,5 @@
         android:icon="@drawable/ic_baseline_login_24" />
 
 
-    <item android:title="Others">
-        <menu>
-            <item
-                android:id="@+id/settings"
-                android:title="Settings"
-                android:icon="@drawable/ic_baseline_settings_24" />
-        </menu>
-    </item>
+
 </menu>

@@ -46,7 +46,9 @@ public class AFRecyclerAdapter  extends
     public void onBindViewHolder(@NonNull AFRecyclerAdapter.ActivityFeedViewHolder holder, final int i) {
         if(activities.get(i).activityPicture != null){
             holder.activityPicture.setImageBitmap(activities.get(i).activityPicture);
-        }else{
+        }
+        else if (activities.get(i).activityPicture == null && activities.get(i).party != null){
+
             String party = activities.get(i).party;
 
             if (party == null) {
@@ -76,6 +78,9 @@ public class AFRecyclerAdapter  extends
 
 
 
+        }
+        else {
+            holder.activityPicture.setImageResource(R.drawable.mp);
         }
         holder.activityTitle.setText(String.valueOf(activities.get(i).activityTitle));
         holder.activityDescription.setText(String.valueOf(activities.get(i).activityDescription));
