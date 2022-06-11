@@ -151,7 +151,7 @@ public class MPCardActivity extends BaseActivity
                 int loopCount = 0;
                 for (int i = 1; i < lines.length-1; i++) {
                     String[] temp = lines[i].split(",");
-                    if (!temp[temp.length-1].equals("0")) {
+                    if (temp[temp.length-1].matches("C.*")) {
                         loopCount++;
                         String result;
                         if (temp[5].equals("Yea")) {
